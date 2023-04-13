@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="alter_bg">@color/white</color>
+    <color name="bg">#ff121212</color>
+    <color name="completed">#ff5d68a0</color>
+    <color name="dropped">#ffb24443</color>
+    <color name="grey_background">@color/ui_bg</color>
+    <color name="iconColor">#ffa0a0a0</color>
+    <color name="loading">#ffe0e0e0</color>
+    <color name="onHold">#ffcd922e</color>
+    <color name="planToWatch">#ff9e68a2</color>
+    <color name="text">@color/white</color>
+    <color name="ui_bg">#ff24252a</color>
+    <color name="watching">#ff639c67</color>
+</resources>

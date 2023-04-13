@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<com.google.android.material.appbar.AppBarLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		app:liftOnScroll="true"
+		android:fitsSystemWindows="true"
+		android:id="@+id/app_bar_layout">
+		<RelativeLayout
+			android:layout_width="fill_parent"
+			android:layout_height="?actionBarSize"
+		>
+			<androidx.appcompat.widget.Toolbar
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentTop="true"
+				app:contentInsetStart="0.0dip">
+				<LinearLayout
+					android:orientation="horizontal"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content">
+					<ImageButton
+						android:id="@+id/ib_back"
+						android:background="@null"
+						android:layout_width="56.0dip"
+						android:layout_height="56.0dip"
+						android:layout_marginStart="8.0dip"
+						app:srcCompat="@drawable/ic_back_24"
+					 />
+					<TextView
+						android:textSize="18.0sp"
+						android:textColor="@color/text"
+						android:ellipsize="end"
+						android:gravity="start|center"
+						android:id="@+id/tv_anime_title"
+						android:background="@null"
+						android:layout_width="0.0dip"
+						android:layout_height="56.0dip"
+						android:maxLines="1"
+						android:includeFontPadding="false"
+						android:layout_weight="1.0"
+						android:alpha="0.9"
+						android:fontFamily="@font/roboto_medium" />
+				</LinearLayout>
+			</androidx.appcompat.widget.Toolbar>
+
+		</RelativeLayout>
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/nested_scroll_view"
+		android:visibility="gone"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
+		android:overScrollMode="never">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+
+			<com.google.android.material.chip.ChipGroup
+				android:layout_height="wrap_content"
+				android:layout_width="match_parent"
+				android:visibility="gone"
+				android:layout_marginTop="8.0dip"
+				android:layout_marginLeft="16.0dip"
+				android:layout_marginRight="16.0dip"
+				android:layout_marginHorizontal="16.0dip"
+				android:id="@+id/dubs_chip_group" />
+
+			<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/dub_text_til"
+				android:visibility="gone"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="16.0dip"
+				android:layout_marginTop="8.0dip"
+				android:layout_marginRight="16.0dip"
+				android:layout_marginBottom="8.0dip"
+				android:hint="@string/dub"
+				android:layout_marginHorizontal="16.0dip"
+				app:boxBackgroundColor="@color/bg"
+				app:boxCornerRadiusBottomEnd="8.0dip"
+				app:boxCornerRadiusBottomStart="8.0dip"
+				app:boxCornerRadiusTopEnd="8.0dip"
+				app:boxCornerRadiusTopStart="8.0dip"
+				app:endIconTint="@color/iconColor"
+				app:startIconDrawable="@drawable/ic_source_24"
+				app:startIconTint="@color/iconColor"
+				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+				<AutoCompleteTextView
+					android:textSize="14.0sp"
+					android:textColor="@color/text"
+					android:id="@+id/translations"
+					android:padding="16.0dip"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:inputType="none"
+					android:alpha="0.9"
+					android:textAllCaps="true"
+					android:fontFamily="@font/roboto_medium" />
+			</com.google.android.material.textfield.TextInputLayout>
+
+			<com.google.android.material.chip.ChipGroup
+				android:layout_height="wrap_content"
+				android:layout_width="match_parent"
+				android:visibility="gone"
+				android:layout_marginLeft="16.0dip"
+				android:layout_marginRight="16.0dip"
+				android:layout_marginHorizontal="16.0dip"
+				android:id="@+id/players_chip_group" />
+
+			<LinearLayout
+				android:orientation="horizontal"
+				android:id="@+id/ll_sort"
+				android:visibility="gone"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="16.0dip"
+				android:layout_marginRight="16.0dip"
+				android:layout_marginHorizontal="16.0dip">
+				<TextView
+					android:textSize="16.0sp"
+					android:textColor="@color/text"
+					android:ellipsize="end"
+					android:gravity="start|center"
+					android:id="@+id/tv_episodes"
+					android:background="@null"
+					android:layout_width="0.0dip"
+					android:layout_height="48.0dip"
+					android:text="@string/episode_list"
+					android:maxLines="1"
+					android:includeFontPadding="false"
+					android:layout_weight="1.0"
+					android:alpha="0.9"
+					android:fontFamily="@font/roboto_medium" />
+
+				<ToggleButton
+					android:id="@+id/tb_sort"
+					android:background="@drawable/tb_sort"
+					android:focusable="false"
+					android:focusableInTouchMode="false"
+					android:layout_width="48.0dip"
+					android:layout_height="48.0dip"
+					android:textOn=""
+					android:textOff=""
+					android:scaleX="0.7"
+					android:scaleY="0.7" />
+			</LinearLayout>
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/rv_episodes"
+				android:clipToPadding="false"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="8.0dip"
+				android:overScrollMode="never"
+				android:orientation="vertical"
+				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+			 />
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+	<include
+		android:layout_gravity="center"
+		android:id="@+id/load_state_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		layout="@layout/load_state_layout" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

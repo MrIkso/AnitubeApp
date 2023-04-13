@@ -1,0 +1,37 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+	dependencies {
+		def nav_version = "2.5.3"
+		def hilt_version = '2.45'
+		classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+		classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+	}
+}
+
+plugins {
+	id 'com.android.application' version '7.4.1' apply false
+	id 'com.android.library' version '7.4.1' apply false
+	id 'org.jetbrains.kotlin.android' version '1.8.10' apply false
+	id "com.diffplug.spotless" version "6.5.0"
+	id "com.github.ben-manes.versions" version "0.46.0"
+}
+
+spotless {
+	groovyGradle {
+		target "**/*.gradle"
+		greclipse()
+	}
+
+	java {
+		target "**/*.java"
+		trimTrailingWhitespace()
+		removeUnusedImports()
+		googleJavaFormat().aosp()
+		indentWithSpaces()
+		endWithNewline()
+		importOrder 'android',
+				'androidx','com', 'dagger',
+				'junit', 'net', 'io', 'org', 'okhttp3', 'retrofit2',
+				'java', 'javax', '', 'static *'
+	}
+}

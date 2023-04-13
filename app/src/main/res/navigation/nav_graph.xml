@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/nav_graph"
+	app:startDestination="@id/nav_home">
+
+	<fragment
+		android:id="@+id/nav_home"
+		android:name="com.mrikso.anitube.app.ui.home.HomeFragment"
+		android:label="home"
+		tools:layout="@layout/fragment_home">
+		<action
+			android:id="@+id/action_nav_home_to_nav_details_anime_info"
+			app:destination="@id/nav_details_anime_info" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/nav_anime_list"
+		android:name="com.mrikso.anitube.app.ui.anime_list.AnimeListFragment"
+		android:label="anime_list"
+		tools:layout="@layout/fragment_anime_list">
+		<action
+			android:id="@+id/action_nav_anime_list_to_nav_details_anime_info"
+			app:destination="@id/nav_details_anime_info" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/nav_search"
+		android:name="com.mrikso.anitube.app.fragments.SearchFragment"
+		android:label="search"
+		tools:layout="@layout/fragment_search" />
+
+	<fragment
+		android:id="@+id/nav_profile"
+		android:name="com.mrikso.anitube.app.fragments.ProfileFragment"
+		android:label="profile"
+		tools:layout="@layout/fragment_profile" />
+
+	<fragment
+		android:id="@+id/nav_details_anime_info"
+		android:name="com.mrikso.anitube.app.ui.detail.DetailsAnimeFragmemt"
+		android:label="anime_info"
+		tools:layout="@layout/fragment_details_anime">
+		<deepLink
+            android:id="@+id/deepLink"
+            app:uri="anitube.in.ua"
+            android:autoVerify="true"/>
+			
+		<argument
+			android:name="url"
+			app:argType="string" />
+
+		<action
+			android:id="@+id/actin_nav_details_anime_info_to_nav_watch"
+			app:destination="@id/nav_watch" />
+		<action
+			android:id="@+id/actin_nav_details_anime_info_to_nav_details_anime_info"
+			app:destination="@id/nav_details_anime_info" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/nav_watch"
+		android:name="com.mrikso.anitube.app.ui.watch.WatchAnimeFragment"
+		android:label="watch_anime"
+		tools:layout="@layout/fragment_watch">
+		<argument
+			android:name="title"
+			app:argType="string" />
+		<argument
+			android:name="id"
+			app:argType="integer" />
+		<argument
+			android:name="url"
+			app:argType="string" />
+	</fragment>
+
+</navigation>

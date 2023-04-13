@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:id="@+id/state_frame"
+	android:layout_gravity="center">
+
+	<LinearLayout
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent"
+		android:visibility="gone"
+		android:gravity="center"
+		android:padding="16.0dip"
+		android:orientation="vertical"
+		android:id="@+id/error_layout">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_marginBottom="8.0dip"
+			android:gravity="center"
+			android:textSize="18.0sp"
+			android:text="@string/oh_something_went_wrong" />
+
+		<TextView
+			android:id="@+id/error_message_tv"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:text="@string/error_load" />
+
+		<LinearLayout
+			android:id="@+id/button_ll"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:orientation="horizontal"
+			android:layout_marginTop="24.0dip">
+
+			<com.google.android.material.button.MaterialButton
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:textAllCaps="false"
+				android:layout_gravity="center_horizontal"
+				android:id="@+id/repeat"
+				android:text="@string/repeat" />
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<ProgressBar
+		android:layout_height="52.0dip"
+		android:layout_width="52.0dip"
+		android:visibility="visible"
+		android:gravity="center"
+		android:layout_gravity="center"
+		android:id="@+id/progress_bar" />
+
+</FrameLayout>

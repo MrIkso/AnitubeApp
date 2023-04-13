@@ -1,0 +1,41 @@
+
+name: Android CI
+
+on:
+  push:
+      paths-ignore:
+          - '**.md'
+          - '**.txt'
+          - '.github/**'
+          - '.idea/**'
+          - '!.github/workflows/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  apk:
+    name: Build apk
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug apk
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_height="wrap_content"
+	android:layout_width="fill_parent"
+	android:visibility="gone"
+	android:orientation="vertical"
+	android:id="@+id/ll_sreenshots">
+
+	<include
+		android:id="@+id/divider"
+		layout="@layout/layout_divider" />
+		
+	<TextView
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:fontFamily="@font/roboto_medium"
+		style="@style/LayoutHeader"
+		android:layout_marginTop="16.0dip"
+		android:layout_marginStart="16.0dip"
+		android:text="@string/screenshots" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:layout_marginTop="16.0dip"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:overScrollMode="never"
+		android:clipToPadding="false"
+		android:orientation="horizontal"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		android:id="@+id/recycler_view_screenshots"
+	 />
+
+</LinearLayout>

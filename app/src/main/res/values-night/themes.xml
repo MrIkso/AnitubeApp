@@ -1,0 +1,9 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.DayNight">
+        <!-- StatusBar -->
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- NavBar -->
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>

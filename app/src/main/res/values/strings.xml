@@ -1,0 +1,32 @@
+<resources>
+	<string name="app_name">Anitube App</string>
+	<string name="nav_home">Головна</string>
+	<string name="nav_anime_list">Список аніме</string>
+	<string name="nav_profile">Профіль</string>
+	<string name="nav_search">Пошук</string>
+	<string name="oh_something_went_wrong">Щось пішло не так</string>
+	<string name="error_load">Помилка при завантаженні</string>
+	<string name="help">Допомога</string>
+	<string name="repeat">Повторити</string>
+	<string name="recommendations">Рекомендуємо</string>
+	<string name="screenshots">Скріншоти</string>
+	<string name="trailer">Трейлер</string>
+	<string name="detail">Детальніше</string>
+	<string name="hide">Приховати</string>
+	<string name="director">Режисер:</string>
+	<string name="year">Рік:</string>
+	<string name="studio">Студія:</string>
+	<string name="series">Серій:</string>
+	<string name="translation">Переклад:</string>
+	<string name="dubbers">Даббери:</string>
+	<string name="new_anime">Новинки</string>
+	<string name="best_anime">Найкраще аніме</string>
+	<string name="play">Дивитися</string>
+	<string name="dub">Озвучка</string>
+	<string name="episode_list">Список епізодів</string>
+	<string name="close">Закрити</string>
+	<string name="close_app">Закрити застосунок</string>
+	<string name="app_crashed">Застосунок упав</string>
+	<string name="copy">Копіювати</string>
+	<string name="log_copied">Лог скопійовано в буфер обміну</string>
+</resources>
