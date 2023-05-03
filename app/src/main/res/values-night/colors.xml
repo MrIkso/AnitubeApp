@@ -12,4 +12,7 @@
     <color name="text">@color/white</color>
     <color name="ui_bg">#ff24252a</color>
     <color name="watching">#ff639c67</color>
+	
+	<!--player colors-->
+	<color name="grey900">#212121</color>
 </resources>

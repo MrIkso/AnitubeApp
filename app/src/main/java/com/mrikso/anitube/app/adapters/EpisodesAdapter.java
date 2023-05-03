@@ -4,42 +4,32 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mrikso.anitube.app.comparator.EpisodesDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemEpisodeBinding;
-import com.mrikso.anitube.app.model.EpisodeModel;
+import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHolder> {
-    private List<EpisodeModel> results = new ArrayList<>();
-
+public class EpisodesAdapter extends ListAdapter<EpisodeModel, EpisodesAdapter.ViewHolder> {
     private OnItemClickListener listener;
-    private ItemEpisodeBinding binding;
 
-    public void setResults(List<EpisodeModel> results) {
-        this.results = results;
-        notifyDataSetChanged();
+    public EpisodesAdapter() {
+        super(new EpisodesDiffCallback());
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        binding = ItemEpisodeBinding.inflate(inflater, parent, false);
+        ItemEpisodeBinding binding = ItemEpisodeBinding.inflate(inflater, parent, false);
         return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EpisodeModel episode = results.get(position);
-        holder.bind(episode);
-    }
-
-    @Override
-    public int getItemCount() {
-        return results.size();
+        EpisodeModel episode = getItem(position);
+        holder.bind(episode, position);
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,12 +40,14 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
             this.binding = binding;
         }
 
-        public void bind(EpisodeModel episode) {
+        public void bind(EpisodeModel episode, int position) {
             binding.tvName.setText(episode.getName());
             if (listener != null) {
                 binding.getRoot()
                         .setOnClickListener(
-                                v -> listener.onEpisodeItemSelected(episode.getEpisodeUrl()));
+                                v ->
+                                        listener.onEpisodeItemSelected(
+                                                position, episode.getEpisodeUrl()));
             }
         }
     }
@@ -65,6 +57,6 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
     }
 
     public interface OnItemClickListener {
-        void onEpisodeItemSelected(String url);
+        void onEpisodeItemSelected(int episodeNumber, String url);
     }
 }

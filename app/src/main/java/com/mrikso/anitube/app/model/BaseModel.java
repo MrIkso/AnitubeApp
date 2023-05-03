@@ -1,6 +1,8 @@
 package com.mrikso.anitube.app.model;
 
-public abstract class BaseModel {
+import java.io.Serializable;
+
+public abstract class BaseModel implements Serializable {
     private String id;
     private String name;
 

@@ -1,5 +1,9 @@
 package com.mrikso.anitube.app.parser;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mrikso.anitube.app.model.AnimeListReleases;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.SimpleModel;
@@ -23,7 +27,9 @@ public class ArticleStoryParser {
             //  String currentPage = navigationElement.selectFirst("span > a.title").text().trim();
             String maxPage = navigationElement.getElementsByTag("a").last().text();
             // releases.setCurrentPage(currentPage);
-            releases.setMaxPage(maxPage);
+            releases.setMaxPage(Integer.valueOf(maxPage));
+        } else {
+            releases.setMaxPage(1);
         }
         return releases;
     }
@@ -44,9 +50,13 @@ public class ArticleStoryParser {
         if (titlElement != null) {
             String title = titlElement.text();
             String url = titlElement.getElementsByTag("a").first().attr("href");
-            String[] parts = url.split("-");
-            int id = Integer.parseInt(parts[0].substring(parts[0].lastIndexOf("/") + 1));
-            releaseModel.setAnimeId(id);
+
+            Element favStatus = titlElement.selectFirst("ul > li > a");
+            if (favStatus != null) {
+                boolean isFav = favStatus.attr("href").contains("doaction=del");
+                releaseModel.setFavorites(isFav);
+            }
+            releaseModel.setAnimeId(ParserUtils.getAnimeId(url));
             releaseModel.setAnimeUrl(url);
             releaseModel.setTitle(title);
         }
@@ -55,6 +65,12 @@ public class ArticleStoryParser {
         if (posterElement != null) {
             String urlPoster = ParserUtils.getImageUrl(posterElement);
             releaseModel.setPosterUrl(urlPoster);
+            // #dle-content > article:nth-child(1) > div > div > div.story_c_l >
+            // span.story_astatus_yellow
+            Element status = posterElement.selectFirst("span[class*=\"story_astatus\"] > sup");
+            if (status != null) {
+                releaseModel.setWatchStatusModdel(ParserUtils.getWatchModel(status.text()));
+            }
         }
 
         // витягування року випуску аніме
@@ -84,7 +100,9 @@ public class ArticleStoryParser {
             String description = descriptionElement.text().trim();
             releaseModel.setDescription(description);
         }
-        // Log.i(TAG, releaseModel.toString());
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(releaseModel);
+        Log.i(TAG, json);
         return releaseModel;
     }
 }

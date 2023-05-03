@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -18,26 +19,33 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.mrikso.anitube.app.adapters.MoviesAdapter;
+import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
-import com.mrikso.anitube.app.comparator.MovieComparator;
+import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.FragmentAnimeListBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
 @AndroidEntryPoint
 public class AnimeListFragment extends Fragment {
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private FragmentAnimeListBinding binding;
     private AnimeListFragmentViewModel viewModel;
-    private MoviesAdapter moviesAdapter;
+    private AnimePagingAdapter animePpagingAdapter;
+    private String profileLink;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /// setRetainInstance(true);
-        viewModel = new ViewModelProvider(requireActivity()).get(AnimeListFragmentViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AnimeListFragmentViewModel.class);
     }
 
     @Nullable
@@ -58,97 +66,115 @@ public class AnimeListFragment extends Fragment {
     }
 
     private void initViews() {
-        moviesAdapter = new MoviesAdapter(new MovieComparator(), getGlide(requireContext()));
-        moviesAdapter.setOnItemClickListener(
+        animePpagingAdapter =
+                new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        animePpagingAdapter.setOnItemClickListener(
                 link -> {
-                    AnimeListFragmentDirections.ActionNavAnimeListToNavDetailsAnimeInfo action =
-                            AnimeListFragmentDirections.actionNavAnimeListToNavDetailsAnimeInfo(
-                                    link);
-                    Navigation.findNavController(requireView()).navigate(action);
+                    openDetailsFragment(link);
                 });
-        moviesAdapter.addLoadStateListener(
+        animePpagingAdapter.addLoadStateListener(
                 combinedLoadStates -> {
                     LoadState refreshLoadState = combinedLoadStates.getRefresh();
                     LoadState appendLoadState = combinedLoadStates.getAppend();
                     if (refreshLoadState instanceof LoadState.Loading) {
-                        binding.animeListContent.setVisibility(View.GONE);
+                        binding.container.setVisibility(View.GONE);
                         binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
                         binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                     }
                     if (refreshLoadState instanceof LoadState.NotLoading) {
                         if (refreshLoadState.getEndOfPaginationReached()
-                                && moviesAdapter.getItemCount() < 1) {
+                                && animePpagingAdapter.getItemCount() < 1) {
                             showNoDataState();
                         } else {
-                            binding.animeListContent.setVisibility(View.VISIBLE);
+                            binding.container.setVisibility(View.VISIBLE);
                             binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                             binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                         }
                     } else if (refreshLoadState instanceof LoadState.Error) {
                         binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                        binding.animeListContent.setVisibility(View.GONE);
+                        binding.container.setVisibility(View.GONE);
                         binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
                         binding.loadStateLayout.repeat.setOnClickListener(
-                                v -> moviesAdapter.retry());
+                                v -> animePpagingAdapter.retry());
+                        LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
+                        binding.loadStateLayout.errorMessageTv.setText(
+                                loadStateError.getError().getLocalizedMessage());
                     }
                     if (!(refreshLoadState instanceof LoadState.Loading)
                             && appendLoadState instanceof LoadState.NotLoading) {
                         if (appendLoadState.getEndOfPaginationReached()
-                                && moviesAdapter.getItemCount() < 1) {
+                                && animePpagingAdapter.getItemCount() < 1) {
                             showNoDataState();
                         }
                     }
                     return null;
                 });
         binding.animeListRecyclerView.setAdapter(
-                moviesAdapter.withLoadStateFooter(
+                animePpagingAdapter.withLoadStateFooter(
                         new MoviesLoadStateAdapter(
                                 v -> {
-                                    moviesAdapter.retry();
+                                    animePpagingAdapter.retry();
                                 })));
 
         binding.swipeRefreshLayout.setOnRefreshListener(
                 () -> {
-                    moviesAdapter.refresh();
+                    animePpagingAdapter.refresh();
                     binding.swipeRefreshLayout.setRefreshing(false);
                 });
+
+        binding.layoutToolbar.searchBtn.setOnClickListener(v -> openSearchFragment());
+        binding.layoutToolbar.searchCardView.setOnClickListener(v -> openSearchFragment());
+        binding.layoutToolbar.profileAvatar.setOnClickListener(v -> openProfileFragment());
+    }
+
+    private void openDetailsFragment(final String link) {
+        AnimeListFragmentDirections.ActionNavAnimeListToNavDetailsAnimeInfo action =
+                AnimeListFragmentDirections.actionNavAnimeListToNavDetailsAnimeInfo(link);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     private void showNoDataState() {
         // TODO: Implement this method
-        binding.animeListContent.setVisibility(View.GONE);
+        binding.container.setVisibility(View.GONE);
     }
 
     private void initObservers() {
-        viewModel.animePagingDataFlowable.
-                // .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                subscribe (
-                results -> {
-                    if (binding != null) {
-                        if (results != null) {
-                            showAnimeList(results);
-                        } else {
-                            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
+        viewModel
+                .getAnimePagingData()
+                .observe(
+                        getViewLifecycleOwner(),
+                        results -> {
+                            if (binding != null) {
+                                if (results != null) {
+                                    showAnimeList(results);
+                                } else {
+                                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
+
+        viewModel
+                .getUserData()
+                .observe(
+                        getViewLifecycleOwner(),
+                        results -> {
+                            if (results != null
+                                    && results.first != null
+                                    && results.second != null) {
+                                setUserData(results);
+                            }
+                        });
     }
 
     private void showAnimeList(final PagingData<AnimeReleaseModel> results) {
-        moviesAdapter.submitData(getLifecycle(), results);
+        animePpagingAdapter.submitData(getLifecycle(), results);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        moviesAdapter = null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        viewModel = null;
+        animePpagingAdapter = null;
     }
 
     public RequestManager getGlide(Context context) {
@@ -157,13 +183,29 @@ public class AnimeListFragment extends Fragment {
                         new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void openSearchFragment() {
+        Navigation.findNavController(requireView()).navigate(R.id.nav_search);
+    }
+
+    private void setUserData(Pair<String, String> data) {
+        profileLink = data.second;
+        ViewUtils.loadImage(
+                binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
+    }
+
+    private void openProfileFragment() {
+        if (PreferencesHelper.getInstance().isLogin()) {
+            AnimeListFragmentDirections.ActionNavAnimeListToNavProfile action =
+                    AnimeListFragmentDirections.actionNavAnimeListToNavProfile(profileLink);
+            Navigation.findNavController(requireView()).navigate(action);
+        } else {
+            Navigation.findNavController(requireView()).navigate(R.id.nav_login);
+        }
     }
 
     @Override
-    public void onAttach(Context arg0) {
-        super.onAttach(arg0);
+    public void onDestroy() {
+        super.onDestroy();
+        disposables.dispose();
     }
 }

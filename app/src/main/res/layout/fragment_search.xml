@@ -1,33 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 xmlns:tools="http://schemas.android.com/tools"
-	 android:layout_height="match_parent"
-	 android:layout_width="match_parent"
-	 android:id="@+id/search_frame"
-	 tools:context=".Fragments.SearchFragment">
+	android:id="@+id/root"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:animateLayoutChanges="true"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:id="@+id/container"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<com.google.android.material.appbar.AppBarLayout
+			android:id="@+id/appbar"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			app:elevation="0.0dip"
+		>
+			<androidx.appcompat.widget.Toolbar
+				android:layout_width="fill_parent"
+				android:layout_height="?actionBarSize"
+				android:paddingStart="0.0dip"
+				android:paddingEnd="0.0dip"
+				app:contentInsetStart="0.0dip"
+				app:layout_scrollFlags="scroll|enterAlways|snap"
+			>
+				<LinearLayout
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:id="@+id/search_linearLayout"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:paddingEnd="4.0dip">
+					<RelativeLayout
+						android:gravity="center"
+						android:id="@+id/back"
+						android:background="?selectableItemBackgroundBorderless"
+						android:focusable="true"
+						android:clickable="true"
+						android:layout_width="56.0dip"
+						android:layout_height="56.0dip">
+						<androidx.appcompat.widget.AppCompatImageView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:src="@drawable/ic_back"
+						 />
+					</RelativeLayout>
+					<androidx.appcompat.widget.AppCompatAutoCompleteTextView
+						android:textSize="16.0sp"
+						android:ellipsize="end"
+						android:gravity="start|center"
+						android:id="@+id/etSearch"
+						android:background="@null"
+						android:layout_width="0.0dip"
+						android:layout_height="fill_parent"
+						android:hint="@string/search_for_anime"
+						android:maxLines="1"
+						android:layout_weight="1.0"
+						android:inputType="text"
+						android:imeOptions="actionSearch"
+						android:paddingStart="16.0dip" />
 
-	<LinearLayout
-		 android:layout_height="wrap_content"
-		 android:layout_width="wrap_content"
-		 android:orientation="vertical">
-
-		<TextView
-			 android:layout_height="wrap_content"
-			 android:layout_width="wrap_content"
-			 android:gravity="center"
-			 android:textSize="22sp"
-			 android:id="@+id/counter_tv"
-			 android:text="Search" />
-
-		<Button
-			 android:layout_height="wrap_content"
-			 android:layout_width="wrap_content"
-			 android:gravity="center"
-			 android:textSize="22sp"
-			 android:id="@+id/counter_btn"
-			 android:text="count" />
-
-	</LinearLayout>
-
+					<ImageView
+						android:id="@+id/clear"
+						android:background="?selectableItemBackgroundBorderless"
+						android:visibility="gone"
+						android:clickable="true"
+						android:layout_width="48.0dip"
+						android:layout_height="48.0dip"
+						android:src="@drawable/ic_close"
+						android:scaleType="center"
+						android:minWidth="48.0dip"
+					 />
+					<RelativeLayout
+						android:gravity="center"
+						android:id="@+id/filter"
+						android:background="?selectableItemBackgroundBorderless"
+						android:focusable="true"
+						android:visibility="gone"
+						android:clickable="true"
+						android:layout_width="48.0dip"
+						android:layout_height="48.0dip">
+						<androidx.appcompat.widget.AppCompatImageView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:src="@drawable/ic_filter_list"
+						 />
+					</RelativeLayout>
+				</LinearLayout>
+			</androidx.appcompat.widget.Toolbar>
+			<include
+				android:id="@+id/divider"
+				layout="@layout/layout_divider" />
+		</com.google.android.material.appbar.AppBarLayout>
+		<RelativeLayout
+			android:id="@+id/content"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior">
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recycler_view"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+		</RelativeLayout>
+		<include
+			android:id="@+id/load_state_layout"
+			layout="@layout/load_state_layout" />
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 </FrameLayout>

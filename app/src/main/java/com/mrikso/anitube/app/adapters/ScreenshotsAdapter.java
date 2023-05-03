@@ -35,7 +35,7 @@ public class ScreenshotsAdapter extends RecyclerView.Adapter<ScreenshotsAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ScreenshotModel model = results.get(position);
-        holder.bind(model);
+        holder.bind(model, position);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ScreenshotsAdapter extends RecyclerView.Adapter<ScreenshotsAdapter.
             this.binding = binding;
         }
 
-        public void bind(ScreenshotModel model) {
+        public void bind(ScreenshotModel model, int position) {
 
             Glide.with(binding.getRoot().getContext())
                     .load(model.getPreviewUrl())
@@ -59,8 +59,7 @@ public class ScreenshotsAdapter extends RecyclerView.Adapter<ScreenshotsAdapter.
                     .into(binding.sivScreenshot);
             if (listener != null) {
                 binding.getRoot()
-                        .setOnClickListener(
-                                v -> listener.onScreenshotItemSelected(model.getFullUrl()));
+                        .setOnClickListener(v -> listener.onScreenshotItemSelected(position));
             }
         }
     }
@@ -70,6 +69,6 @@ public class ScreenshotsAdapter extends RecyclerView.Adapter<ScreenshotsAdapter.
     }
 
     public interface OnItemClickListener {
-        void onScreenshotItemSelected(String link);
+        void onScreenshotItemSelected(int position);
     }
 }

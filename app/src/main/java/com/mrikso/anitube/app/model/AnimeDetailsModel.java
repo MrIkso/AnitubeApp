@@ -14,7 +14,9 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
     private List<SimpleModel> translators;
     private List<SimpleModel> voicers;
     private List<DubbersTeam> dubbersTeamList;
+    private List<FranchiseModel> franchiseList;
     private List<BaseAnimeModel> similarAnimeList;
+    private boolean isHavePlaylistsAjax;
 
     public String getOriginalTitle() {
         return this.originalTitle;
@@ -104,31 +106,19 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
         this.dubbersTeamList = dubbersTeamList;
     }
 
-    @Override
-    public String toString() {
-        return super.toString()
-                + " AnimeDetailsModel[originalTitle="
-                + originalTitle
-                + ", screenshotsModel="
-                + screenshotsModel
-                + ", trailerModel="
-                + trailerModel
-                + ", studio="
-                + studio
-                + ", director="
-                + director
-                + ", age="
-                + age
-                + ", genres="
-                + genres
-                + ", translators="
-                + translators
-                + ", voicers="
-                + voicers
-                + ", dubbersTeamList="
-                + dubbersTeamList
-                + ", similarAnimeList="
-                + similarAnimeList
-                + "]";
+    public List<FranchiseModel> getFranchiseList() {
+        return this.franchiseList;
+    }
+
+    public void setFranchiseList(List<FranchiseModel> franchiseList) {
+        this.franchiseList = franchiseList;
+    }
+
+    public boolean isHavePlaylistsAjax() {
+        return this.isHavePlaylistsAjax;
+    }
+
+    public void setHavePlaylistsAjax(boolean isHavePlaylistsAjax) {
+        this.isHavePlaylistsAjax = isHavePlaylistsAjax;
     }
 }

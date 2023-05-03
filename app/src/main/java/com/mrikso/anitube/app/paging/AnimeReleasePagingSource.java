@@ -10,7 +10,6 @@ import androidx.paging.rxjava3.RxPagingSource;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
-import com.mrikso.anitube.app.repository.AnitubeRepository;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -21,13 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class AnimeReleasePagingSource extends RxPagingSource<Integer, AnimeReleaseModel> {
-    @NonNull
-	private final AnitubeApiService service;
-    // private final AnimeReleasesMapper mapper;
-    int maxPage = -1;
+    @NonNull private final AnitubeApiService service;
+    @NonNull private AnimeReleasesMapper mapper;
+    private int maxPage = -1;
 
-    public AnimeReleasePagingSource(@NonNull AnitubeApiService service) {
+    public AnimeReleasePagingSource(
+            @NonNull AnitubeApiService service, @NonNull AnimeReleasesMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
         Log.d("AnimeReleasePagingSource", "construcrot called");
     }
 
@@ -40,16 +40,16 @@ public class AnimeReleasePagingSource extends RxPagingSource<Integer, AnimeRelea
         // fist page
         int page = loadParams.getKey() != null ? loadParams.getKey() : 1;
 
-        Log.d("AnimeReleasePagingSource", "loadSingle: loading page " + page);
+        // Log.d("AnimeReleasePagingSource", "loadSingle: loading page " + page);
 
         // Send request to server with page number
         return service.getAnimeByPage(String.valueOf(page))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(data -> Single.just(new AnimeReleasesMapper().transform(data)))
+                .flatMap(data -> Single.just(mapper.transform(data)))
                 .map(
                         data -> {
-                            maxPage = Integer.parseInt(data.getMaxPage());
+                            maxPage = data.getMaxPage();
                             return data.getAnimeReleases();
                         })
                 .map(animes -> toLoadResult(animes, page))
@@ -63,7 +63,7 @@ public class AnimeReleasePagingSource extends RxPagingSource<Integer, AnimeRelea
     // Method to map AnimeReleaseModel to LoadResult object
     private LoadResult<Integer, AnimeReleaseModel> toLoadResult(
             List<AnimeReleaseModel> data, int page) {
-        Log.d("AnimeReleasePagingSource", "toLoadResult:data size " + data.size());
+        // Log.d("AnimeReleasePagingSource", "toLoadResult:data size " + data.size());
 
         return new LoadResult.Page<>(
                 data, null, (data != null && !data.isEmpty() && page <= maxPage) ? page + 1 : null);

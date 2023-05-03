@@ -1,26 +1,18 @@
 package com.mrikso.anitube.app.model;
 
-import android.os.Parcelable;
-import java.io.Serializable;
-
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "animes")
 public class AnimeReleaseModel {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+
+    public int id;
 
     private String title;
     private String description;
     private SimpleModel releaseYear = new SimpleModel(null, null);
-    private String status; // на майбутнє
+    private WatchAnimeStatusModel watchStatusModdel;
     private String posterUrl;
     private String animeUrl;
     private String episodes;
     private String rating;
+    private boolean isFavorites;
     private int animeId;
 
     public String getTitle() {
@@ -45,14 +37,6 @@ public class AnimeReleaseModel {
 
     public void setReleaseYear(SimpleModel releaseYear) {
         this.releaseYear = releaseYear;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getPosterUrl() {
@@ -89,16 +73,14 @@ public class AnimeReleaseModel {
 
     @Override
     public String toString() {
-        return "AnimeReleaseModel[id="
-                + id
+        return "AnimeReleaseModel[animeId="
+                + animeId
                 + ", title="
                 + title
                 + ", description="
                 + description
                 + ", releaseYear="
                 + releaseYear.toString()
-                + ", status="
-                + status
                 + ", posterUrl="
                 + posterUrl
                 + ", animeUrl="
@@ -124,5 +106,21 @@ public class AnimeReleaseModel {
 
     public void setAnimeId(int animeId) {
         this.animeId = animeId;
+    }
+
+    public boolean isFavorites() {
+        return this.isFavorites;
+    }
+
+    public void setFavorites(boolean isFavorites) {
+        this.isFavorites = isFavorites;
+    }
+
+    public WatchAnimeStatusModel getWatchStatusModdel() {
+        return this.watchStatusModdel;
+    }
+
+    public void setWatchStatusModdel(WatchAnimeStatusModel watchStatusModdel) {
+        this.watchStatusModdel = watchStatusModdel;
     }
 }

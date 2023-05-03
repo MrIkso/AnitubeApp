@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -16,10 +17,14 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimeCarouselAdapter;
 import com.mrikso.anitube.app.adapters.BaseAnimeAdapter;
 import com.mrikso.anitube.app.adapters.ReleaseAnimeAdapter;
 import com.mrikso.anitube.app.databinding.FragmentHomeBinding;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -41,13 +46,13 @@ public class HomeFragment extends Fragment
     private TimerTask timerTask;
     private int position;
     private LinearLayoutManager carouselLayoutManager;
-
     private RecyclerView mNowShowingRecyclerView;
+    private String profileLink;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate");
+        //    Log.i(TAG, "onCreate");
         viewModel = new ViewModelProvider(this).get(HomeFragmentViewModel.class);
         viewModel.loadHome();
     }
@@ -132,6 +137,16 @@ public class HomeFragment extends Fragment
                                                 });
                             }
                         });
+
+        viewModel
+                .getUserData()
+                .observe(
+                        getViewLifecycleOwner(),
+                        results -> {
+                            if (results != null) {
+                                setUserData(results);
+                            }
+                        });
     }
 
     private void initViews() {
@@ -178,11 +193,14 @@ public class HomeFragment extends Fragment
 
         binding.swipeRefreshLayout.setOnRefreshListener(
                 () -> {
-                    viewModel.loadHome();
+                    viewModel.reloadHome();
                     binding.swipeRefreshLayout.setRefreshing(false);
                 });
 
-        binding.loadStateLayout.repeat.setOnClickListener(v -> viewModel.loadHome());
+        binding.loadStateLayout.repeat.setOnClickListener(v -> viewModel.reloadHome());
+        binding.layoutToolbar.searchBtn.setOnClickListener(v -> openSearchFragment());
+        binding.layoutToolbar.searchCardView.setOnClickListener(v -> openSearchFragment());
+        binding.layoutToolbar.profileAvatar.setOnClickListener(v -> openProfileFragment());
     }
 
     private void stopAutoScrollCarousel() {
@@ -244,11 +262,31 @@ public class HomeFragment extends Fragment
         Navigation.findNavController(requireView()).navigate(action);
     }
 
+    private void openSearchFragment() {
+        Navigation.findNavController(requireView()).navigate(R.id.nav_search);
+    }
+
+    private void openProfileFragment() {
+        if (PreferencesHelper.getInstance().isLogin()) {
+            HomeFragmentDirections.ActionNavHomeToNavProfile action =
+                    HomeFragmentDirections.actionNavHomeToNavProfile(profileLink);
+            Navigation.findNavController(requireView()).navigate(action);
+        } else {
+            Navigation.findNavController(requireView()).navigate(R.id.nav_login);
+        }
+    }
+
+    private void setUserData(Pair<String, String> data) {
+        profileLink = data.second;
+        ViewUtils.loadImage(
+                binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
         stopAutoScrollCarousel();
+        binding = null;
         releaseAnimeAdapter = null;
         carouselAdapter = null;
         bestAnimeAdapter = null;

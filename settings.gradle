@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AnitubeApp"
 include ':app'
+include ':treeview'

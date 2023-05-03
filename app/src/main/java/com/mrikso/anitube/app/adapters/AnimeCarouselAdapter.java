@@ -19,7 +19,6 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
     private List<InteresingModel> results = new ArrayList<>();
 
     private OnItemClickListener listener;
-    private ItemInteresingAnimeBinding binding;
 
     public void setResults(List<InteresingModel> results) {
         this.results.addAll(results);
@@ -30,7 +29,8 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        binding = ItemInteresingAnimeBinding.inflate(inflater, parent, false);
+        ItemInteresingAnimeBinding binding =
+                ItemInteresingAnimeBinding.inflate(inflater, parent, false);
         return new ViewHolder(binding);
     }
 

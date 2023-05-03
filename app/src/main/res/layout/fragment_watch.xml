@@ -25,11 +25,11 @@
 					android:layout_height="wrap_content">
 					<ImageButton
 						android:id="@+id/ib_back"
-						android:background="@null"
+						android:background="?selectableItemBackgroundBorderless"
 						android:layout_width="56.0dip"
 						android:layout_height="56.0dip"
 						android:layout_marginStart="8.0dip"
-						app:srcCompat="@drawable/ic_back_24"
+						app:srcCompat="@drawable/ic_back"
 					 />
 					<TextView
 						android:textSize="18.0sp"
@@ -62,58 +62,62 @@
 			android:orientation="vertical"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content">
+				<com.mrikso.anitube.app.view.TreeViewGroup
+				android:id="@+id/tree_view"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"/>
 
-			<com.google.android.material.chip.ChipGroup
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:visibility="gone"
-				android:layout_marginTop="8.0dip"
-				android:layout_marginLeft="16.0dip"
-				android:layout_marginRight="16.0dip"
-				android:layout_marginHorizontal="16.0dip"
-				android:id="@+id/dubs_chip_group" />
-
-			<com.google.android.material.textfield.TextInputLayout
-				android:id="@+id/dub_text_til"
-				android:visibility="gone"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginLeft="16.0dip"
-				android:layout_marginTop="8.0dip"
-				android:layout_marginRight="16.0dip"
-				android:layout_marginBottom="8.0dip"
-				android:hint="@string/dub"
-				android:layout_marginHorizontal="16.0dip"
-				app:boxBackgroundColor="@color/bg"
-				app:boxCornerRadiusBottomEnd="8.0dip"
-				app:boxCornerRadiusBottomStart="8.0dip"
-				app:boxCornerRadiusTopEnd="8.0dip"
-				app:boxCornerRadiusTopStart="8.0dip"
-				app:endIconTint="@color/iconColor"
-				app:startIconDrawable="@drawable/ic_source_24"
-				app:startIconTint="@color/iconColor"
-				style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-				<AutoCompleteTextView
-					android:textSize="14.0sp"
-					android:textColor="@color/text"
-					android:id="@+id/translations"
-					android:padding="16.0dip"
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:inputType="none"
-					android:alpha="0.9"
-					android:textAllCaps="true"
-					android:fontFamily="@font/roboto_medium" />
-			</com.google.android.material.textfield.TextInputLayout>
-
-			<com.google.android.material.chip.ChipGroup
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:visibility="gone"
-				android:layout_marginLeft="16.0dip"
-				android:layout_marginRight="16.0dip"
-				android:layout_marginHorizontal="16.0dip"
-				android:id="@+id/players_chip_group" />
+			<!-- <com.google.android.material.chip.ChipGroup -->
+				<!-- android:layout_height="wrap_content" -->
+				<!-- android:layout_width="match_parent" -->
+				<!-- android:visibility="gone" -->
+				<!-- android:layout_marginTop="8.0dip" -->
+				<!-- android:layout_marginLeft="16.0dip" -->
+				<!-- android:layout_marginRight="16.0dip" -->
+				<!-- android:layout_marginHorizontal="16.0dip" -->
+				<!-- android:id="@+id/dubs_chip_group" /> -->
+<!--  -->
+			<!-- <com.google.android.material.textfield.TextInputLayout -->
+				<!-- android:id="@+id/dub_text_til" -->
+				<!-- android:visibility="gone" -->
+				<!-- android:layout_width="fill_parent" -->
+				<!-- android:layout_height="wrap_content" -->
+				<!-- android:layout_marginLeft="16.0dip" -->
+				<!-- android:layout_marginTop="8.0dip" -->
+				<!-- android:layout_marginRight="16.0dip" -->
+				<!-- android:layout_marginBottom="8.0dip" -->
+				<!-- android:hint="@string/dub" -->
+				<!-- android:layout_marginHorizontal="16.0dip" -->
+				<!-- app:boxBackgroundColor="@color/bg" -->
+				<!-- app:boxCornerRadiusBottomEnd="8.0dip" -->
+				<!-- app:boxCornerRadiusBottomStart="8.0dip" -->
+				<!-- app:boxCornerRadiusTopEnd="8.0dip" -->
+				<!-- app:boxCornerRadiusTopStart="8.0dip" -->
+				<!-- app:endIconTint="@color/iconColor" -->
+				<!-- app:startIconDrawable="@drawable/ic_source_24" -->
+				<!-- app:startIconTint="@color/iconColor" -->
+				<!-- style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"> -->
+				<!-- <AutoCompleteTextView -->
+					<!-- android:textSize="14.0sp" -->
+					<!-- android:textColor="@color/text" -->
+					<!-- android:id="@+id/translations" -->
+					<!-- android:padding="16.0dip" -->
+					<!-- android:layout_width="fill_parent" -->
+					<!-- android:layout_height="wrap_content" -->
+					<!-- android:inputType="none" -->
+			<!-- android:alpha="0.9" -->
+			<!-- android:textAllCaps="true" -->
+			<!-- android:fontFamily="@font/roboto_medium" /> -->
+			<!-- </com.google.android.material.textfield.TextInputLayout> -->
+			<!--  -->
+			<!-- <com.google.android.material.chip.ChipGroup -->
+			<!-- android:layout_height="wrap_content" -->
+			<!-- android:layout_width="match_parent" -->
+				<!-- android:visibility="gone" -->
+				<!-- android:layout_marginLeft="16.0dip" -->
+				<!-- android:layout_marginRight="16.0dip" -->
+				<!-- android:layout_marginHorizontal="16.0dip" -->
+				<!-- android:id="@+id/players_chip_group" /> -->
 
 			<LinearLayout
 				android:orientation="horizontal"

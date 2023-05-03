@@ -10,12 +10,12 @@
 		android:icon="@drawable/ic_theaters"
 		android:title="@string/nav_anime_list" />
 	<item
-		android:id="@+id/nav_search"
-		android:icon="@drawable/ic_search"
-		android:title="@string/nav_search" />
+		android:id="@+id/nav_library"
+		android:icon="@drawable/ic_video_library"
+		android:title="@string/nav_library" />
 	<item
-		android:id="@+id/nav_profile"
-		android:icon="@drawable/ic_account"
-		android:title="@string/nav_profile" />
+		android:id="@+id/nav_collections"
+		android:icon="@drawable/ic_collections"
+		android:title="@string/nav_collections" />
 
 </menu>

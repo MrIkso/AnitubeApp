@@ -1,21 +1,18 @@
 package com.mrikso.anitube.app.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.color.DynamicColors;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ActivityMainBinding;
-import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -26,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavController navController;
     // private MenuItem selectedItem;
-    private SharedViewModel viewModel = null;
+    // private SharedViewModel viewModel = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +33,26 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         // set content view to binding's root
         setContentView(binding.getRoot());
-        initViewModel();
+
+        //  initViewModel();
         NavHostFragment navHostFragment =
                 (NavHostFragment)
                         getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
         // navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bttomNav, navController);
+
+        navController.addOnDestinationChangedListener(
+                (nav, destination, bundle) -> {
+                    switch (destination.getId()) {
+                        case R.id.nav_screenshots:
+                            hideBottomNavigation();
+                            break;
+                        default:
+                            showBottomNavigation();
+                            break;
+                    }
+                });
 
         binding.bttomNav.setOnItemSelectedListener(
                 item -> {
@@ -64,23 +74,33 @@ public class MainActivity extends AppCompatActivity {
                     //   }
                     return true;
                 });
+
+        handleIntent(getIntent());
     }
 
     private void handleBottomNavItemSelections(BottomNavigationView bn, int itemId) {
         bn.getMenu().findItem(itemId).setChecked(true);
     }
 
+    private void showBottomNavigation() {
+        binding.bttomNav.setVisibility(View.VISIBLE);
+    }
+
+    private void hideBottomNavigation() {
+        binding.bttomNav.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        binding = null;
         navController = null;
-        viewModel = null;
+        binding = null;
+        // viewModel = null;
     }
 
-    private void initViewModel() {
-        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-    }
+    //    private void initViewModel() {
+    //        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+    //    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -96,6 +116,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        navController.handleDeepLink(intent);
+        handleIntent(intent);
+    }
+
+    void handleIntent(Intent intent) {
+        if (intent != null && intent.getData() != null) {
+            Uri uri = intent.getData();
+            Bundle bundle = new Bundle();
+            bundle.putString("url", uri.toString());
+            navController.navigate(R.id.nav_details_anime_info, bundle);
+        }
     }
 }

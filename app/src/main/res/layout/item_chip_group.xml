@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.chip.ChipGroup
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content"
+	android:layout_width="match_parent"
+	android:layout_marginLeft="16.0dip"
+	android:layout_marginRight="16.0dip"
+	android:layout_marginHorizontal="16.0dip"
+	android:id="@+id/players_chip_group" />

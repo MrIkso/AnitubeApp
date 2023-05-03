@@ -165,11 +165,17 @@
 							android:layout_height="wrap_content"
 							android:layout_gravity="center_horizontal"
 							android:text="@string/play"
-							app:icon="@drawable/ic_play_24"
+							app:icon="@drawable/ic_play_circle"
 							android:textAllCaps="false"
 							android:elevation="4.0dip"
 							app:cornerRadius="16.0dip"
 						 />
+						 
+						 	<include
+							android:id="@+id/layout_release_action"
+							layout="@layout/layout_release_action"
+							 />
+							
 						<include
 							android:id="@+id/layout_info"
 							layout="@layout/layout_info"
@@ -190,6 +196,10 @@
 						<include
 							android:id="@+id/layout_screenshots"
 							layout="@layout/layout_screenshots"
+							style="@style/layout_detail_item" />
+						<include
+							android:id="@+id/layout_franchises"
+							layout="@layout/layout_franchises"
 							style="@style/layout_detail_item" />
 						<include
 							android:id="@+id/layout_similar"
@@ -220,7 +230,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended"
-		app:srcCompat="@drawable/ic_back_24"
+		app:srcCompat="@drawable/ic_back"
 		app:tint="@color/iconColor"
 		style="style/ShapeAppearanceOverlayExtended" />
 

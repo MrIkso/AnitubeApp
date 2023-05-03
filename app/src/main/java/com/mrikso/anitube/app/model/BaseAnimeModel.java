@@ -2,12 +2,12 @@ package com.mrikso.anitube.app.model;
 
 public class BaseAnimeModel {
     public final String title;
-    public final String imageUrl;
+    public final String posterUrl;
     public final String animeUrl;
 
-    public BaseAnimeModel(String title, String imageUrl, String animeUrl) {
+    public BaseAnimeModel(String title, String posterUrl, String animeUrl) {
         this.title = title;
-        this.imageUrl = imageUrl;
+        this.posterUrl = posterUrl;
         this.animeUrl = animeUrl;
     }
 
@@ -15,10 +15,22 @@ public class BaseAnimeModel {
     public String toString() {
         return "BaseAnimeModel[title="
                 + title
-                + ", imageUrl="
-                + imageUrl
+                + ", posterUrl="
+                + posterUrl
                 + ", animeUrl="
                 + animeUrl
                 + "]";
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getPosterUrl() {
+        return this.posterUrl;
+    }
+
+    public String getAnimeUrl() {
+        return this.animeUrl;
     }
 }

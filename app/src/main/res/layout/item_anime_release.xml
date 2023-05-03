@@ -11,12 +11,14 @@
 	 android:baselineAligned="false"
 	 android:paddingBottom="8.0dip"
 	 android:paddingStart="12.0dip"
-	 android:layout_marginTop="8dp">
+	 android:layout_marginTop="8dp"
+	 android:focusable="true">
 
 	<androidx.cardview.widget.CardView
 		 android:layout_height="wrap_content"
 		 android:layout_width="wrap_content"
 		 android:layout_marginBottom="8.0dip"
+		 app:cardElevation="0dp"
 		 android:backgroundTint="@android:color/transparent"
 		 android:layout_marginTop="8.0dip"
 		 android:id="@+id/card_view">
@@ -38,21 +40,24 @@
 
 			<RelativeLayout
 				 android:layout_height="20.0dip"
-				 android:layout_width="fill_parent"
+				 android:layout_width="wrap_content"
 				 android:visibility="gone"
 				 android:gravity="center"
-				 android:background="#e65c6bc0"
-				 android:layout_alignBottom="@+id/poster"
+				 android:background="@color/anime_status_plan_to_watch"
+				 android:layout_alignLeft="@+id/poster"
 				 android:id="@+id/status_layout">
 
 				<TextView
 					 android:layout_height="wrap_content"
-					 android:layout_width="fill_parent"
+					 android:layout_width="wrap_content"
 					 android:gravity="center"
+					 android:paddingRight="5dp"
 					 android:ellipsize="end"
-					 android:textSize="12.0dip"
-					 android:textColor="#ffd5dbff"
+					 android:textSize="12sp"
+					 android:paddingLeft="5dp"
+					 android:textColor="@color/white"
 					 android:maxLines="1"
+					 android:text="@string/anime_status_will"
 					 android:id="@+id/status" />
 
 			</RelativeLayout>
@@ -118,12 +123,12 @@
 			<TextView
 				 android:layout_height="wrap_content"
 				 android:layout_width="wrap_content"
+				 android:visibility="gone"
 				 android:paddingRight="8.0dip"
 				 android:textSize="14.0sp"
 				 android:paddingLeft="8.0dip"
 				 android:textStyle="bold"
 				 android:id="@+id/rating"
-				 android:visibility="gone"
 				 android:text="9.2" />
 
 		</LinearLayout>

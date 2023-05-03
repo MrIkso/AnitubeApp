@@ -4,8 +4,8 @@ import java.util.List;
 
 public class AnimeListReleases {
     private List<AnimeReleaseModel> animeReleases;
-    private String currentPage;
-    private String maxPage;
+    private int currentPage;
+    private int maxPage;
 
     public AnimeListReleases(List<AnimeReleaseModel> animeReleases) {
         this.animeReleases = animeReleases;
@@ -15,19 +15,23 @@ public class AnimeListReleases {
         return this.animeReleases;
     }
 
-    public String getCurrentPage() {
+    public int getCurrentPage() {
         return this.currentPage;
     }
 
-    public void setCurrentPage(String currentPage) {
+    public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
     }
 
-    public String getMaxPage() {
+    public int getMaxPage() {
         return this.maxPage;
     }
 
-    public void setMaxPage(String maxPage) {
+    public void setMaxPage(int maxPage) {
         this.maxPage = maxPage;
+    }
+
+    public boolean isEndOfPage() {
+        return maxPage == currentPage;
     }
 }

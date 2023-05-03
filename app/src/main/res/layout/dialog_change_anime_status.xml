@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	 xmlns:app="http://schemas.android.com/apk/res-auto"
+	 android:layout_height="wrap_content"
+	 android:layout_width="match_parent"
+	 app:layout_behavior="@string/bottom_sheet_behavior"
+	 android:orientation="vertical"
+	 style="@style/Widget.Material3.BottomSheet">
+
+	<TextView
+		 android:layout_height="wrap_content"
+		 android:layout_width="match_parent"
+		 android:gravity="center"
+		 android:padding="16dp"
+		 android:textSize="20sp"
+		 android:text="@string/change_anime_status_title"
+		 android:id="@+id/tv_title" />
+
+	<RadioGroup
+		 android:layout_height="wrap_content"
+		 android:layout_width="match_parent"
+		 android:layout_marginEnd="16dp"
+		 android:orientation="vertical"
+		 android:layout_marginTop="16dp"
+		 android:layout_marginStart="16dp"
+		 android:id="@+id/radio_group">
+
+		<RadioButton
+			 android:layout_height="wrap_content"
+			 android:layout_width="match_parent"
+			 android:id="@+id/anime_status_seen"
+			 android:text="@string/anime_status_seen" />
+
+		<RadioButton
+			 android:layout_height="wrap_content"
+			 android:layout_width="match_parent"
+			 android:id="@+id/anime_status_will"
+			 android:text="@string/anime_status_will" />
+
+		<RadioButton
+			 android:layout_height="wrap_content"
+			 android:layout_width="match_parent"
+			 android:id="@+id/anime_status_watch"
+			 android:text="@string/anime_status_watch" />
+
+		<RadioButton
+			 android:layout_height="wrap_content"
+			 android:layout_width="match_parent"
+			 android:id="@+id/anime_status_poned"
+			 android:text="@string/anime_status_poned" />
+
+		<RadioButton
+			 android:layout_height="wrap_content"
+			 android:layout_width="match_parent"
+			 android:id="@+id/anime_status_adand"
+			 android:text="@string/anime_status_adand" />
+
+	</RadioGroup>
+
+	<LinearLayout
+		 android:layout_height="wrap_content"
+		 android:layout_width="match_parent"
+		 android:weightSum="2"
+		 android:paddingEnd="8dp"
+		 android:orientation="horizontal"
+		 android:paddingStart="8dp"
+		 android:id="@+id/container_bottom_sheet_dialog_base_buttons">
+
+		<com.google.android.material.button.MaterialButton
+			 android:layout_height="match_parent"
+			 android:layout_width="match_parent"
+			 android:layout_margin="4dp"
+			 android:singleLine="false"
+			 android:layout_weight="1"
+			 android:id="@+id/button_bottom_sheet_dialog_base_cancel"
+			 android:text="@android:string/cancel" />
+
+		<com.google.android.material.button.MaterialButton
+			 android:layout_height="match_parent"
+			 android:layout_width="match_parent"
+			 android:visibility="gone"
+			 android:layout_margin="4dp"
+			 android:singleLine="false"
+			 android:layout_weight="1"
+			 android:id="@+id/button_bottom_sheet_dialog_base_ok"
+			 android:text="@android:string/ok" />
+
+	</LinearLayout>
+
+</LinearLayout>

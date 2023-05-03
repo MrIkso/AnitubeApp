@@ -17,14 +17,14 @@ android {
 		targetSdk 33
 		versionCode 1
 		versionName "1.0.0"
-		
+
 		javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += [
-                    "room.incremental":"true"
-                    ]
-            }
-        }
+			annotationProcessorOptions {
+				arguments += [
+					"room.incremental":"true"
+				]
+			}
+		}
 	}
 
 	buildTypes {
@@ -58,33 +58,33 @@ android {
 dependencies {
 
 	// Paging
-	def paging_version = "3.2.0-alpha04"
-	def room_version = "2.6.0-alpha01"
-    def lifecycle_version = "2.6.1"
-    def navigation_version = "2.5.3"
+	def paging_version = "3.1.1"
+	def room_version = "2.5.1"
+	def lifecycle_version = "2.6.0"
+	def navigation_version = "2.5.3"
 	def hilt_version = "2.45"
-	
-	implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
+
+	// AndroidX
+	implementation 'androidx.appcompat:appcompat:1.6.1'
 	implementation 'com.google.android.material:material:1.8.0'
-	implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha09'
-	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
+	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 	// navigation
 	implementation 'androidx.navigation:navigation-fragment:2.5.3'
 	implementation 'androidx.navigation:navigation-ui:2.5.3'
-	
+
 	// ViewModel
 	implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
 	// LiveData
 	implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
 	implementation 'androidx.preference:preference:1.2.0'
-	
-	//Room
-	implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-	implementation "androidx.room:room-rxjava3:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
 
-    
+	// Room
+	implementation "androidx.room:room-runtime:$room_version"
+	implementation "androidx.room:room-paging:$room_version"
+	implementation "androidx.room:room-rxjava3:$room_version"
+	kapt "androidx.room:room-compiler:$room_version"
+
 	implementation 'com.github.MZCretin:ExpandableTextView:v1.6.1-x'
 
 	constraints {
@@ -99,6 +99,7 @@ dependencies {
 	// Retrofit
 	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 	implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 	implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 	// jsoup
 	implementation 'org.jsoup:jsoup:1.15.4'
@@ -107,8 +108,8 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.9.0'
 
 	// RxJava
-	implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+	implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+	implementation 'io.reactivex.rxjava3:rxjava:3.0.7'
 
 	implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
 
@@ -119,10 +120,21 @@ dependencies {
 	implementation "androidx.paging:paging-runtime:$paging_version"
 	// RxJava3 support for paging library
 	implementation "androidx.paging:paging-rxjava3:$paging_version"
-	
+
+	//Exoplayer
+	implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
+	implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
+	implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.5'
+
 	// Dagger - Hilt
 	implementation("com.google.dagger:hilt-android:$hilt_version")
 	kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-	
+
+	// Utility
 	implementation 'com.blankj:utilcodex:1.31.1'
+	implementation 'io.lindstrom:m3u8-parser:0.24'
+	// TouchImageView
+	implementation "com.github.MikeOrtiz:TouchImageView:1.4.1"
+
+	implementation project(path: ":treeview")
 }

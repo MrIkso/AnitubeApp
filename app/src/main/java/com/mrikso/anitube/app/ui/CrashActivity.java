@@ -5,11 +5,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.appcompat.content.res.AppCompatResources;
+
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.blankj.utilcode.util.DeviceUtils;
-import com.google.android.material.snackbar.Snackbar;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ActivityCrashBinding;

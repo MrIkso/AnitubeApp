@@ -3,6 +3,7 @@ package com.mrikso.anitube.app.data;
 import androidx.room.TypeConverter;
 
 import com.mrikso.anitube.app.model.SimpleModel;
+
 import java.util.Date;
 
 public class Converters {

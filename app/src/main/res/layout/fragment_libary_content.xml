@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	 xmlns:app="http://schemas.android.com/apk/res-auto"
+	 android:layout_height="match_parent"
+	 android:layout_width="match_parent">
+
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		 android:layout_height="wrap_content"
+		 android:layout_width="wrap_content"
+		 android:id="@+id/swipe_refresh_layout">
+
+		<LinearLayout
+			 android:layout_height="fill_parent"
+			 android:layout_width="fill_parent"
+			 android:visibility="gone"
+			 android:orientation="vertical"
+			 android:id="@+id/content">
+
+			<androidx.recyclerview.widget.RecyclerView
+				 android:layout_height="match_parent"
+				 android:layout_width="fill_parent"
+				 android:orientation="vertical"
+				 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+				 android:id="@+id/anime_list" />
+
+			<View
+				 android:layout_height="0.5dip"
+				 android:layout_width="wrap_content"
+				 android:layout_marginEnd="16.0dip"
+				 android:layout_marginTop="16.0dip"
+				 android:layout_marginStart="16.0dip"
+				 android:id="@+id/spacer" />
+
+		</LinearLayout>
+
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+	
+		<include
+		android:id="@+id/load_state_layout"
+		layout="@layout/load_state_layout" />
+
+</FrameLayout>

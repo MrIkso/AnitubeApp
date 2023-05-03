@@ -56,7 +56,7 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
         public void bind(BaseAnimeModel episode) {
             binding.tvTitle.setText(episode.title);
             Glide.with(binding.getRoot().getContext())
-                    .load(ApiClient.BASE_URL + episode.imageUrl)
+                    .load(ApiClient.BASE_URL + episode.posterUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.sivPoster);
             if (listener != null) {

@@ -1,23 +1,13 @@
 package com.mrikso.anitube.app.repository;
 
-import android.util.Log;
-
-import androidx.lifecycle.LiveData;
-import androidx.paging.Pager;
-import androidx.paging.PagingConfig;
-import androidx.paging.PagingData;
-import androidx.paging.PagingLiveData;
-import androidx.paging.rxjava3.PagingRx;
-
-import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
-import com.mrikso.anitube.app.paging.AnimeReleasePagingSource;
 
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 import org.jsoup.nodes.Document;
+
+import retrofit2.Response;
 
 import java.util.Date;
 
@@ -32,19 +22,31 @@ public class AnitubeRepository {
     }
 
     public Single<Document> getHome() {
-        return anitubeApi.getHome();
+        return anitubeApi.getHomePage();
     }
 
-    public Single<Document> getAnimePage(String url) {
-        return anitubeApi.getAnimePage(url);
+    public Single<Document> getPage(String url) {
+        return anitubeApi.getPage(url);
     }
 
     public Single<Document> getAnimeByPage(int page) {
         return anitubeApi.getAnimeByPage(String.valueOf(page));
     }
 
-    public Single<String> getPlaylist(int id) {
+    public Single<Response<Document>> login(String username, String password) {
+        return anitubeApi.login("submit", username, password);
+    }
+
+    public Single<Document> addOrRemoveFromFavorites(int animeId, boolean isAdd, String dleHash) {
+        return anitubeApi.addOrRemoveFromFavorites(animeId, isAdd ? "plus" : "minus", dleHash);
+    }
+
+    public Single<ChangeStatusResponse> changeAnimeStatus(int animeId, int viewStatus) {
+        return anitubeApi.changeAnimeStatus(animeId, viewStatus);
+    }
+
+    public Single<String> getPlaylist(int animeId) {
         long currentTimeMillis = new Date().getTime();
-        return anitubeApi.getPlaylist(id, "playlist", currentTimeMillis);
+        return anitubeApi.getPlaylist(animeId, "playlist", currentTimeMillis);
     }
 }

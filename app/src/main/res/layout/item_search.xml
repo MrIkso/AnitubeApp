@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:id="@+id/item_search_root"
+	android:clickable="true"
+	android:focusable="true"
+	android:background="?attr/selectableItemBackground"
+	android:layout_width="fill_parent"
+	android:layout_height="48.0dip"
+	android:paddingStart="16.0dip"
+	android:paddingEnd="16.0dip">
+	<androidx.appcompat.widget.AppCompatImageView
+		android:id="@+id/search_image_view"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingEnd="16.0dip"
+		app:srcCompat="@drawable/ic_history"
+	 />
+	<TextView
+		android:ellipsize="end"
+		android:id="@+id/query_tv"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:maxLines="1" />
+</LinearLayout>

@@ -1,8 +1,6 @@
 package com.mrikso.anitube.app.ui.detail;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -12,33 +10,43 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ctetin.expandabletextviewlibrary.ExpandableTextView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.common.base.Strings;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.BaseAnimeAdapter;
+import com.mrikso.anitube.app.adapters.FranchisesAdapter;
 import com.mrikso.anitube.app.adapters.ScreenshotsAdapter;
-import com.mrikso.anitube.app.databinding.ChipGroupItemBinding;
 import com.mrikso.anitube.app.databinding.FragmentDetailsAnimeBinding;
+import com.mrikso.anitube.app.databinding.ItemChipBinding;
+import com.mrikso.anitube.app.databinding.LayoutReleaseActionBinding;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.DubbersTeam;
+import com.mrikso.anitube.app.model.FranchiseModel;
 import com.mrikso.anitube.app.model.ScreenshotModel;
 import com.mrikso.anitube.app.model.SimpleModel;
+import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.ui.dialogs.ChangeAnimeStatusDialog;
+import com.mrikso.anitube.app.utils.IntentUtils;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 import org.jsoup.internal.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,16 +59,15 @@ public class DetailsAnimeFragmemt extends Fragment
     private FragmentDetailsAnimeBinding binding;
     private ScreenshotsAdapter screenshotsAdapter;
     private BaseAnimeAdapter similarAnimeAdapter;
+    private FranchisesAdapter franchisesAdapter;
+    private List<ScreenshotModel> screenshotsList = null;
+    private int mode = -1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(DetailsAnimeFragmemtViewModel.class);
-        //if (savedInstanceState != null) {
-
-            loadPage();
-      //  }
-		
+        loadPage();
     }
 
     @Nullable
@@ -86,6 +93,8 @@ public class DetailsAnimeFragmemt extends Fragment
         binding = null;
         screenshotsAdapter = null;
         similarAnimeAdapter = null;
+        screenshotsList = null;
+        franchisesAdapter = null;
     }
 
     private void initObservers() {
@@ -141,6 +150,10 @@ public class DetailsAnimeFragmemt extends Fragment
         screenshotsAdapter = new ScreenshotsAdapter();
         screenshotsAdapter.setOnItemClickListener(this);
         binding.layoutScreenshots.recyclerViewScreenshots.setAdapter(screenshotsAdapter);
+
+        franchisesAdapter = new FranchisesAdapter(i -> openDetailsFragment(i));
+        binding.layoutFranchises.recyclerViewFranchies.setAdapter(franchisesAdapter);
+
         similarAnimeAdapter = new BaseAnimeAdapter();
         similarAnimeAdapter.setOnItemClickListener(this);
         binding.layoutSimilar.recyclerViewSimilar.setAdapter(similarAnimeAdapter);
@@ -152,33 +165,47 @@ public class DetailsAnimeFragmemt extends Fragment
         binding.title.setText(animeDetails.getTitle());
         String titleEng = animeDetails.getOriginalTitle();
 
-        if (!StringUtil.isBlank(titleEng)) {
+        if (!Strings.isNullOrEmpty(titleEng)) {
             binding.titleEng.setVisibility(View.VISIBLE);
             binding.titleEng.setText(titleEng);
         }
 
         String posterUrl = ApiClient.BASE_URL + animeDetails.getPosterUrl();
-        loadImage(binding.poster, posterUrl);
-        loadImage(binding.posterBg, posterUrl);
+        ViewUtils.loadImage(binding.poster, posterUrl);
+        ViewUtils.loadImage(binding.posterBg, posterUrl);
 
         String rating = animeDetails.getRating();
-        if (!StringUtil.isBlank(rating)) {
+        if (!Strings.isNullOrEmpty(rating)) {
             binding.llScore.setVisibility(View.VISIBLE);
             binding.tvScore.setText(rating);
             binding.rbScore.setRating(Float.parseFloat(rating));
         }
 
+        showReleaseActions(animeDetails);
+
         showInfoGroup(animeDetails);
 
         String description = animeDetails.getDescription();
-        if (!StringUtil.isBlank(description)) {
+        if (!Strings.isNullOrEmpty(description)) {
             binding.layoutDescription.llDescription.setVisibility(View.VISIBLE);
             ExpandableTextView expandableTextView = binding.layoutDescription.tvDescription;
             expandableTextView.setContent(description);
             expandableTextView.setNeedExpend(true);
         }
 
-        List<ScreenshotModel> screenshotsList = animeDetails.getScreenshotsModel();
+        ScreenshotModel trailer = animeDetails.getTrailerModel();
+        if (trailer != null) {
+            binding.layoutTrailer.llVideo.setVisibility(View.VISIBLE);
+
+            ViewUtils.loadImage(
+                    binding.layoutTrailer.itemTrailer.sivScreenshot, trailer.getPreviewUrl());
+            binding.layoutTrailer.itemTrailer.sivScreenshot.setOnClickListener(
+                    v -> {
+                        IntentUtils.openInBrowser(requireContext(), trailer.getFullUrl());
+                    });
+        }
+
+        screenshotsList = animeDetails.getScreenshotsModel();
         if (screenshotsList != null && !screenshotsList.isEmpty()) {
             binding.layoutScreenshots.llSreenshots.setVisibility(View.VISIBLE);
             requireActivity()
@@ -186,17 +213,6 @@ public class DetailsAnimeFragmemt extends Fragment
                             () -> {
                                 screenshotsAdapter.setResults(screenshotsList);
                             });
-        }
-
-        ScreenshotModel trailer = animeDetails.getTrailerModel();
-        if (trailer != null) {
-            binding.layoutTrailer.llVideo.setVisibility(View.VISIBLE);
-
-            loadImage(binding.layoutTrailer.itemTrailer.sivScreenshot, trailer.getPreviewUrl());
-            binding.layoutTrailer.itemTrailer.sivScreenshot.setOnClickListener(
-                    v -> {
-                        openInBrowser(requireContext(), trailer.getFullUrl());
-                    });
         }
 
         List<BaseAnimeModel> similarAnimeList = animeDetails.getSimilarAnimeList();
@@ -209,6 +225,16 @@ public class DetailsAnimeFragmemt extends Fragment
                             });
         }
 
+        List<FranchiseModel> franchiseAnimeList = animeDetails.getFranchiseList();
+        if (franchiseAnimeList != null && !franchiseAnimeList.isEmpty()) {
+            binding.layoutFranchises.llFranchise.setVisibility(View.VISIBLE);
+            requireActivity()
+                    .runOnUiThread(
+                            () -> {
+                                franchisesAdapter.submitList(franchiseAnimeList);
+                            });
+        }
+
         binding.fabWatch.setOnClickListener(
                 v -> {
                     //  String url = animeDetails.getAnimeUrl();
@@ -216,19 +242,64 @@ public class DetailsAnimeFragmemt extends Fragment
                     // int id = animeDetails.getId();
                     openWatchFragment(
                             animeDetails.getTitle(),
-                            animeDetails.getId(),
+                            animeDetails.isHavePlaylistsAjax(),
+                            animeDetails.getAnimeId(),
                             animeDetails.getAnimeUrl());
                 });
     }
 
     private void loadPage() {
-        String url = DetailsAnimeFragmemtArgs.fromBundle(getArguments()).getUrl();
+
+        DetailsAnimeFragmemtArgs args = DetailsAnimeFragmemtArgs.fromBundle(getArguments());
+        String url = args.getUrl();
         viewModel.loadData(url);
     }
-	
-	private void reloadPage() {
+
+    private void reloadPage() {
         String url = DetailsAnimeFragmemtArgs.fromBundle(getArguments()).getUrl();
         viewModel.loadAnime(url);
+    }
+
+    private void showReleaseActions(AnimeDetailsModel animeDetails) {
+        LayoutReleaseActionBinding actionBinding = binding.layoutReleaseAction;
+        if (PreferencesHelper.getInstance().isLogin()) {
+            actionBinding.bookmarkContainer.setVisibility(View.VISIBLE);
+            actionBinding.statusContainer.setVisibility(View.VISIBLE);
+
+            showBookmarkStatus(animeDetails.isFavorites());
+
+            actionBinding.bookmarkContainer.setOnClickListener(
+                    v ->
+                            addOrRemoveFromFavorites(
+                                    animeDetails.getAnimeId(), !animeDetails.isFavorites()));
+
+            if (animeDetails.getWatchStatusModdel() != null) {
+                mode = animeDetails.getWatchStatusModdel().getViewStatus().getStatusCode();
+                showReleaseWatchStatus(animeDetails.getWatchStatusModdel());
+            }
+
+            actionBinding.statusContainer.setOnClickListener(
+                    v -> {
+                        ChangeAnimeStatusDialog dialog = ChangeAnimeStatusDialog.newInstance(mode);
+                        dialog.setListener(
+                                newMode -> {
+                                    mode = newMode;
+                                    viewModel.changeAnimeStatus(animeDetails.getAnimeId(), newMode);
+                                    WatchAnimeStatusModel newModel =
+                                            ParserUtils.getWatchModel(newMode);
+                                    showReleaseWatchStatus(newModel);
+                                });
+                        dialog.show(getParentFragmentManager(), ChangeAnimeStatusDialog.TAG);
+                    });
+        }
+
+        actionBinding.shareContainer.setOnClickListener(
+                v -> {
+                    new ShareCompat.IntentBuilder(requireActivity())
+                            .setType("text/plain")
+                            .setText(animeDetails.getAnimeUrl())
+                            .startChooser();
+                });
     }
 
     private void showInfoGroup(AnimeDetailsModel animeDetails) {
@@ -302,18 +373,13 @@ public class DetailsAnimeFragmemt extends Fragment
             chipGroup.removeAllViews();
             for (SimpleModel simple : genres) {
                 Chip chip =
-                        ChipGroupItemBinding.inflate(getLayoutInflater(), chipGroup, false)
-                                .getRoot();
+                        ItemChipBinding.inflate(getLayoutInflater(), chipGroup, false).getRoot();
                 chip.setText(simple.getText());
                 chip.setClickable(true);
-                chip.setOnClickListener(v -> openSearchFragment(simple.getUrl()));
+                chip.setOnClickListener(v -> openSearchFragment(simple.getText(), simple.getUrl()));
                 chipGroup.addView(chip);
             }
         }
-    }
-
-    private void loadImage(AppCompatImageView view, String url) {
-        Glide.with(view.getContext()).load(url).diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
     }
 
     @Override
@@ -327,30 +393,25 @@ public class DetailsAnimeFragmemt extends Fragment
         Navigation.findNavController(requireView()).navigate(action);
     }
 
-    private void openWatchFragment(String title, int id, String url) {
+    private void openWatchFragment(String title, boolean isHavePlaylistsAjax, int id, String url) {
         DetailsAnimeFragmemtDirections.ActinNavDetailsAnimeInfoToNavWatch action =
-                DetailsAnimeFragmemtDirections.actinNavDetailsAnimeInfoToNavWatch(title, id, url);
+                DetailsAnimeFragmemtDirections.actinNavDetailsAnimeInfoToNavWatch(
+                        title, isHavePlaylistsAjax, id, url);
         Navigation.findNavController(requireView()).navigate(action);
     }
 
-    private void openSearchFragment(String link) {
-        openInBrowser(requireContext(), link);
+    private void openSearchFragment(String title, String url) {
+        DetailsAnimeFragmemtDirections.ActionNavDetailsAnimeToNavSearchResult action =
+                DetailsAnimeFragmemtDirections.actionNavDetailsAnimeToNavSearchResult(title, url);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     @Override
-    public void onScreenshotItemSelected(String url) {}
-
-    private void openInBrowser(Context context, String link) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // browserIntent.addCategory(Intent.CATEGORY_APP_BROWSER);
-        try {
-            ContextCompat.startActivity(context, browserIntent, null);
-            return;
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+    public void onScreenshotItemSelected(int position) {
+        DetailsAnimeFragmemtDirections.ActionNavDetailsAnimeToNavScreenshots action =
+                DetailsAnimeFragmemtDirections.actionNavDetailsAnimeToNavScreenshots(
+                        position, new ArrayList<>(screenshotsList));
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     private void createClickableTextView(TextView tv, String message, String url) {
@@ -362,5 +423,31 @@ public class DetailsAnimeFragmemt extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+    }
+
+    private void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
+        showBookmarkStatus(isAdd);
+        viewModel.addOrRemoveFromFavorites(animeId, isAdd);
+    }
+
+    private void showBookmarkStatus(boolean isFavorite) {
+        binding.layoutReleaseAction.bookmarkStatusText.setText(
+                isFavorite
+                        ? R.string.release_action_remove_from_bookmarks
+                        : R.string.release_action_add_to_bookmarks);
+
+        binding.layoutReleaseAction.bookmark.setImageDrawable(
+                isFavorite
+                        ? ContextCompat.getDrawable(requireContext(), R.drawable.ic_bookmark_added)
+                        : ContextCompat.getDrawable(
+                                requireContext(), R.drawable.ic_bookmark_border));
+    }
+
+    private void showReleaseWatchStatus(WatchAnimeStatusModel watchStatus) {
+        binding.layoutReleaseAction.status.setImageDrawable(
+                ViewUtils.changeIconColor(
+                        requireContext(), R.drawable.ic_done, watchStatus.getColor()));
+
+        binding.layoutReleaseAction.watchStatusText.setText(watchStatus.getStatus());
     }
 }

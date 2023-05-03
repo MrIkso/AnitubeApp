@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	 xmlns:app="http://schemas.android.com/apk/res-auto"
+	 xmlns:tools="http://schemas.android.com/tools"
+	 android:layout_height="wrap_content"
+	 android:layout_width="match_parent"
+	 android:gravity="center_horizontal"
+	 android:orientation="horizontal"
+	 android:baselineAligned="true">
+
+	<LinearLayout
+		 android:layout_height="75dp"
+		 android:layout_width="85dp"
+		 android:visibility="gone"
+		 android:background="?attr/selectableItemBackground"
+		 android:gravity="center_horizontal"
+		 android:clickable="true"
+		 android:layout_margin="8dp"
+		 android:orientation="vertical"
+		 android:focusable="true"
+		 android:id="@+id/statusContainer">
+
+		<ImageView
+			 android:layout_height="24dp"
+			 android:layout_width="24dp"
+			 android:layout_marginBottom="8dp"
+			 android:layout_marginTop="8dp"
+			 tools:ignore="ContentDescription"
+			 app:srcCompat="@drawable/ic_add"
+			 android:id="@+id/status" />
+
+		<TextView
+			 android:layout_height="wrap_content"
+			 android:layout_width="wrap_content"
+			 android:gravity="center"
+			 android:textAppearance="?attr/textAppearanceLabelSmall"
+			 android:id="@+id/watch_status_text"
+			 android:text="@string/release_action_add_to_list" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		 android:layout_height="75dp"
+		 android:layout_width="80dp"
+		 android:visibility="gone"
+		 android:background="?attr/selectableItemBackground"
+		 android:gravity="center_horizontal"
+		 android:clickable="true"
+		 android:layout_margin="8dp"
+		 android:orientation="vertical"
+		 android:focusable="true"
+		 android:id="@+id/bookmarkContainer">
+
+		<ImageView
+			 android:layout_height="24dp"
+			 android:layout_width="24dp"
+			 android:layout_marginBottom="8dp"
+			 android:layout_marginTop="8dp"
+			 app:srcCompat="@drawable/ic_bookmark_border"
+			 tools:ignore="ContentDescription"
+			 android:id="@+id/bookmark" />
+
+		<TextView
+			 android:layout_height="wrap_content"
+			 android:layout_width="wrap_content"
+			 android:gravity="center"
+			 android:textAppearance="?attr/textAppearanceLabelSmall"
+			 android:id="@+id/bookmark_status_text"
+			 android:text="@string/release_action_add_to_bookmarks" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		 android:layout_height="75dp"
+		 android:layout_width="80dp"
+		 android:background="?attr/selectableItemBackground"
+		 android:gravity="center_horizontal"
+		 android:clickable="true"
+		 android:layout_margin="8dp"
+		 android:orientation="vertical"
+		 android:focusable="true"
+		 android:id="@+id/shareContainer">
+
+		<ImageView
+			 android:layout_height="24dp"
+			 android:layout_width="24dp"
+			 android:layout_marginBottom="8dp"
+			 android:layout_marginTop="8dp"
+			 tools:ignore="ContentDescription"
+			 app:srcCompat="@drawable/ic_share"
+			 android:id="@+id/share" />
+
+		<TextView
+			 android:layout_height="wrap_content"
+			 android:layout_width="wrap_content"
+			 android:gravity="center"
+			 android:textAppearance="?attr/textAppearanceLabelSmall"
+			 android:text="@string/release_action_share" />
+
+	</LinearLayout>
+
+</LinearLayout>

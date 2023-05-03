@@ -5,15 +5,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.databinding.ItemAnimeReleaseBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
 import com.mrikso.anitube.app.network.ApiClient;
-
-import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,10 +60,22 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
         public void bind(AnimeReleaseModel episode) {
             binding.title.setText(episode.getTitle());
             binding.episodes.setText(episode.getEpisodes());
+            if (episode.getWatchStatusModdel() != null) {
+                WatchAnimeStatusModel statusModel = episode.getWatchStatusModdel();
+
+                binding.statusLayout.setVisibility(View.VISIBLE);
+                binding.statusLayout.setBackgroundColor(
+                        ContextCompat.getColor(
+                                binding.getRoot().getContext(), statusModel.getColor()));
+                binding.status.setText(statusModel.getStatus());
+            } else {
+                binding.statusLayout.setVisibility(View.GONE);
+            }
+
             if (episode.getReleaseYear() != null) {
                 binding.year.setText(episode.getReleaseYear().getText());
             }
-            if (!StringUtil.isBlank(episode.getRating())) {
+            if (!Strings.isNullOrEmpty(episode.getRating())) {
 
                 binding.rating.setVisibility(View.VISIBLE);
                 binding.rating.setText(episode.getRating());

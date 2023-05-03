@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Process;
-import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -46,9 +45,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         dateInfo.append(Calendar.getInstance().getTime());
         dateInfo.append(newLine);
 
-        //Log.e("Error", errorMessage.toString());
-		//Log.d("Software", softwareInfo.toString());
-        //Log.d("Date", dateInfo.toString());
+        // Log.e("Error", errorMessage.toString());
+        // Log.d("Software", softwareInfo.toString());
+        // Log.d("Date", dateInfo.toString());
 
         var intent = new Intent(context, CrashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

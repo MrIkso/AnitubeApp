@@ -9,7 +9,6 @@ import retrofit2.Retrofit
 import java.lang.reflect.Type
 import java.nio.charset.Charset
 
-
 class JsoupConverterFactory : Converter.Factory() {
 
     override fun responseBodyConverter(

@@ -1,83 +1,104 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="AppTheme.DayNight">
-        <!-- StatusBar -->
-        <item name="android:windowLightStatusBar">true</item>
-        <!-- NavBar -->
-        <item name="android:windowLightNavigationBar">true</item>
+	<!-- Base application theme. -->
+	<style
+		name="AppTheme"
+		parent="AppTheme.DayNight">
+		<!-- StatusBar -->
+		<item name="android:windowLightStatusBar">true</item>
+		<!-- NavBar -->
+		<item name="android:windowLightNavigationBar">true</item>
 
-    </style>
+	</style>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme.DayNight" parent="Theme.Material3.DynamicColors.DayNight">
-        <!-- Primary brand color. -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-    </style>
+	<!-- Base application theme. -->
+	<style
+		name="AppTheme.DayNight"
+		parent="Theme.Material3.DynamicColors.DayNight">
+		<!-- Primary brand color. -->
+		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:windowLightStatusBar">true</item>
+		<item name="android:navigationBarColor">@android:color/transparent</item>
+		<item name="android:windowLightNavigationBar">true</item>
+		<item name="windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+	</style>
 
-    <style name="LayoutHeader">
-        <item name="android:textSize">@dimen/h2_text_size</item>
-        <item name="android:gravity">center</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:alpha">0.9</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
-    </style>
-        <style name="TextLabel">
-        <item name="android:textSize">14sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:alpha">0.7</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-    </style>
-    <style name="TextLabelAlpha" parent="@style/TextLabel">
-        <item name="android:alpha">0.5</item>
-    </style>
-    <style name="TextValue" parent="@style/TextLabel">
-        <item name="android:alpha">0.9</item>
-    </style>
-       <style name="ShapeAppearanceOverlayExtended">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16.0dip</item>
-    </style>
-	
-	   <style name="CardViewDescription">
-        <item name="android:textSize">13.0sp</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:layout_marginTop">4.0dip</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:alpha">0.6</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:layout_marginStart">1.0dip</item>
-        <item name="android:layout_marginEnd">1.0dip</item>
-    </style>
-    <style name="CardViewShapeableImageView">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8.0dip</item>
-    </style>
-    <style name="CardViewTitle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:layout_marginTop">8.0dip</item>
-        <item name="android:maxLines">2</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:alpha">0.9</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:layout_marginStart">1.0dip</item>
-        <item name="android:layout_marginEnd">1.0dip</item>
-    </style>
-    
-        <style name="fab_circle">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">25.0%</item>
-    </style>
-    <style name="layout_detail_item">
-        <item name="android:layout_marginTop">16.0dip</item>
-        <item name="android:layout_marginStart">16.0dip</item>
-        <item name="android:layout_marginEnd">16.0dip</item>
-    </style>
+	<style name="AppTheme.FullScreenTheme">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowFullscreen">true</item>
+	</style>
+
+	<style name="LayoutHeader">
+		<item name="android:textSize">@dimen/h2_text_size</item>
+		<item name="android:gravity">center</item>
+		<item name="android:includeFontPadding">false</item>
+		<item name="android:alpha">0.9</item>
+		<item name="android:fontFamily">@font/roboto_medium</item>
+	</style>
+	<style name="TextLabel">
+		<item name="android:textSize">14sp</item>
+		<item name="android:gravity">center</item>
+		<item name="android:includeFontPadding">false</item>
+		<item name="android:alpha">0.7</item>
+		<item name="android:fontFamily">@font/roboto_regular</item>
+	</style>
+	<style
+		name="TextLabelAlpha"
+		parent="@style/TextLabel">
+		<item name="android:alpha">0.5</item>
+	</style>
+	<style
+		name="TextValue"
+		parent="@style/TextLabel">
+		<item name="android:alpha">0.9</item>
+	</style>
+	<style name="ShapeAppearanceOverlayExtended">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">16.0dip</item>
+	</style>
+
+	<style name="CardViewDescription">
+		<item name="android:textSize">13.0sp</item>
+		<item name="android:ellipsize">end</item>
+		<item name="android:layout_marginTop">4.0dip</item>
+		<item name="android:maxLines">1</item>
+		<item name="android:includeFontPadding">false</item>
+		<item name="android:alpha">0.6</item>
+		<item name="android:fontFamily">@font/roboto_regular</item>
+		<item name="android:layout_marginStart">1.0dip</item>
+		<item name="android:layout_marginEnd">1.0dip</item>
+	</style>
+	<style name="CardViewShapeableImageView">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">8.0dip</item>
+	</style>
+	<style name="ShapeAppearanceOverlay">
+		<item name="cornerSize">50%</item>
+	</style>
+	<style name="CardViewTitle">
+		<item name="android:textSize">14sp</item>
+		<item name="android:ellipsize">end</item>
+		<item name="android:layout_marginTop">8.0dip</item>
+		<item name="android:maxLines">2</item>
+		<item name="android:includeFontPadding">false</item>
+		<item name="android:alpha">0.9</item>
+		<item name="android:fontFamily">@font/roboto_medium</item>
+		<item name="android:layout_marginStart">1.0dip</item>
+		<item name="android:layout_marginEnd">1.0dip</item>
+	</style>
+
+	<style name="fab_circle">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">25.0%</item>
+	</style>
+	<style name="layout_detail_item">
+		<item name="android:layout_marginTop">16.0dip</item>
+		<item name="android:layout_marginStart">16.0dip</item>
+		<item name="android:layout_marginEnd">16.0dip</item>
+	</style>
+
+	<style name="ClickableView">
+		<item name="colorControlHighlight">@android:color/darker_gray</item>
+		<item name="android:background">?selectableItemBackgroundBorderless</item>
+	</style>
 </resources>
