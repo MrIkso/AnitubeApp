@@ -13,7 +13,7 @@ public class UserProfileModel {
     private String userCity;
     private String userOnline;
     private int userCommentsCount;
-    private int userCommentsRating;
+    private String userCommentsRating;
 
     public String getUsername() {
         return this.username;
@@ -111,11 +111,11 @@ public class UserProfileModel {
         this.userCommentsCount = userCommentsCount;
     }
 
-    public int getUserCommentsRating() {
+    public String getUserCommentsRating() {
         return this.userCommentsRating;
     }
 
-    public void setUserCommentsRating(int userCommentsRating) {
+    public void setUserCommentsRating(String userCommentsRating) {
         this.userCommentsRating = userCommentsRating;
     }
 }

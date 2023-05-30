@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	 android:layout_height="wrap_content"
+	 android:layout_width="fill_parent"
+	 android:orientation="vertical">
+
+	<TextView
+		 android:layout_height="wrap_content"
+		 android:layout_width="match_parent"
+		 android:padding="10dp"
+		 style="@style/LayoutHeader"
+		 android:layout_marginTop="0dp"
+		 android:id="@+id/best_anime_title"
+		 android:text="@string/home_best_anime" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		 android:layout_height="wrap_content"
+		 android:layout_width="fill_parent"
+		 android:id="@+id/best_anime_recycler_view" />
+
+</LinearLayout>

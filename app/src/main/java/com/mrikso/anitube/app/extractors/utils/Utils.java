@@ -9,8 +9,7 @@ import java.util.regex.Pattern;
 public class Utils {
 
     private static boolean startWithNumber(String string) {
-        final String regex =
-                "^[0-9][A-Za-z0-9-\\s,]*$"; // start with number and can contain space or comma (
+        final String regex = "^[0-9][A-Za-z0-9-\\s,]*$"; // start with number and can contain space or comma (
         // 480p , ENG)
         final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
         final Matcher matcher = pattern.matcher(string);

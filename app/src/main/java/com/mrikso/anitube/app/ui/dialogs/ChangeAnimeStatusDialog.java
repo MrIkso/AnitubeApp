@@ -36,9 +36,7 @@ public class ChangeAnimeStatusDialog extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DialogChangeAnimeStatusBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -46,10 +44,8 @@ public class ChangeAnimeStatusDialog extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int mode = getArguments().getInt(MODE_NUMBER, -1);
-        if (mode != -1) {
-            setCheckedRadioButton(mode);
-        }
+        int mode = getArguments().getInt(MODE_NUMBER, 1);
+        setCheckedRadioButton(mode);
         if (listener != null) {
             sendChekedResult();
         }
@@ -58,34 +54,39 @@ public class ChangeAnimeStatusDialog extends BottomSheetDialogFragment {
     }
 
     void sendChekedResult() {
-        binding.radioGroup.setOnCheckedChangeListener(
-                (group, checkedId) -> {
-                    ViewStatusAnime mode = ViewStatusAnime.STATUS_WATCH;
-                    switch (checkedId) {
-                        case R.id.anime_status_adand:
-                            mode = ViewStatusAnime.STATUS_ADAND;
-                            break;
-                        case R.id.anime_status_seen:
-                            mode = ViewStatusAnime.STATUS_SEEN;
-                            break;
-                        case R.id.anime_status_will:
-                            mode = ViewStatusAnime.STATUS_WILL;
-                            break;
-                        case R.id.anime_status_watch:
-                            mode = ViewStatusAnime.STATUS_WATCH;
-                            break;
-                        case R.id.anime_status_poned:
-                            mode = ViewStatusAnime.STATUS_PONED;
-                            break;
-                    }
-                    listener.onChecked(mode.getStatusCode());
-                    dismiss();
-                });
+        binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            ViewStatusAnime mode = ViewStatusAnime.STATUS_WATCH;
+            switch (checkedId) {
+                case R.id.anime_status_no_watch:
+                    mode = ViewStatusAnime.STATUS_NONE_WATCH;
+                    break;
+                case R.id.anime_status_adand:
+                    mode = ViewStatusAnime.STATUS_ADAND;
+                    break;
+                case R.id.anime_status_seen:
+                    mode = ViewStatusAnime.STATUS_SEEN;
+                    break;
+                case R.id.anime_status_will:
+                    mode = ViewStatusAnime.STATUS_WILL;
+                    break;
+                case R.id.anime_status_watch:
+                    mode = ViewStatusAnime.STATUS_WATCH;
+                    break;
+                case R.id.anime_status_poned:
+                    mode = ViewStatusAnime.STATUS_PONED;
+                    break;
+            }
+            listener.onChecked(mode.getStatusCode());
+            dismiss();
+        });
     }
 
     void setCheckedRadioButton(int mode) {
         ViewStatusAnime enumMode = ViewStatusAnime.fromId(mode);
         switch (enumMode) {
+            case STATUS_NONE_WATCH:
+                binding.animeStatusNoWatch.setChecked(true);
+                break;
             case STATUS_SEEN:
                 binding.animeStatusSeen.setChecked(true);
                 break;

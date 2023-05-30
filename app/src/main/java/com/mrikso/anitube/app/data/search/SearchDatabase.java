@@ -18,13 +18,10 @@ public abstract class SearchDatabase extends RoomDatabase {
     public static SearchDatabase getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance =
-                        Room.databaseBuilder(
-                                        context.getApplicationContext(),
-                                        SearchDatabase.class,
-                                        SearchDatabase.SEARCH_DATABASE)
-                                .allowMainThreadQueries()
-                                .build();
+                sInstance = Room.databaseBuilder(
+                                context.getApplicationContext(), SearchDatabase.class, SearchDatabase.SEARCH_DATABASE)
+                        .allowMainThreadQueries()
+                        .build();
             }
         }
         return sInstance;

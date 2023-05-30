@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 android:layout_height="match_parent"
-	 android:layout_width="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-	<TextView
-		 android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:gravity="center"
-		 android:textSize="22sp"
-		 android:id="@+id/tab_number_textview" />
+        <LinearLayout
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:id="@+id/content">
 
-</RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:id="@+id/history_list" />
+
+            <View
+                android:layout_height="0.5dp"
+                android:layout_width="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:id="@+id/spacer" />
+
+        </LinearLayout>
+
+
+    <include
+        android:id="@+id/load_state_layout"
+        layout="@layout/load_state_layout" />
+
+</FrameLayout>

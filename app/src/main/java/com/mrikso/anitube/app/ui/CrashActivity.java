@@ -39,10 +39,9 @@ public class CrashActivity extends AppCompatActivity {
 
         binding.result.setText(error.toString());
 
-        binding.fab.setOnClickListener(
-                v -> {
-                    ClipboardUtils.copyText(binding.result.getText());
-                });
+        binding.fab.setOnClickListener(v -> {
+            ClipboardUtils.copyText(binding.result.getText());
+        });
     }
 
     @Override

@@ -10,10 +10,7 @@ public class UnsupportedVideoSourceDialog {
 
     public static void show(Context context, String ifRame) {
         DialogUtils.showConfirmation(
-                context,
-                R.string.error_dialog_title,
-                R.string.error_dialog_message_unsupport_video_source,
-                () -> {
+                context, R.string.error_dialog_title, R.string.error_dialog_message_unsupport_video_source, () -> {
                     IntentUtils.openInBrowser(context, ifRame);
                 });
     }

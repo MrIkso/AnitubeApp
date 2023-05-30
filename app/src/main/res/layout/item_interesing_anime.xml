@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/carousel_main_card"
+	style="?attr/materialCardViewFilledStyle"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="170dp"
 	app:cardCornerRadius="30dp"
+	app:cardElevation="0dp"
+	
+	android:clickable="true"
+	android:focusable="true"
 	android:layout_margin="16dp">
-	<ImageView
+	<androidx.appcompat.widget.AppCompatImageView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:scaleType="centerCrop"
+		android:id="@+id/carousel_bg" />
+
+	<androidx.appcompat.widget.AppCompatImageView
 		android:id="@+id/carousel_imageView"
 		android:layout_width="match_parent"
-		android:layout_height="200dp"
-		android:foreground="@drawable/image_cover" />
+		android:layout_height="match_parent"
+		android:scaleType="centerCrop"
+	 />
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

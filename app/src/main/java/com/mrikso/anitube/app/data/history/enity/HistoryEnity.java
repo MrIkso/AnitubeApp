@@ -2,7 +2,6 @@ package com.mrikso.anitube.app.data.history.enity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "watch_history")
@@ -23,7 +22,7 @@ public class HistoryEnity {
     private String posterUrl;
 
     @ColumnInfo(name = "episode_id")
-    private String episodeId;
+    private int episodeId;
 
     @ColumnInfo(name = "total_watch_time")
     private long totalWatchTime;
@@ -34,9 +33,15 @@ public class HistoryEnity {
     @ColumnInfo(name = "watch_date")
     private long watchDate;
 
-    public HistoryEnity(int animeId, String name) {
-        this.animeId = animeId;
-        this.name = name;
+    @ColumnInfo(name = "source_path")
+    private String sourcePath;
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getAnimeId() {
@@ -55,14 +60,6 @@ public class HistoryEnity {
         this.name = name;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getAnimeUrl() {
         return this.animeUrl;
     }
@@ -79,11 +76,11 @@ public class HistoryEnity {
         this.posterUrl = posterUrl;
     }
 
-    public String getEpisodeId() {
+    public int getEpisodeId() {
         return this.episodeId;
     }
 
-    public void setEpisodeId(String episodeId) {
+    public void setEpisodeId(int episodeId) {
         this.episodeId = episodeId;
     }
 
@@ -109,5 +106,13 @@ public class HistoryEnity {
 
     public void setWatchDate(long watchDate) {
         this.watchDate = watchDate;
+    }
+
+    public String getSourcePath() {
+        return this.sourcePath;
+    }
+
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
     }
 }

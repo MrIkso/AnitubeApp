@@ -35,8 +35,7 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         super(url, client);
     }
 
-    private VideoLinksModel getModel(String masterU3u8, PlayerJsResponse playerJs)
-            throws IOException {
+    private VideoLinksModel getModel(String masterU3u8, PlayerJsResponse playerJs) throws IOException {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
@@ -57,32 +56,27 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
     }
 
     private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
-        return Single.create(
-                emitter -> {
-                    String page =
-                            client.newCall(new Request.Builder().url(getUrl()).get().build())
-                                    .execute()
-                                    .body()
-                                    .string();
-                    Gson gson = new Gson();
-                    //  String jsCode = getDocument().selectFirst("script").data();
-                    //  Log.i(TAG, " " + getDocument().bo());
-                    String json = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
-                    // Log.i(TAG, " " + json);
-                    PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
+        return Single.create(emitter -> {
+            String page = client.newCall(
+                            new Request.Builder().url(getUrl()).get().build())
+                    .execute()
+                    .body()
+                    .string();
+            Gson gson = new Gson();
+            //  String jsCode = getDocument().selectFirst("script").data();
+            //  Log.i(TAG, " " + getDocument().bo());
+            String json = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
+            // Log.i(TAG, " " + json);
+            PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
 
-                    String masterPlaylist =
-                            client.newCall(
-                                            new Request.Builder()
-                                                    .url(playerJs.getFile())
-                                                    .get()
-                                                    .build())
-                                    .execute()
-                                    .body()
-                                    .string();
+            String masterPlaylist = client.newCall(
+                            new Request.Builder().url(playerJs.getFile()).get().build())
+                    .execute()
+                    .body()
+                    .string();
 
-                    emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
-                });
+            emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+        });
     }
 
     @Override
@@ -90,9 +84,8 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         return downloadManifest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(
-                        v -> {
-                            return new Pair<>(LoadState.DONE, getModel(v.first, v.second));
-                        });
+                .map(v -> {
+                    return new Pair<>(LoadState.DONE, getModel(v.first, v.second));
+                });
     }
 }

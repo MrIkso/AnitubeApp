@@ -49,10 +49,8 @@ public class SuggestionAdapter extends ArrayAdapter<SimpleModel> {
         ItemSearchBinding binding = ItemSearchBinding.inflate(inflater, parent, false);
         SimpleModel suggestion = suggestionList.get(position);
         binding.queryTv.setText(suggestion.getText());
-        binding.searchImageView.setImageDrawable(
-                parent.getContext().getDrawable(R.drawable.ic_north_east));
-        binding.getRoot()
-                .setOnClickListener(v -> onClickListener.suggestionClicked(suggestion.getUrl()));
+        binding.searchImageView.setImageDrawable(parent.getContext().getDrawable(R.drawable.ic_north_east));
+        binding.getRoot().setOnClickListener(v -> onClickListener.suggestionClicked(suggestion.getUrl()));
         return binding.getRoot();
     }
 

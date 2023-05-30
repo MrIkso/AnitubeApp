@@ -16,8 +16,7 @@ public class PreferenceUtils {
         return settings.getString(key, defaultValue);
     }
 
-    public static Set<String> getPrefStringSet(
-            Context context, String key, final Set<String> defaultValue) {
+    public static Set<String> getPrefStringSet(Context context, String key, final Set<String> defaultValue) {
         final SharedPreferences settings =
                 PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         return settings.getStringSet(key, defaultValue);
@@ -35,8 +34,7 @@ public class PreferenceUtils {
         settings.edit().putString(key, value).commit();
     }
 
-    public static boolean getPrefBoolean(
-            Context context, final String key, final boolean defaultValue) {
+    public static boolean getPrefBoolean(Context context, final String key, final boolean defaultValue) {
         final SharedPreferences settings =
                 PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         return settings.getBoolean(key, defaultValue);

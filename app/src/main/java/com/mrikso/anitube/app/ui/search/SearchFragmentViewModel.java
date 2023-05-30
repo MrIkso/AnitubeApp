@@ -34,8 +34,7 @@ public class SearchFragmentViewModel extends ViewModel {
     private LiveData<List<RecentSearch>> searchData = new MutableLiveData<>();
     private MutableLiveData<List<SimpleModel>> quickSearchResult = new MutableLiveData<>();
     private MutableLiveData<Boolean> _showSearchResultAdapter = new MutableLiveData<>(false);
-    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData =
-            new MutableLiveData<>();
+    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
     private SearchRepository searchRepository;
 
@@ -50,24 +49,23 @@ public class SearchFragmentViewModel extends ViewModel {
     }
 
     public void runQuickSearch(String query, String dleHash) {
-        Disposable disposable =
-                searchRepository
-                        .runQickSearch(query, dleHash)
-                        .subscribe(
-                                new Consumer<List<SimpleModel>>() {
-                                    @Override
-                                    public void accept(List<SimpleModel> result) throws Throwable {
-                                        quickSearchResult.postValue(result);
-                                    }
-                                },
-                                new Consumer<Throwable>() {
-                                    @Override
-                                    public void accept(Throwable throwable) throws Throwable {
-                                        throwable.printStackTrace();
-                                        /// loadSate.postValue(LoadState.ERROR);
-                                        ///  errorMessage.postValue(throwable.getMessage());
-                                    }
-                                });
+        Disposable disposable = searchRepository
+                .runQickSearch(query, dleHash)
+                .subscribe(
+                        new Consumer<List<SimpleModel>>() {
+                            @Override
+                            public void accept(List<SimpleModel> result) throws Throwable {
+                                quickSearchResult.postValue(result);
+                            }
+                        },
+                        new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Throwable {
+                                throwable.printStackTrace();
+                                /// loadSate.postValue(LoadState.ERROR);
+                                ///  errorMessage.postValue(throwable.getMessage());
+                            }
+                        });
 
         compositeDisposable.add(disposable);
     }
@@ -86,14 +84,12 @@ public class SearchFragmentViewModel extends ViewModel {
 
     public void getSearchResult(String query) {
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        animePagingDataFlowable =
-                PagingRx.cachedIn(searchRepository.getSearchResult(query), viewModelScope);
+        animePagingDataFlowable = PagingRx.cachedIn(searchRepository.getSearchResult(query), viewModelScope);
 
-        compositeDisposable.add(
-                animePagingDataFlowable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(animePagingData::setValue));
+        compositeDisposable.add(animePagingDataFlowable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(animePagingData::setValue));
     }
 
     public LiveData<List<RecentSearch>> getSearchHistoryData() {

@@ -1,6 +1,8 @@
 package com.mrikso.anitube.app.model;
 
-public class ScreenshotModel {
+import java.io.Serializable;
+
+public class ScreenshotModel implements Serializable {
     private final String previewUrl;
     private final String fullUrl;
 

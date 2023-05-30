@@ -14,7 +14,7 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.FranchiseDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemFranchiseBinding;
 import com.mrikso.anitube.app.model.FranchiseModel;
-import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ParserUtils;
 
 public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAdapter.ViewHolder> {
     private final OnItemClickListener listener;
@@ -51,20 +51,17 @@ public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAda
             binding.tvYear.setText(release.getReleaseYear());
             binding.tvEpisodes.setText(release.getEpisodes());
             Glide.with(binding.getRoot().getContext())
-                    .load(ApiClient.BASE_URL + release.getPosterUrl())
+                    .load(ParserUtils.normaliseImageUrl(release.getPosterUrl()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.poster);
             if (release.isCurrent()) {
                 binding.getRoot().setEnabled(false);
                 binding.getRoot()
                         .setBackgroundColor(
-                                ContextCompat.getColor(
-                                        binding.getRoot().getContext(), R.color.grey_transpatent));
+                                ContextCompat.getColor(binding.getRoot().getContext(), R.color.grey_transpatent));
             } else {
                 if (listener != null) {
-                    binding.getRoot()
-                            .setOnClickListener(
-                                    v -> listener.onReleaseItemSelected(release.getAnimeUrl()));
+                    binding.getRoot().setOnClickListener(v -> listener.onReleaseItemSelected(release.getAnimeUrl()));
                 }
             }
         }

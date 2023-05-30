@@ -27,8 +27,7 @@ public class LibaryFragmentViewModel extends ViewModel {
     private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
     private boolean singleLoad;
 
-    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData =
-            new MutableLiveData<>();
+    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
 
     private final LibaryRepository repository;
 
@@ -40,14 +39,12 @@ public class LibaryFragmentViewModel extends ViewModel {
     public void loadData(int mode) {
         if (!singleLoad) {
             CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-            animePagingDataFlowable =
-                    PagingRx.cachedIn(repository.getAnimeListByPage(mode), viewModelScope);
+            animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(mode), viewModelScope);
 
-            compositeDisposable.add(
-                    animePagingDataFlowable
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(animePagingData::setValue));
+            compositeDisposable.add(animePagingDataFlowable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(animePagingData::setValue));
             singleLoad = true;
         }
     }

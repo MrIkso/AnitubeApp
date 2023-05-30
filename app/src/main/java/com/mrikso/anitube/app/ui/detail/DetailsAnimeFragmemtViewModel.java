@@ -56,46 +56,38 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     }
 
     public void loadAnime(String url) {
-        Disposable disposable =
-                repository
-                        .getPage(url)
-                        .subscribeOn(Schedulers.io())
-                        .doOnSubscribe(
-                                new Consumer<Disposable>() {
-                                    @Override
-                                    public void accept(Disposable disposable) throws Throwable {
-                                        loadSate.postValue(LoadState.LOADING);
-                                        Log.d(TAG, "start loading");
-                                    }
-                                })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(
-                                new DisposableSingleObserver<Document>() {
-                                    @Override
-                                    public void onSuccess(Document response) {
-                                        Executors.newSingleThreadExecutor()
-                                                .execute(
-                                                        () -> {
-                                                            try {
-                                                                FileCache.writePage(
-                                                                        response.html());
-                                                            } catch (IOException err) {
-                                                                err.printStackTrace();
-                                                            }
-                                                        });
-                                        Executors.newSingleThreadExecutor()
-                                                .execute(
-                                                        () -> {
-                                                            parseAnimePage(response);
-                                                        });
-                                    }
+        Disposable disposable = repository
+                .getPage(url)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Throwable {
+                        loadSate.postValue(LoadState.LOADING);
+                        Log.d(TAG, "start loading");
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Document>() {
+                    @Override
+                    public void onSuccess(Document response) {
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            try {
+                                FileCache.writePage(response.html());
+                            } catch (IOException err) {
+                                err.printStackTrace();
+                            }
+                        });
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            parseAnimePage(response);
+                        });
+                    }
 
-                                    @Override
-                                    public void onError(Throwable throwable) {
-                                        throwable.printStackTrace();
-                                        loadSate.postValue(LoadState.ERROR);
-                                    }
-                                });
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                        loadSate.postValue(LoadState.ERROR);
+                    }
+                });
 
         compositeDisposable.add(disposable);
     }
@@ -109,41 +101,37 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     }
 
     public void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
-        compositeDisposable.add(
-                repository
-                        .addOrRemoveFromFavorites(
-                                animeId, isAdd, PreferencesHelper.getInstance().getDleHash())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(v -> {}));
+
+        compositeDisposable.add(repository
+                .addOrRemoveFromFavorites(
+                        animeId, isAdd, PreferencesHelper.getInstance().getDleHash())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(v -> {
+                    AnimeDetailsModel newModel = detailsModel.getValue();
+                    newModel.setFavorites(isAdd);
+                    detailsModel.postValue(newModel);
+                }));
     }
 
     public void changeAnimeStatus(int animeId, int viewStatus) {
-        compositeDisposable.add(
-                repository
-                        .changeAnimeStatus(animeId, viewStatus)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                v -> {
-                                    Toast.makeText(
-                                                    App.getApplication(),
-                                                    v.getMessage(),
-                                                    Toast.LENGTH_SHORT)
-                                            .show();
-                                }));
+        compositeDisposable.add(repository
+                .changeAnimeStatus(animeId, viewStatus)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(v -> {
+                    Toast.makeText(App.getApplication(), v.getMessage(), Toast.LENGTH_SHORT)
+                            .show();
+                }));
     }
 
     public void parseAnimePage(Document document) {
 
         compositeDisposable.add(
-                parser.getDetailsModel(document)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                                v -> {
-                                    detailsModel.postValue(v);
-                                    loadSate.postValue(LoadState.DONE);
-                                }));
+                parser.getDetailsModel(document).subscribeOn(Schedulers.io()).subscribe(v -> {
+                    detailsModel.postValue(v);
+                    loadSate.postValue(LoadState.DONE);
+                }));
     }
 
     @Override

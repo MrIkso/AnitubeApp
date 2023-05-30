@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.parser;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 
 import com.google.gson.Gson;
@@ -12,7 +10,6 @@ import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
-import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
 
 import org.jsoup.nodes.Document;
@@ -22,20 +19,18 @@ import java.util.List;
 
 public class AnimeReleasesMapper {
 
-    private Subject<Pair<String, String>> userData = PublishSubject.create();
+    private HomePageParser homePage;
 
-    public AnimeReleasesMapper() {}
+    public AnimeReleasesMapper() {
+        homePage = HomePageParser.getInstance();
+    }
 
     public AnimeListReleases transform(Document document) {
 
         ParserUtils.parseDleHash(document.html());
         if (PreferencesHelper.getInstance().isLogin()) {
-
-            Pair<String, String> data = new HomePageParser(document).getUserData();
-            if (data != null) {
-                this.userData.onNext(data);
-            }
-          //  Log.i("mapper", userData.toString());
+            homePage.parseUserData(document);
+            //  Log.i("mapper", userData.toString());
         }
         ArticleStoryParser storyParser = new ArticleStoryParser();
         AnimeListReleases releases = storyParser.getReleaeses(document);
@@ -48,6 +43,6 @@ public class AnimeReleasesMapper {
     }
 
     public Subject<Pair<String, String>> getUserData() {
-        return userData;
+        return homePage.getUser();
     }
 }

@@ -1,6 +1,7 @@
 package com.mrikso.anitube.app.network;
 
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
+import com.mrikso.anitube.app.model.CommentsResponse;
 
 import io.reactivex.rxjava3.core.Single;
 
@@ -36,8 +37,7 @@ public interface AnitubeApiService {
     Single<String> quickSearch(@Field("story") String story, @Field("dle_hash") String dleHash);
 
     @GET("/engine/ajax/playlists.php")
-    Single<String> getPlaylist(
-            @Query("news_id") int newsId, @Query("xfield") String xfield, @Query("time") long time);
+    Single<String> getPlaylist(@Query("news_id") int newsId, @Query("xfield") String xfield, @Query("time") long time);
 
     @POST("/")
     @FormUrlEncoded
@@ -49,8 +49,7 @@ public interface AnitubeApiService {
     @POST("/mylists")
     @Headers("X-Requested-With: XMLHttpRequest")
     @FormUrlEncoded
-    Single<ChangeStatusResponse> changeAnimeStatus(
-            @Field("news_id") int newsId, @Field("status_id") int statusId);
+    Single<ChangeStatusResponse> changeAnimeStatus(@Field("news_id") int newsId, @Field("status_id") int statusId);
 
     @GET("/mylists/page/{page}")
     Single<Document> getAllMyLists(@Path("page") int page);
@@ -75,10 +74,14 @@ public interface AnitubeApiService {
 
     @GET("/engine/ajax/controller.php?mod=favorites")
     Single<Document> addOrRemoveFromFavorites(
-            @Query("fav_id") int favId,
-            @Query("action") String action,
-            @Query("user_hash") String userHash);
+            @Query("fav_id") int favId, @Query("action") String action, @Query("user_hash") String userHash);
 
     @GET("/collections/page/{page}")
     Single<Document> getCollections(@Path("page") int page);
+
+    @GET("/?do=random_anime")
+    Single<Document> getRandomAnime();
+
+    @GET("/engine/ajax/controller.php?mod=comments&skin=smartphone&massact=disable")
+    Single<CommentsResponse> getCommentsForAnime(@Query("cstart") int cstart, @Query("news_id") int animeId);
 }

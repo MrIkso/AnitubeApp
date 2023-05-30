@@ -32,8 +32,7 @@ public class DialogUtils {
         if (alertDialog != null) alertDialog.dismiss();
     }
 
-    public static void showMessage(
-            Context context, @StringRes int titleRes, @StringRes int messageRes) {
+    public static void showMessage(Context context, @StringRes int titleRes, @StringRes int messageRes) {
         showMessage(context, context.getString(titleRes), context.getString(messageRes));
     }
 
@@ -48,34 +47,25 @@ public class DialogUtils {
 
     public static void showConfirmation(
             Context context, @StringRes int titleRes, @StringRes int messageRes, Runnable onYes) {
-        showConfirmation(
-                context, context.getString(titleRes), context.getString(messageRes), onYes, null);
+        showConfirmation(context, context.getString(titleRes), context.getString(messageRes), onYes, null);
     }
 
     public static void showConfirmation(
-            Context context,
-            @StringRes int titleRes,
-            @StringRes int messageRes,
-            Runnable onYes,
-            Runnable onNo) {
-        showConfirmation(
-                context, context.getString(titleRes), context.getString(messageRes), onYes, onNo);
+            Context context, @StringRes int titleRes, @StringRes int messageRes, Runnable onYes, Runnable onNo) {
+        showConfirmation(context, context.getString(titleRes), context.getString(messageRes), onYes, onNo);
     }
 
-    public static void showConfirmation(
-            Context context, String title, String message, Runnable onYes, Runnable onNo) {
+    public static void showConfirmation(Context context, String title, String message, Runnable onYes, Runnable onNo) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> onYes.run())
-                .setNegativeButton(
-                        android.R.string.cancel,
-                        (dialog, which) -> {
-                            if (onNo != null) {
-                                onNo.run();
-                            }
-                            dialog.dismiss();
-                        })
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    if (onNo != null) {
+                        onNo.run();
+                    }
+                    dialog.dismiss();
+                })
                 .setCancelable(false)
                 .show();
     }

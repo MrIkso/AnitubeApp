@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.utils.CookieParser;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -33,8 +35,8 @@ public class LoginFragmentViewModel extends ViewModel {
     private final String TAG = "LoginFragmentViewModel";
     private AnitubeRepository repository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<Pair<LoadState, Pair<String, String>>> loadSate =
-            new MutableLiveData<>(null);
+    private MutableLiveData<Pair<LoadState, Pair<String, String>>> loadSate = new MutableLiveData<>(null);
+    private HomePageParser homePageParser = HomePageParser.getInstance();
 
     @Inject
     public LoginFragmentViewModel(AnitubeRepository repository) {
@@ -42,32 +44,24 @@ public class LoginFragmentViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
-        compositeDisposable.add(
-                repository
-                        .login(username, password)
-                        .subscribeOn(Schedulers.io())
-                        .doOnSubscribe(
-                                v -> {
-                                    loadSate.setValue(
-                                            new Pair<>(LoadState.LOADING, new Pair<>(null, null)));
-                                    Log.d(TAG, "start loading");
-                                })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                response -> {
-                                    Executors.newSingleThreadExecutor()
-                                            .execute(
-                                                    () -> {
-                                                        saveCookies(response);
-                                                    });
-                                },
-                                throwable -> {
-                                    throwable.printStackTrace();
-                                    loadSate.postValue(
-                                            new Pair<>(
-                                                    LoadState.ERROR,
-                                                    new Pair<>(throwable.getMessage(), null)));
-                                }));
+        compositeDisposable.add(repository
+                .login(username, password)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(v -> {
+                    loadSate.setValue(new Pair<>(LoadState.LOADING, new Pair<>(null, null)));
+                    Log.d(TAG, "start loading");
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> {
+                            Executors.newSingleThreadExecutor().execute(() -> {
+                                saveCookies(response);
+                            });
+                        },
+                        throwable -> {
+                            throwable.printStackTrace();
+                            loadSate.postValue(new Pair<>(LoadState.ERROR, new Pair<>(throwable.getMessage(), null)));
+                        }));
     }
 
     public LiveData<Pair<LoadState, Pair<String, String>>> getLoadState() {
@@ -75,10 +69,16 @@ public class LoginFragmentViewModel extends ViewModel {
     }
 
     private void saveCookies(Response<Document> response) {
-        HomePageParser homePageParser = new HomePageParser(response.body());
-        Pair<String, String> userDataPair = homePageParser.getUserData();
         List<String> cookielist = response.headers().values("Set-Cookie");
+        CookieParser cp = new CookieParser(cookielist);
         HashSet<String> cookies = new HashSet<>();
+
+        if (Strings.isNullOrEmpty(cp.getValue("dle_user_id"))
+                || "deleted".equals(cp.getValue("dle_user_id")) && Strings.isNullOrEmpty(cp.getValue("dle_password"))
+                || "deleted".equals(cp.getValue("dle_password"))) {
+            loadSate.postValue(new Pair<>(LoadState.ERROR, null));
+            return;
+        }
 
         for (String header : cookielist) {
             Log.i(TAG, header);
@@ -92,6 +92,7 @@ public class LoginFragmentViewModel extends ViewModel {
         if (!cookies.isEmpty()) {
             PreferencesHelper.getInstance().saveCooikes(cookies);
             PreferencesHelper.getInstance().setLogin(true);
+            Pair<String, String> userDataPair = homePageParser.getUserData(response.body());
             loadSate.postValue(new Pair<>(LoadState.DONE, userDataPair));
         } else {
             loadSate.postValue(new Pair<>(LoadState.ERROR, null));

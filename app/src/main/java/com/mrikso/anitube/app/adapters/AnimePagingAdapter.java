@@ -1,33 +1,38 @@
 package com.mrikso.anitube.app.adapters;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.databinding.ItemAnimeReleaseBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
-import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.internal.StringUtil;
 
-public class AnimePagingAdapter
-        extends PagingDataAdapter<AnimeReleaseModel, AnimePagingAdapter.ViewHolder> {
+public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, AnimePagingAdapter.ViewHolder> {
     public static final int LOADING_ITEM = 0;
     public static final int MOVIE_ITEM = 1;
     private final RequestManager glide;
     private OnItemClickListener listener;
 
-    public AnimePagingAdapter(
-            @NotNull DiffUtil.ItemCallback<AnimeReleaseModel> diffCallback, RequestManager glide) {
+    public AnimePagingAdapter(@NotNull DiffUtil.ItemCallback<AnimeReleaseModel> diffCallback, RequestManager glide) {
         super(diffCallback);
         this.glide = glide;
     }
@@ -36,9 +41,7 @@ public class AnimePagingAdapter
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        return new ViewHolder(
-                ItemAnimeReleaseBinding.inflate(
-                        LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(ItemAnimeReleaseBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -73,8 +76,7 @@ public class AnimePagingAdapter
                 WatchAnimeStatusModel statusModel = episode.getWatchStatusModdel();
                 binding.statusLayout.setVisibility(View.VISIBLE);
                 binding.statusLayout.setBackgroundColor(
-                        ContextCompat.getColor(
-                                binding.getRoot().getContext(), statusModel.getColor()));
+                        ContextCompat.getColor(binding.getRoot().getContext(), statusModel.getColor()));
                 binding.status.setText(statusModel.getStatus());
             } else {
                 binding.statusLayout.setVisibility(View.GONE);
@@ -83,19 +85,45 @@ public class AnimePagingAdapter
             if (episode.getReleaseYear() != null) {
                 binding.year.setText(episode.getReleaseYear().getText());
             }
-            if (!StringUtil.isBlank(episode.getRating())) {
+            String rating = episode.getRating();
+            if (!Strings.isNullOrEmpty(rating)) {
 
-                binding.rating.setVisibility(View.VISIBLE);
-                binding.rating.setText(episode.getRating());
+                binding.llScore.setVisibility(View.VISIBLE);
+                binding.rating.setRating(Float.parseFloat(rating) / 2f);
+                if (rating.endsWith(".0")) {
+                    rating = StringUtils.removeChars(rating, 2);
+                }
+                binding.tvScore.setText(String.format("%s/10", rating));
             }
             binding.description.setText(episode.getDescription());
 
-            glide.load(ApiClient.BASE_URL + episode.getPosterUrl()).into(binding.poster);
+            glide.load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(
+                                @Nullable GlideException e,
+                                Object model,
+                                Target<Drawable> target,
+                                boolean isFirstResource) {
+                            binding.progressIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(
+                                Drawable resource,
+                                Object model,
+                                Target<Drawable> target,
+                                DataSource dataSource,
+                                boolean isFirstResource) {
+                            binding.progressIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(binding.poster);
 
             if (listener != null) {
-                binding.getRoot()
-                        .setOnClickListener(
-                                v -> listener.onReleaseItemSelected(episode.getAnimeUrl()));
+                binding.getRoot().setOnClickListener(v -> listener.onReleaseItemSelected(episode.getAnimeUrl()));
             }
         }
     }

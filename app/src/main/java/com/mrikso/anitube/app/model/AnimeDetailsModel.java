@@ -16,7 +16,17 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
     private List<DubbersTeam> dubbersTeamList;
     private List<FranchiseModel> franchiseList;
     private List<BaseAnimeModel> similarAnimeList;
+    private List<TorrentModel> torrensList;
+
     private boolean isHavePlaylistsAjax;
+
+    public AnimeDetailsModel(int animeId, String title, String animeUrl) {
+        super(animeId, title, animeUrl);
+    }
+
+    public AnimeDetailsModel(int animeId, String title, String posterUrl, String animeUrl) {
+        super(animeId, title, posterUrl, animeUrl);
+    }
 
     public String getOriginalTitle() {
         return this.originalTitle;
@@ -120,5 +130,13 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
 
     public void setHavePlaylistsAjax(boolean isHavePlaylistsAjax) {
         this.isHavePlaylistsAjax = isHavePlaylistsAjax;
+    }
+
+    public List<TorrentModel> getTorrensList() {
+        return this.torrensList;
+    }
+
+    public void setTorrensList(List<TorrentModel> torrensList) {
+        this.torrensList = torrensList;
     }
 }

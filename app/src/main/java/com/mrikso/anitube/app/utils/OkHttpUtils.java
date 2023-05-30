@@ -30,59 +30,57 @@ public class OkHttpUtils {
         return mOkHttpClient;
     }
 
-    public static void downloadFile(
-            final String fileUrl, final File file, final FileCallback fileCallback) {
+    public static void downloadFile(final String fileUrl, final File file, final FileCallback fileCallback) {
 
         final Request request = new Request.Builder().url(fileUrl).build();
         final Call call = withOkHttpClient().newCall(request);
-        call.enqueue(
-                new Callback() {
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            InputStream is = null;
-                            byte[] buf = new byte[1024];
-                            int len = 0;
-                            FileOutputStream fos = null;
-                            try {
-                                ResponseBody responseBody = response.body();
-                                if (responseBody != null) {
-                                    is = responseBody.byteStream();
-                                    fos = new FileOutputStream(file);
-                                    while ((len = is.read(buf)) != -1) {
-                                        fos.write(buf, 0, len);
-                                    }
-                                    fos.flush();
-                                    fileCallback.success();
-                                } else {
-                                    fileCallback.fail(-1, null);
-                                }
-                            } catch (IOException e) {
-                                fileCallback.fail(-1, e);
-                                e.printStackTrace();
-                            } finally {
-                                try {
-                                    if (is != null) {
-                                        is.close();
-                                    }
-                                    if (fos != null) {
-                                        fos.close();
-                                    }
-                                } catch (IOException e) {
-                                    fileCallback.fail(-1, e);
-                                    e.printStackTrace();
-                                }
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    InputStream is = null;
+                    byte[] buf = new byte[1024];
+                    int len = 0;
+                    FileOutputStream fos = null;
+                    try {
+                        ResponseBody responseBody = response.body();
+                        if (responseBody != null) {
+                            is = responseBody.byteStream();
+                            fos = new FileOutputStream(file);
+                            while ((len = is.read(buf)) != -1) {
+                                fos.write(buf, 0, len);
                             }
+                            fos.flush();
+                            fileCallback.success();
                         } else {
-                            fileCallback.fail(response.code(), null);
+                            fileCallback.fail(-1, null);
+                        }
+                    } catch (IOException e) {
+                        fileCallback.fail(-1, e);
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (is != null) {
+                                is.close();
+                            }
+                            if (fos != null) {
+                                fos.close();
+                            }
+                        } catch (IOException e) {
+                            fileCallback.fail(-1, e);
+                            e.printStackTrace();
                         }
                     }
+                } else {
+                    fileCallback.fail(response.code(), null);
+                }
+            }
 
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        fileCallback.fail(-1, e);
-                    }
-                });
+            @Override
+            public void onFailure(Call call, IOException e) {
+                fileCallback.fail(-1, e);
+            }
+        });
     }
 
     public interface FileCallback {
@@ -106,8 +104,7 @@ public class OkHttpUtils {
             if (context != null
                     && PackageManager.PERMISSION_GRANTED
                             == context.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-                    && PackageManager.PERMISSION_GRANTED
-                            == context.checkSelfPermission(Manifest.permission.INTERNET)) {
+                    && PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(Manifest.permission.INTERNET)) {
                 return true;
             }
             return false;

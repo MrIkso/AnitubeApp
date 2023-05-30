@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.core.util.Pair;
 
 import com.google.gson.Gson;
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.extractors.model.StreamSbResponse;
 import com.mrikso.anitube.app.extractors.utils.Utils;
 import com.mrikso.anitube.app.model.LoadState;
@@ -12,6 +13,8 @@ import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.OkHttpUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.PreferenceKeys;
+import com.mrikso.anitube.app.utils.PreferenceUtils;
 
 import io.lindstrom.m3u8.model.MasterPlaylist;
 import io.lindstrom.m3u8.model.Variant;
@@ -21,6 +24,7 @@ import io.reactivex.rxjava3.core.Single;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import java.io.IOException;
@@ -29,6 +33,10 @@ import java.util.Map;
 
 public class StreamSBExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "StreamSBExtractor";
+    private final String ENDPOINT_URL =
+            "https://raw.githubusercontent.com/Claudemirovsky/streamsb-endpoint/master/endpoint.txt";
+    private final String PREF_ENDPOINT_DEFAULT = "/sources16";
+
     private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
 
     // https://github.com/jmir1/aniyomi-extensions/blob/0c031d7bc2f38949097c3f1db7f8248d71d190dd/lib/streamsb-extractor/src/main/java/eu/kanade/tachiyomi/lib/streamsbextractor/StreamSBExtractor.kt
@@ -38,19 +46,36 @@ public class StreamSBExtractor extends BaseVideoLinkExtracror {
 
     @Override
     public Single<Pair<LoadState, VideoLinksModel>> parse() {
-        return Single.fromCallable(
-                () -> {
-                    VideoLinksModel model =
-                            videosFromUrl(getUrl(), Headers.of(new String[0]), false, false);
-                    if (model != null) return new Pair<>(LoadState.DONE, model);
-                    else return new Pair<>(LoadState.ERROR, new VideoLinksModel(getUrl()));
-                });
+        return Single.fromCallable(() -> {
+            VideoLinksModel model = videosFromUrl(getUrl(), Headers.of(new String[0]), true, false);
+            if (model != null) return new Pair<>(LoadState.DONE, model);
+            else return new Pair<>(LoadState.ERROR, new VideoLinksModel(getUrl()));
+        });
+    }
+
+    private String getEndpoint() {
+        return PreferenceUtils.getPrefString(
+                App.getApplication().getApplicationContext(), PreferenceKeys.PREF_ENDPOINT_KEY, PREF_ENDPOINT_DEFAULT);
+    }
+
+    private void updateEndpoint() {
+        try {
+            ResponseBody response = client.newCall(
+                            new Request.Builder().url(ENDPOINT_URL).get().build())
+                    .execute()
+                    .body();
+
+            PreferenceUtils.setPrefString(
+                    App.getApplication().getApplicationContext(), PreferenceKeys.PREF_ENDPOINT_KEY, response.string());
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
     }
 
     // animension, asianload and dramacool uses "common = false"
     private String fixUrl(String url, boolean common) {
         String host = Utils.getDomainFromURL(url);
-        String sbUrl = host + "/sources16";
+        String sbUrl = host + getEndpoint();
         String id = Utils.getID(url);
         if (common) {
             String hexBytes = bytesToHex(id.getBytes());
@@ -75,49 +100,53 @@ public class StreamSBExtractor extends BaseVideoLinkExtracror {
         return new String(hexChars);
     }
 
-    private VideoLinksModel videosFromUrl(
-            String url, Headers headers, boolean common, boolean manualData) {
+    private VideoLinksModel videosFromUrl(String url, Headers headers, boolean common, boolean manualData) {
         String trimmedUrl = url.trim(); // Prevents some crashes
-        Headers newHeaders =
-                manualData
-                        ? headers
-                        : headers.newBuilder()
-                                .set("referer", trimmedUrl)
-                                .set("watchsb", "sbstream")
-                                .set("authority", "embedsb.com")
-                                .build();
+        Headers newHeaders = /*    manualData
+                             ? headers
+                             : */ headers.newBuilder()
+                .set("referer", trimmedUrl)
+                .set("watchsb", "sbstream")
+                .set("authority", "embedsb.com")
+                .build();
         try {
-            String master = manualData ? trimmedUrl : fixUrl(trimmedUrl, common);
-            ResponseBody response =
-                    client.newCall(
-                                    new Request.Builder()
-                                            .url(master)
-                                            .headers(newHeaders)
-                                            .get()
-                                            .build())
-                            .execute()
-                            .body();
+            String master = /*manualData ? trimmedUrl :*/ fixUrl(trimmedUrl, common);
+            Response request = client.newCall(new Request.Builder()
+                            .url(master)
+                            .headers(newHeaders)
+                            .get()
+                            .build())
+                    .execute();
 
-            if (response == null) {
-                return null;
+            String responseBody = "";
+            if (request.code() == 200) {
+                responseBody = request.body().string();
+            } else {
+                request.close();
+                updateEndpoint();
+                request = client.newCall(new Request.Builder()
+                                .url(fixUrl(trimmedUrl, common))
+                                .headers(newHeaders)
+                                .get()
+                                .build())
+                        .execute();
+                responseBody = request.body().string();
             }
-            String responseBody = response.string();
+
             Log.i(TAG, responseBody);
             Gson gson = new Gson();
             StreamSbResponse responseModel = gson.fromJson(responseBody, StreamSbResponse.class);
             if (responseModel.getStatusCode() == 200) {
                 // download masterPlaylist and parse it
                 String masterUrl = responseModel.getStreamData().getFile().trim();
-                String masterPlaylist =
-                        client.newCall(
-                                        new Request.Builder()
-                                                .url(masterUrl)
-                                                .headers(newHeaders)
-                                                .get()
-                                                .build())
-                                .execute()
-                                .body()
-                                .string();
+                String masterPlaylist = client.newCall(new Request.Builder()
+                                .url(masterUrl)
+                                .headers(newHeaders)
+                                .get()
+                                .build())
+                        .execute()
+                        .body()
+                        .string();
                 return buildModel(masterPlaylist, newHeaders);
             }
             return null;

@@ -1,4 +1,4 @@
-package com.mrikso.anitube.app.utils;
+package com.mrikso.anitube.app.extractors.utils;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -37,10 +37,8 @@ public class JSUnpacker {
     public String unpack() {
         String js = new String(packedJS);
         try {
-            Pattern p =
-                    Pattern.compile(
-                            "\\}\\s*\\('(.*)',\\s*(.*?),\\s*(\\d+),\\s*'(.*?)'\\.split\\('\\|'\\)",
-                            Pattern.DOTALL);
+            Pattern p = Pattern.compile(
+                    "\\}\\s*\\('(.*)',\\s*(.*?),\\s*(\\d+),\\s*'(.*?)'\\.split\\('\\|'\\)", Pattern.DOTALL);
             Matcher m = p.matcher(js);
             if (m.find() && m.groupCount() == 4) {
                 String payload = m.group(1).replace("\\'", "'");
@@ -92,8 +90,7 @@ public class JSUnpacker {
     }
 
     private class Unbase {
-        private final String ALPHABET_62 =
-                "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private final String ALPHABET_62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private final String ALPHABET_95 =
                 " !\"#$%&\\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         private String alphabet = null;

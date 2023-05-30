@@ -1,7 +1,7 @@
 package com.mrikso.anitube.app.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +12,24 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.adapters.ActionListAdapter;
 import com.mrikso.anitube.app.adapters.AnimeCarouselAdapter;
 import com.mrikso.anitube.app.adapters.BaseAnimeAdapter;
+import com.mrikso.anitube.app.adapters.CollectionsAdapter;
 import com.mrikso.anitube.app.adapters.ReleaseAnimeAdapter;
 import com.mrikso.anitube.app.databinding.FragmentHomeBinding;
+import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
@@ -42,6 +50,8 @@ public class HomeFragment extends Fragment
     private AnimeCarouselAdapter carouselAdapter;
     private BaseAnimeAdapter bestAnimeAdapter;
     private ReleaseAnimeAdapter releaseAnimeAdapter;
+    private CollectionsAdapter collectionsAdapter;
+    private ActionListAdapter actionListAdapter;
     private Timer timer;
     private TimerTask timerTask;
     private int position;
@@ -53,16 +63,14 @@ public class HomeFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //    Log.i(TAG, "onCreate");
-        viewModel = new ViewModelProvider(this).get(HomeFragmentViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(HomeFragmentViewModel.class);
         viewModel.loadHome();
     }
 
     @Nullable
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -71,82 +79,10 @@ public class HomeFragment extends Fragment
     public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
         super.onViewCreated(view, bundle);
         initViews();
-        Log.i(TAG, "onViewCreated");
-
-        viewModel
-                .getLoadState()
-                .observe(
-                        getViewLifecycleOwner(),
-                        result -> {
-                            switch (result) {
-                                case ERROR:
-                                    binding.homeContent.setVisibility(View.GONE);
-                                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                                    break;
-                                case LOADING:
-                                    binding.homeContent.setVisibility(View.GONE);
-                                    binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
-                                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
-                                    break;
-                                case DONE:
-                                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
-                                    binding.homeContent.setVisibility(View.VISIBLE);
-                                    break;
-                            }
-                        });
-
-        viewModel
-                .getInteresingAnime()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (results != null && !results.isEmpty()) {
-                                requireActivity()
-                                        .runOnUiThread(
-                                                () -> {
-                                                    carouselAdapter.setResults(results);
-                                                });
-                            }
-                        });
-
-        viewModel
-                .getBestAnime()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (results != null && !results.isEmpty()) {
-                                requireActivity()
-                                        .runOnUiThread(
-                                                () -> {
-                                                    bestAnimeAdapter.setResults(results);
-                                                });
-                            }
-                        });
-        viewModel
-                .getNewAnime()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (results != null && !results.isEmpty()) {
-                                requireActivity()
-                                        .runOnUiThread(
-                                                () -> {
-                                                    releaseAnimeAdapter.setResults(results);
-                                                });
-                            }
-                        });
-
-        viewModel
-                .getUserData()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (results != null) {
-                                setUserData(results);
-                            }
-                        });
+        initAnimeList();
+        initListeners();
+        initObservers();
+        //  Log.i(TAG, "onViewCreated");
     }
 
     private void initViews() {
@@ -156,12 +92,18 @@ public class HomeFragment extends Fragment
         bestAnimeAdapter.setOnItemClickListener(this);
         releaseAnimeAdapter = new ReleaseAnimeAdapter();
         releaseAnimeAdapter.setOnItemClickListener(this);
+        collectionsAdapter = new CollectionsAdapter(getGlide(requireContext()));
+        collectionsAdapter.setOnItemClickListener(collection -> {
+            HomeFragmentDirections.ActionNavHomeToNavCollectionDetail action =
+                    HomeFragmentDirections.actionNavHomeToNavCollectionDetail(collection);
+            Navigation.findNavController(requireView()).navigate(action);
+        });
 
-        carouselLayoutManager =
-                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        carouselLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         mNowShowingRecyclerView = binding.interestingLayout.carouselRecyclerView;
         mNowShowingRecyclerView.setLayoutManager(carouselLayoutManager);
         mNowShowingRecyclerView.setAdapter(carouselAdapter);
+
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mNowShowingRecyclerView);
         mNowShowingRecyclerView.smoothScrollBy(5, 0);
@@ -170,37 +112,132 @@ public class HomeFragment extends Fragment
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.bestAnimeLayout.bestAnimeRecyclerView.setAdapter(bestAnimeAdapter);
 
+        binding.newCollectionLayout.collectionsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.newCollectionLayout.collectionsRecyclerView.setAdapter(collectionsAdapter);
+
         binding.newAnimeLayout.newAnimeRecyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         binding.newAnimeLayout.newAnimeRecyclerView.setAdapter(releaseAnimeAdapter);
 
-        mNowShowingRecyclerView.setOnScrollListener(
-                new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(
-                            @NonNull RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
+        mNowShowingRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
 
-                        if (newState == 1) {
-                            stopAutoScrollCarousel();
-                        } else if (newState == 0) {
-                            position =
-                                    carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
-                            runAutoScrollingCarousel();
-                        }
-                    }
-                });
+                if (newState == 1) {
+                    stopAutoScrollCarousel();
+                } else if (newState == 0) {
+                    position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    runAutoScrollingCarousel();
+                }
+            }
+        });
 
-        binding.swipeRefreshLayout.setOnRefreshListener(
-                () -> {
-                    viewModel.reloadHome();
-                    binding.swipeRefreshLayout.setRefreshing(false);
-                });
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            viewModel.reloadHome();
+            binding.swipeRefreshLayout.setRefreshing(false);
+        });
+    }
 
+    private void initListeners() {
         binding.loadStateLayout.repeat.setOnClickListener(v -> viewModel.reloadHome());
         binding.layoutToolbar.searchBtn.setOnClickListener(v -> openSearchFragment());
         binding.layoutToolbar.searchCardView.setOnClickListener(v -> openSearchFragment());
         binding.layoutToolbar.profileAvatar.setOnClickListener(v -> openProfileFragment());
+        binding.newCollectionLayout.viewAllCollection.setOnClickListener(
+                v -> Navigation.findNavController(requireView()).navigate(R.id.nav_collections));
+    }
+
+    private void initAnimeList() {
+        actionListAdapter = new ActionListAdapter(getGlide(requireContext()));
+        actionListAdapter.setOnItemClickListener(v -> onActionItemClicked(v));
+        binding.layoutHomeAnimeList.animeListRv.setAdapter(actionListAdapter);
+
+        GridLayoutManager manager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false);
+        binding.layoutHomeAnimeList.animeListRv.setLayoutManager(manager);
+
+        //  binding.layoutHomeAnimeList.animeListRv.setLayoutManager(
+        //      new AutoFitGridLayoutManager(requireContext(), 2));
+
+    }
+
+    private void onActionItemClicked(int mode) {
+        switch (mode) {
+            case ActionMode.ACTION_MODE_YEARS:
+                openSimpleFragment(true);
+                break;
+            case ActionMode.ACTION_MODE_GENRES:
+                openSimpleFragment(false);
+                break;
+            case ActionMode.ACTION_MODE_RANDOM_ANIME:
+                openDetailsFragment(ApiClient.RANDOM_ANIME_URl);
+                break;
+        }
+    }
+
+    private void initObservers() {
+        viewModel.getLoadState().observe(getViewLifecycleOwner(), result -> {
+            switch (result) {
+                case ERROR:
+                    binding.homeContent.setVisibility(View.GONE);
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                    break;
+                case LOADING:
+                    binding.homeContent.setVisibility(View.GONE);
+                    binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                    break;
+                case DONE:
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                    binding.homeContent.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
+
+        viewModel.getInteresingAnime().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) {
+                requireActivity().runOnUiThread(() -> {
+                    carouselAdapter.setResults(results);
+                });
+            }
+        });
+
+        viewModel.getBestAnime().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) {
+                requireActivity().runOnUiThread(() -> {
+                    bestAnimeAdapter.setResults(results);
+                });
+            }
+        });
+        viewModel.getNewAnime().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) {
+                requireActivity().runOnUiThread(() -> {
+                    releaseAnimeAdapter.setResults(results);
+                });
+            }
+        });
+        viewModel.getNewACollections().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) {
+
+                collectionsAdapter.submitList(results);
+            }
+        });
+
+        viewModel.getActionList().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) {
+
+                actionListAdapter.submitList(results);
+            }
+        });
+        viewModel.getUserData().observe(getViewLifecycleOwner(), results -> {
+            if (PreferencesHelper.getInstance().isLogin())
+                if (results != null) {
+                    setUserData(results);
+                }
+        });
     }
 
     private void stopAutoScrollCarousel() {
@@ -214,30 +251,29 @@ public class HomeFragment extends Fragment
     }
 
     private void runAutoScrollingCarousel() {
-        if (timer == null && timerTask == null) {
-            timer = new Timer();
-            timerTask =
-                    new TimerTask() {
-                        @Override
-                        public void run() {
-                            if (position == carouselAdapter.getItemCount() - 1) {
-                                mNowShowingRecyclerView.post(
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                position = 0;
-                                                mNowShowingRecyclerView.smoothScrollToPosition(
-                                                        position);
-                                                mNowShowingRecyclerView.smoothScrollBy(5, 0);
-                                            }
-                                        });
-                            } else {
-                                position++;
-                                mNowShowingRecyclerView.smoothScrollToPosition(position);
-                            }
+        if (carouselAdapter != null) {
+            if (timer == null && timerTask == null) {
+                timer = new Timer();
+                timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (position == carouselAdapter.getItemCount() - 1) {
+                            mNowShowingRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    position = 0;
+                                    mNowShowingRecyclerView.smoothScrollToPosition(position);
+                                    mNowShowingRecyclerView.smoothScrollBy(5, 0);
+                                }
+                            });
+                        } else {
+                            position++;
+                            mNowShowingRecyclerView.smoothScrollToPosition(position);
                         }
-                    };
-            timer.schedule(timerTask, 4000, 4000);
+                    }
+                };
+                timer.schedule(timerTask, 4000, 4000);
+            }
         }
     }
 
@@ -276,10 +312,18 @@ public class HomeFragment extends Fragment
         }
     }
 
+    private void openSimpleFragment(boolean isCallendar) {
+        HomeFragmentDirections.ActionNavHomeToNavSimpleList action =
+                HomeFragmentDirections.actionNavHomeToNavSimpleList(isCallendar);
+        Navigation.findNavController(requireView()).navigate(action);
+    }
+
     private void setUserData(Pair<String, String> data) {
         profileLink = data.second;
-        ViewUtils.loadImage(
-                binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
+        ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
+
+        // ViewUtils.loadImage(
+        //   binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
     }
 
     @Override
@@ -290,11 +334,17 @@ public class HomeFragment extends Fragment
         releaseAnimeAdapter = null;
         carouselAdapter = null;
         bestAnimeAdapter = null;
+        actionListAdapter = null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        viewModel = null;
+        // viewModel = null;
+    }
+
+    public RequestManager getGlide(Context context) {
+        return Glide.with(context)
+                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 }

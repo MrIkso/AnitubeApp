@@ -2,12 +2,12 @@ package com.mrikso.anitube.app.ui.watch;
 
 import android.util.Log;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.Gson;
+import com.mrikso.anitube.app.data.history.enity.LastWatchedEpisodeEnity;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.ResponseModel;
@@ -17,6 +17,7 @@ import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.FileCache;
+import com.mrikso.anitube.app.viewmodel.ListRepository;
 import com.mrikso.treeview.TreeItem;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -46,89 +47,72 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private AnitubeRepository repository;
+    private WatchAnimeRepository watchAnimeRepository;
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<AnimeDetailsModel> detailsModel = new MutableLiveData<>();
     private final MutableLiveData<TreeItem<PlayerModel>> playlistTree = new MutableLiveData<>();
-    //   private final MutableLiveData<List<VoicerModel>> voicerModel = new MutableLiveData<>();
-    // private final MutableLiveData<List<DubStatusModel>> dubStatusModel = new MutableLiveData<>();
-    //  private final MutableLiveData<List<PlayerModel>> playerModel = new MutableLiveData<>();
-    //  private final MutableLiveData<Pair<LoadState, String>> directVideoUrl = new
-    // MutableLiveData<>();
+    private final MutableLiveData<List<EpisodeModel>> episodesList = new MutableLiveData<>();
+    private ListRepository listRepo;
     private boolean singleLoad = false;
 
     @Inject
-    public WatchAnimeFragmentViewModel(AnitubeRepository repository) {
+    public WatchAnimeFragmentViewModel(AnitubeRepository repository, WatchAnimeRepository watchAnimeRepository) {
         this.repository = repository;
+        this.watchAnimeRepository = watchAnimeRepository;
     }
 
-    public void loadPlaylist(boolean isHavePlaylistsAjax, int id, String url) {
+    public void loadPlaylist(boolean isHavePlaylistsAjax, int animeId, String url) {
         if (!singleLoad) {
-            loadData(isHavePlaylistsAjax, id, url);
+            loadData(isHavePlaylistsAjax, animeId, url);
         }
         singleLoad = true;
     }
 
-    public void reloadPlaylist(boolean isHavePlaylistsAjax, int id, String url) {
-        loadData(isHavePlaylistsAjax, id, url);
+    public void reloadPlaylist(boolean isHavePlaylistsAjax, int animeId, String url) {
+        loadData(isHavePlaylistsAjax, animeId, url);
     }
 
-    private void loadData(boolean isHavePlaylistsAjax, int id, String url) {
+    private void loadData(boolean isHavePlaylistsAjax, int animeId, String url) {
         if (isHavePlaylistsAjax) {
-            Disposable disposable =
-                    repository
-                            .getPlaylist(id)
-                            .subscribeOn(Schedulers.io())
-                            .doOnSubscribe(
-                                    new Consumer<Disposable>() {
-                                        @Override
-                                        public void accept(Disposable disposable) throws Throwable {
-                                            loadSate.postValue(LoadState.LOADING);
-                                            Log.d(TAG, "start loading");
-                                        }
-                                    })
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    new Consumer<String>() {
-                                        @Override
-                                        public void accept(String response) throws Throwable {
-                                            Executors.newSingleThreadExecutor()
-                                                    .execute(
-                                                            () -> {
-                                                                loadPlaylistFromAjax(response);
-                                                            });
-                                        }
-                                    },
-                                    new Consumer<Throwable>() {
-                                        @Override
-                                        public void accept(Throwable throwable) throws Throwable {
-                                            Log.d(TAG, throwable.toString());
-                                            loadSate.postValue(LoadState.ERROR);
-                                            errorMessage.postValue(throwable.getMessage());
-                                        }
+            Disposable disposable = repository
+                    .getPlaylist(animeId)
+                    .subscribeOn(Schedulers.io())
+                    .doOnSubscribe(new Consumer<Disposable>() {
+                        @Override
+                        public void accept(Disposable disposable) throws Throwable {
+                            loadSate.postValue(LoadState.LOADING);
+                            Log.d(TAG, "start loading");
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            new Consumer<String>() {
+                                @Override
+                                public void accept(String response) throws Throwable {
+                                    Executors.newSingleThreadExecutor().execute(() -> {
+                                        loadPlaylistFromAjax(response, animeId);
                                     });
+                                }
+                            },
+                            new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Throwable {
+                                    Log.d(TAG, throwable.toString());
+                                    loadSate.postValue(LoadState.ERROR);
+                                    errorMessage.postValue(throwable.getMessage());
+                                }
+                            });
 
             compositeDisposable.add(disposable);
         } else {
-            loadVideosFromPage();
+            loadVideosFromPage(animeId);
         }
     }
 
     public LiveData<LoadState> getLoadState() {
         return loadSate;
     }
-
-    //    public LiveData<List<DubStatusModel>> getDubStatusPlayList() {
-    //        return dubStatusModel;
-    //    }
-    //
-    //    public LiveData<List<VoicerModel>> getVoicersPlayList() {
-    //        return voicerModel;
-    //    }
-    //
-    //    public LiveData<List<PlayerModel>> getPlayersPlayList() {
-    //        return playerModel;
-    //    }
 
     public LiveData<String> getErrorMessage() {
         return errorMessage;
@@ -138,16 +122,16 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
         return playlistTree;
     }
 
-    private void loadPlaylistFromAjax(String response) {
+    private void loadPlaylistFromAjax(String response, int animeId) {
 
         // Log.d(TAG, response);
         try {
             ResponseModel responseModel = new Gson().fromJson(response, ResponseModel.class);
             if (responseModel.isSuccess()) {
                 Document doc = Jsoup.parse(responseModel.getResponse());
-                List<Pair<String, String>> listDubStatus = new ArrayList<>();
-                List<Pair<String, String>> listVoicers = new ArrayList<>();
-                List<Pair<String, String>> listPlayers = new ArrayList<>();
+                //    List<Pair<String, String>> listDubStatus = new ArrayList<>();
+                // List<Pair<String, String>> listVoicers = new ArrayList<>();
+                // List<Pair<String, String>> listPlayers = new ArrayList<>();
 
                 // парсимо всі плейлисти
                 Elements playlists = doc.select(".playlists-lists .playlists-items li");
@@ -222,16 +206,23 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                                 }
                             }
                 "*/
-                List<EpisodeModel> allEpisodesList = new ArrayList<>();
 
                 // парсимо всі епізоди
                 Elements episodeElements = doc.select(".playlists-videos .playlists-items li");
+                List<EpisodeModel> allEpisodesList = new ArrayList<>(episodeElements.size());
                 for (Element episodeElement : episodeElements) {
                     String audioId = episodeElement.attr("data-id"); // 0_0_0 or 0_0_0_0 if subs
-                    String episodeId = episodeElement.text();
+                    String episodeName = episodeElement.text();
                     String url = episodeElement.attr("data-file");
                     Log.i(TAG, "id: " + audioId + " url: " + url);
-                    EpisodeModel episodeModel = new EpisodeModel(audioId, episodeId, url);
+                    EpisodeModel episodeModel = new EpisodeModel(audioId, episodeName, url);
+                    LastWatchedEpisodeEnity dbEpisode = watchAnimeRepository.getWatchedEpisode(animeId, url);
+                    if (dbEpisode != null) {
+                        episodeModel.setIsWatched(dbEpisode.isWatched());
+                        episodeModel.setTotalEpisodeTime(dbEpisode.getTotalEpisodeTime());
+                        episodeModel.setTotalWatchTime(dbEpisode.getTotalWatchTime());
+                    }
+
                     allEpisodesList.add(episodeModel);
                 }
 
@@ -284,31 +275,26 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
        }
     */
 
-    private void loadVideosFromPage() {
-        Executors.newSingleThreadExecutor()
-                .execute(
-                        () -> {
-                            try {
-                                Document doc = Jsoup.parse(FileCache.readPage());
-                                parseVideosFromPage(doc);
-                            } catch (Exception err) {
-                                err.printStackTrace();
-                                loadSate.postValue(LoadState.ERROR);
-                                errorMessage.postValue(err.getMessage());
-                            }
-                        });
+    private void loadVideosFromPage(int animeId) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Document doc = Jsoup.parse(FileCache.readPage());
+                parseVideosFromPage(doc, animeId);
+            } catch (Exception err) {
+                err.printStackTrace();
+                loadSate.postValue(LoadState.ERROR);
+                errorMessage.postValue(err.getMessage());
+            }
+        });
     }
 
-    private void parseVideosFromPage(Document response) {
-        ParseVideosFromPage parse = new ParseVideosFromPage(response);
+    private void parseVideosFromPage(Document response, int animeId) {
+        ParseVideosFromPage parse = new ParseVideosFromPage(response, animeId, watchAnimeRepository);
         compositeDisposable.add(
-                parse.getPlayerTree()
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                                v -> {
-                                    playlistTree.postValue(v);
-                                    loadSate.postValue(LoadState.DONE);
-                                }));
+                parse.getPlayerTree().subscribeOn(Schedulers.io()).subscribe(v -> {
+                    playlistTree.postValue(v);
+                    loadSate.postValue(LoadState.DONE);
+                }));
     }
 
     @Override

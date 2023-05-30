@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:orientation="vertical"
-	android:id="@+id/ll_franchise"
-	android:visibility="gone"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
-	<include
-		android:id="@+id/divider"
-		layout="@layout/layout_divider" />
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="16.0dip"
-		android:text="@string/anime_franchise"
-		android:fontFamily="@font/roboto_medium"
-		android:layout_marginStart="16.0dip"
-		style="@style/LayoutHeader" />
-	<androidx.recyclerview.widget.RecyclerView
-		android:layout_marginTop="16.0dip"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:overScrollMode="never"
-		android:clipToPadding="false"
-		android:orientation="vertical"
-		android:id="@+id/recycler_view_franchies"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/ll_franchise"
+    android:visibility="gone"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        style="@style/LayoutHeader"
+        android:text="@string/anime_franchise"
+        android:fontFamily="@font/roboto_medium" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:overScrollMode="never"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:id="@+id/recycler_view_franchies"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>

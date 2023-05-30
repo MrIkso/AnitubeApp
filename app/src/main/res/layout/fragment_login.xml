@@ -1,76 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 xmlns:app="http://schemas.android.com/apk/res-auto"
-	 xmlns:tools="http://schemas.android.com/tools"
-	 android:layout_height="match_parent"
-	 android:layout_width="match_parent"
-	 android:scrollbars="none">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-	<RelativeLayout
-		 android:layout_height="match_parent"
-		 android:layout_width="match_parent"
-		 android:layout_marginLeft="30dp"
-		 android:layout_marginRight="30dp">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:elevation="0dp">
 
-		<TextView
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:gravity="center"
-			 android:layout_margin="50dp"
-			 android:textSize="35dp"
-			 android:id="@+id/sign_in_tv"
-			 android:text="@string/login_title"
-			 android:textStyle="bold" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:title="@string/login_title"
+            app:navigationIcon="@drawable/ic_back" />
 
-		<EditText
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:layout_marginEnd="10dp"
-			 android:drawablePadding="20dp"
-			 android:padding="20dp"
-			 android:layout_marginTop="10dp"
-			 android:layout_marginStart="10dp"
-			 android:layout_marginBottom="10dp"
-			 android:layout_below="@+id/sign_in_tv"
-			 android:background="@null"
-			 android:drawableLeft="@drawable/baseline_person_outline_24"
-			 android:hint="@string/login_username"
-			 android:id="@+id/user_name_et" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-		<EditText
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:layout_below="@+id/user_name_et"
-			 android:drawablePadding="20dp"
-			 android:background="@null"
-			 android:drawableLeft="@drawable/baseline_password_24"
-			 android:hint="@string/login_password"
-			 android:layout_margin="10dp"
-			 android:padding="20dp"
-			 android:inputType="textPassword"
-			 android:id="@+id/password_et" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_below="@id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-		<com.google.android.material.button.MaterialButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:layout_below="@+id/password_et"
-			 android:ellipsize="end"
-			 android:layout_margin="20dp"
-			 android:layout_centerHorizontal="true"
-			 style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-			 android:id="@+id/login_btn"
-			 android:text="@string/login_text" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
 
-		<TextView
-			 android:layout_height="wrap_content"
-			 android:layout_width="wrap_content"
-			 android:layout_below="@id/login_btn"
-			 android:layout_margin="20dp"
-			 android:layout_centerHorizontal="true"
-			 android:id="@+id/forget_pass"
-			 android:text="@string/login_forget_password" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edit_text_username_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="12dp"
+                android:hint="@string/login_username"
+                app:startIconDrawable="@drawable/baseline_person_outline_24">
 
-	</RelativeLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="username"
+                    android:inputType="text" />
 
-</ScrollView>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_below="@id/edit_text_username_layout"
+                android:id="@+id/edit_text_password_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="24dp"
+                android:hint="@string/login_password"
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/baseline_password_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="password"
+                    android:imeOptions="actionGo"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@id/edit_text_password_layout"
+                android:ellipsize="end"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                android:id="@+id/login_btn"
+                android:text="@string/login_text" />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_below="@id/login_btn"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/forget_pass"
+                android:text="@string/login_forget_password" />
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

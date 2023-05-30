@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_height="wrap_content"
+	android:layout_width="fill_parent"
+	android:orientation="vertical">
+	
+	<LinearLayout
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:paddingEnd="10dp"
+		android:paddingStart="10dp"
+		android:layout_marginTop="0dp">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="0dp"
+			android:layout_weight="1.0"
+			style="@style/LayoutHeader"
+			android:text="@string/home_new_collections" />
+
+		<Button
+			style="?attr/materialIconButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/view_all_collection"
+			app:icon="@drawable/ic_read_more" />
+	</LinearLayout>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:id="@+id/collections_recycler_view" />
+
+</LinearLayout>

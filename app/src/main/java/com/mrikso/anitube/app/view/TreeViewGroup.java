@@ -21,15 +21,16 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.mrikso.anitube.app.databinding.ItemChipGroupBinding;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
+import com.mrikso.anitube.app.utils.ListUtils;
 import com.mrikso.anitube.app.utils.ViewUtils;
 import com.mrikso.treeview.TreeItem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TreeViewGroup extends LinearLayout {
-    //  protected List<TreeItem<PlayerModel>> items = new ArrayList<>();
-    /// protected List<Integer> selectedIndex = new ArrayList<>();
     protected TreeItem<PlayerModel> model;
     protected Map<String, Pair<Integer, Integer>> chipGroups = new HashMap<>();
     private boolean showRoot = false;
@@ -89,9 +90,8 @@ public class TreeViewGroup extends LinearLayout {
 
     private void showLevel(TreeItem<PlayerModel> root, String key, int depth, int viewIndex) {
         if (root == null) return;
-        Log.i(
-                "TreeViewGroup",
-                "showLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
+        Log.i("TreeViewGroup", "showLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
+
         if (chipGroups.containsKey(key)) {
 
             //	showAllChildrenRecursive(root);
@@ -143,10 +143,31 @@ public class TreeViewGroup extends LinearLayout {
         }
     }
 
+    public String getPath(TreeItem<PlayerModel> root) {
+        StringBuilder path = new StringBuilder();
+        TreeItem<PlayerModel> parent = root.getParent();
+        List<String> pathList = new ArrayList<>();
+        while (parent != null) {
+            if (parent.getValue() != null) {
+                pathList.add(parent.getValue().getName());
+            }
+            parent = parent.getParent();
+        }
+
+        pathList = ListUtils.reverseList(pathList);
+
+        for (String ss : pathList) {
+            path.append(ss);
+            path.append("->");
+        }
+
+        path.append(root.getValue().getName());
+
+        return path.toString();
+    }
+
     private void removeLevel(String key, int depth) {
-        Log.i(
-                "TreeViewGroup",
-                "removeLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
+        Log.i("TreeViewGroup", "removeLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
         for (Map.Entry<String, Pair<Integer, Integer>> entry : chipGroups.entrySet()) {
             String entryKey = entry.getKey();
             Pair<Integer, Integer> value = entry.getValue();
@@ -208,65 +229,58 @@ public class TreeViewGroup extends LinearLayout {
     }
 
     private ChipGroup createChipGroup(TreeItem<PlayerModel> result) {
-
-        ChipGroup chipGroup = ItemChipGroupBinding.inflate(inflater, this, false).getRoot();
+        ChipGroup chipGroup =
+                ItemChipGroupBinding.inflate(inflater, this, false).getRoot();
         chipGroup.removeAllViews();
         chipGroup.setSingleSelection(true);
         chipGroup.setSelectionRequired(true);
         chipGroup.setId(View.generateViewId());
         int bgColor = ViewUtils.getRandomMaterialColor(getContext());
         for (TreeItem<PlayerModel> model : result.getChildren()) {
-            Chip chip =
-                    createChip(
-                            model.getValue().getName(),
-                            bgColor,
-                            v -> {
-                                if (clickListener != null) {
-                                    clickListener.onClick(model);
-                                }
-                                // click with debounce
-                                long lastClickTime = (long) v.getTag();
-                                if (System.currentTimeMillis() - lastClickTime < ANIM_TIME) {
-                                    return;
-                                }
-                                v.setTag(System.currentTimeMillis());
-                                model.setSelected(!model.isSelected());
-                                //  removeAllExpandedItemRecursive(model);
-                                // showLevel(model, model.getDepth());
-                                // v.setChecked(model.isSelected());
 
-                                if (model.isExpandable()) {
-                                    // if (model.isExpanded()) {
-                                    // model.setExpanded(false);
-                                    //     removeAllExpandedItemRecursive(result);
-                                    //  } else {
-                                    // model.setExpanded(true);
-                                    // removeLevel(model.getValue().getId(), model.getDepth());
-                                    removeAllExpandedItemRecursive(result);
+            Chip chip = createChip(model.getValue().getName(), bgColor, v -> {
+                if (clickListener != null) {
+                    clickListener.onClick(model);
+                }
+                // click with debounce
+                long lastClickTime = (long) v.getTag();
+                if (System.currentTimeMillis() - lastClickTime < ANIM_TIME) {
+                    return;
+                }
+                v.setTag(System.currentTimeMillis());
+                model.setSelected(!model.isSelected());
+                //  removeAllExpandedItemRecursive(model);
+                // showLevel(model, model.getDepth());
+                // v.setChecked(model.isSelected());
 
-                                    showLevel(
-                                            model,
-                                            model.getValue().getId(),
-                                            model.getDepth(),
-                                            viewIndex);
+                if (model.isExpandable()) {
+                    // if (model.isExpanded()) {
+                    // model.setExpanded(false);
+                    //     removeAllExpandedItemRecursive(result);
+                    //  } else {
+                    // model.setExpanded(true);
+                    // removeLevel(model.getValue().getId(), model.getDepth());
+                    removeAllExpandedItemRecursive(result);
 
-                                    if (!model.isExpanded()) {
-                                        viewIndex++;
-                                    }
-                                    model.setExpanded(true);
-                                    //   }
-                                    //  model.setExpanded(!model.isExpanded());
-                                    // v.setSelected(model.isExpanded());
-                                    // } else {
-                                    // model.setExpanded(true);
-                                    // showLevel(model, model.getDepth());
-                                    // v.setSelected(!v.isSelected());
-                                }
+                    showLevel(model, model.getValue().getId(), model.getDepth(), viewIndex);
 
-                                // removeLevel(model.getDepth());
-                                // showLevel(model, model.getDepth());
-                                //   v.setSelected(!model.isExpanded());
-                            });
+                    if (!model.isExpanded()) {
+                        viewIndex++;
+                    }
+                    model.setExpanded(true);
+                    //   }
+                    //  model.setExpanded(!model.isExpanded());
+                    // v.setSelected(model.isExpanded());
+                    // } else {
+                    // model.setExpanded(true);
+                    // showLevel(model, model.getDepth());
+                    // v.setSelected(!v.isSelected());
+                }
+
+                // removeLevel(model.getDepth());
+                // showLevel(model, model.getDepth());
+                //   v.setSelected(!model.isExpanded());
+            });
 
             chip.setChecked(model.isSelected());
             chipGroup.addView(chip);
@@ -278,9 +292,7 @@ public class TreeViewGroup extends LinearLayout {
     private Chip createChip(String name, @ColorInt int color, View.OnClickListener listener) {
         Chip chip = new Chip(getContext(), null, R.style.Widget_Material3_Chip_Filter_Elevated);
         chip.setText(name);
-        chip.setTextColor(
-                ContextCompat.getColorStateList(
-                        getContext(), com.mrikso.anitube.app.R.color.text_200));
+        chip.setTextColor(ContextCompat.getColorStateList(getContext(), com.mrikso.anitube.app.R.color.text_200));
         chip.setClickable(true);
         chip.setCheckable(true);
         chip.setOnClickListener(listener);

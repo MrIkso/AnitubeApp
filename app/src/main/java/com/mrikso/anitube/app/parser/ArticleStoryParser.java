@@ -24,9 +24,7 @@ public class ArticleStoryParser {
         AnimeListReleases releases = new AnimeListReleases(list);
         Element navigationElement = document.selectFirst("div.navigation > span.navi_pages");
         if (navigationElement != null) {
-            //  String currentPage = navigationElement.selectFirst("span > a.title").text().trim();
             String maxPage = navigationElement.getElementsByTag("a").last().text();
-            // releases.setCurrentPage(currentPage);
             releases.setMaxPage(Integer.valueOf(maxPage));
         } else {
             releases.setMaxPage(1);
@@ -44,21 +42,19 @@ public class ArticleStoryParser {
 
     public AnimeReleaseModel getAnimeModel(Element storyElement) {
         // Log.i(TAG, storyElement.html());
-        AnimeReleaseModel releaseModel = new AnimeReleaseModel();
+        AnimeReleaseModel releaseModel = null;
         Element storyPostElement = storyElement.selectFirst("div.story_c");
         Element titlElement = storyElement.selectFirst("h2");
         if (titlElement != null) {
             String title = titlElement.text();
             String url = titlElement.getElementsByTag("a").first().attr("href");
+            releaseModel = new AnimeReleaseModel(ParserUtils.getAnimeId(url), title, url);
 
             Element favStatus = titlElement.selectFirst("ul > li > a");
             if (favStatus != null) {
                 boolean isFav = favStatus.attr("href").contains("doaction=del");
                 releaseModel.setFavorites(isFav);
             }
-            releaseModel.setAnimeId(ParserUtils.getAnimeId(url));
-            releaseModel.setAnimeUrl(url);
-            releaseModel.setTitle(title);
         }
 
         Element posterElement = storyPostElement.selectFirst(".story_c_l");
@@ -76,18 +72,17 @@ public class ArticleStoryParser {
         // витягування року випуску аніме
         Element yearElement = storyElement.selectFirst("div.story_infa dt:contains(Рік)");
         if (yearElement != null) {
-            SimpleModel year =
-                    ParserUtils.buidlSimpleModel(yearElement.nextElementSibling().selectFirst("a"));
+            SimpleModel year = ParserUtils.buidlSimpleModel(
+                    yearElement.nextElementSibling().selectFirst("a"));
             releaseModel.setReleaseYear(year);
         }
 
         // витягування кількості епізодів та їх тривалості
-        String episodes =
-                storyElement
-                        .selectFirst("div.story_infa dt:contains(Серій)")
-                        .nextSibling()
-                        .toString()
-                        .trim();
+        String episodes = storyElement
+                .selectFirst("div.story_infa dt:contains(Серій)")
+                .nextSibling()
+                .toString()
+                .trim();
 
         releaseModel.setEpisodes(episodes);
         // витягування рейтингу

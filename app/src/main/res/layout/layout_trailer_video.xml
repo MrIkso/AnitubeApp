@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	android:visibility="gone"
-	android:orientation="vertical"
-	android:id="@+id/ll_video">
-	<include
-		android:id="@+id/divider"
-		layout="@layout/layout_divider" />
-	<TextView
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		style="@style/LayoutHeader"
-		android:layout_marginTop="16.0dip"
-		android:layout_marginStart="16.0dip"
-		android:text="@string/trailer" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:visibility="gone"
+    android:orientation="vertical"
+    android:id="@+id/ll_video">
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        style="@style/LayoutHeader"
+        android:text="@string/trailer" />
 
-	<include
-		android:layout_gravity="center"
-		android:id="@+id/item_trailer"
-		layout="@layout/item_screenshot" />
+    <include
+        android:layout_gravity="center"
+        android:id="@+id/item_trailer"
+        layout="@layout/item_screenshot" />
 
 </LinearLayout>

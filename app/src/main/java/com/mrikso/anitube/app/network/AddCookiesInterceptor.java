@@ -16,6 +16,7 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
+
         if (PreferencesHelper.getInstance().isLogin()) {
             Set<String> preferences = PreferencesHelper.getInstance().getCooikes();
             for (String cookie : preferences) {

@@ -20,4 +20,17 @@
         <item>@color/material_grey</item>
         <item>@color/material_blue_grey</item>
     </integer-array>
+    
+       <!-- Theme Mode Preference -->
+    <string-array name="theme_mode_entries">
+        <item>Світла</item>
+        <item>Темна</item>
+        <item>Системна</item>
+    </string-array>
+
+    <string-array name="theme_mode_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>follow_system</item>
+    </string-array>
 </resources>

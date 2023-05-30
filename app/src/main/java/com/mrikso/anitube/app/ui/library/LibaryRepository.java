@@ -50,20 +50,15 @@ public class LibaryRepository {
 
     public Flowable<PagingData<AnimeReleaseModel>> getAnimeListByPage(int listType) {
         // Create new paging config
-        PagingConfig config =
-                new PagingConfig(
-                        11, //  Count of items in one page
-                        11, //  Number of items to prefetch
-                        false, // Enable placeholders for data which is not yet loaded
-                        11, // initialLoadSize - Count of items to be loaded initially
-                        11 * 600);
+        PagingConfig config = new PagingConfig(
+                11, //  Count of items in one page
+                11, //  Number of items to prefetch
+                false, // Enable placeholders for data which is not yet loaded
+                11, // initialLoadSize - Count of items to be loaded initially
+                11 * 600);
         // Create new Pager
         Pager<Integer, AnimeReleaseModel> pager =
-                new Pager<>(
-                        config,
-                        () ->
-                                new AnimeListPagingSource(
-                                        this, mapper, listType)); // et paging source
+                new Pager<>(config, () -> new AnimeListPagingSource(this, mapper, listType)); // et paging source
 
         return PagingRx.getFlowable(pager).doOnError(t -> t.printStackTrace());
     }

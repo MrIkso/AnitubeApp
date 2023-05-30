@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="video_orientation_video">Орієнтація відео</string>
+	<string name="video_orientation_sensor">Автоповорот</string>
+	<string name="video_orientation_system">Орієнтація пристрою</string>
+</resources>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 import com.mrikso.anitube.app.BuildConfig;
+import com.mrikso.anitube.app.data.history.HistoryDatabase;
 import com.mrikso.anitube.app.data.search.SearchDatabase;
 import com.mrikso.anitube.app.network.AddCookiesInterceptor;
 import com.mrikso.anitube.app.network.AnitubeApiService;
@@ -14,12 +15,15 @@ import com.mrikso.anitube.app.network.JsoupConverterFactory;
 import com.mrikso.anitube.app.network.UserAgentInterceptor;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
 import com.mrikso.anitube.app.parser.CollectionsParser;
+import com.mrikso.anitube.app.parser.CommentsParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.ui.anime_list.AnimeListRepository;
 import com.mrikso.anitube.app.ui.collections.CollectionsRepository;
+import com.mrikso.anitube.app.ui.comments.CommentsRepository;
 import com.mrikso.anitube.app.ui.library.LibaryRepository;
 import com.mrikso.anitube.app.ui.search.SearchRepository;
 import com.mrikso.anitube.app.ui.search_result.SearchResultRepository;
+import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,13 +49,12 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 @InstallIn(SingletonComponent.class)
 public class AppModules {
 
-    /*
-        @Singleton
-        @Provides
-        public static AnimeDatabase provideAnimeDatabase(@ApplicationContext Context context) {
-            return AnimeDatabase.getInstance(context);
-        }
-    */
+    @Singleton
+    @Provides
+    public static HistoryDatabase provideAnimeDatabase(@ApplicationContext Context context) {
+        return HistoryDatabase.getInstance(context);
+    }
+
     @Singleton
     @Provides
     public static SearchDatabase provideSearchDatabase(@ApplicationContext Context context) {
@@ -93,6 +96,8 @@ public class AppModules {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(userAgentInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .followRedirects(true)
+                .followSslRedirects(true)
                 .build();
     }
 
@@ -168,9 +173,21 @@ public class AppModules {
 
     @Singleton
     @Provides
+    public static WatchAnimeRepository provideWatchRepository(HistoryDatabase database) {
+        return new WatchAnimeRepository(database);
+    }
+
+    @Singleton
+    @Provides
     public static SearchResultRepository provideSearchResultRepository(
             AnitubeApiService apiService, AnimeReleasesMapper mapper) {
         return new SearchResultRepository(apiService, mapper);
+    }
+
+    @Singleton
+    @Provides
+    public static CommentsRepository provideCommentsRepository(AnitubeApiService apiService) {
+        return new CommentsRepository(apiService, new CommentsParser());
     }
 
     @Singleton

@@ -15,14 +15,14 @@ import com.mrikso.anitube.app.model.ScreenshotModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @AndroidEntryPoint
 public class ScreenshotsFragment extends Fragment {
 
     private FragmentScreenshotsBinding binding;
     private ScreenshotsVpAdapter screenshotAdapter;
-    private List<ScreenshotModel> screenshots;
+    private ArrayList<ScreenshotModel> screenshots;
     private int currentPosition;
 
     @Override
@@ -34,9 +34,7 @@ public class ScreenshotsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentScreenshotsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -65,7 +63,7 @@ public class ScreenshotsFragment extends Fragment {
 
     private void parseArgs() {
         ScreenshotsFragmentArgs args = ScreenshotsFragmentArgs.fromBundle(getArguments());
-        screenshots = args.getScreenshots();
+        screenshots = (ArrayList<ScreenshotModel>) args.getScreenshots();
         currentPosition = args.getPosition();
     }
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="episode_hint">
+        <item quantity="one">%d епізод</item>
+        <item quantity="two">%d епізоди</item>
+        <item quantity="few">%d епізодів</item>
+        <item quantity="many">%d епізодів</item>
+		<item quantity="other">%d епізодів</item>
+    </plurals>
+	
+	<plurals name="some_minutes_ago">
+       <item quantity="one">%1$d хвилину тому</item>
+	   <item quantity="two">%1$d хвилини тому</item>
+		<item quantity="few">%1$d хвилин тому</item>
+		<item quantity="many">%1$d хвилин тому</item>
+		<item quantity="other">%1$d хвилин тому</item>
+    </plurals>
+    <plurals name="some_hours_ago">
+        <item quantity="one">%d годину тому</item>
+		<item quantity="two">%d години тому</item>
+        <item quantity="other">%d годин тому</item>
+    </plurals>
+	
+    <plurals name="some_days_ago">
+        <item quantity="one">%d день тому</item>
+		<item quantity="two">%d дні тому</item>
+        <item quantity="other">%d днів тому</item>
+    </plurals>
+	
+    <plurals name="second">
+        <item quantity="one">секунда</item>
+        <item quantity="other">секунд</item>
+    </plurals>
+    <plurals name="minute">
+        <item quantity="one">хвилина</item>
+        <item quantity="other">хвилин</item>
+    </plurals>
+    <plurals name="hour">
+        <item quantity="one">година</item>
+        <item quantity="other">годин</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">день</item>
+        <item quantity="other">днів</item>
+    </plurals>
+    <plurals name="year">
+        <item quantity="one">рік</item>
+        <item quantity="other">років</item>
+    </plurals>
+</resources>

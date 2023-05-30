@@ -25,8 +25,7 @@ public class SearchResultViewModel extends ViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private SearchResultRepository repository;
-    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData =
-            new MutableLiveData<>();
+    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
     private boolean singleLoad = false;
 
@@ -48,14 +47,12 @@ public class SearchResultViewModel extends ViewModel {
     public void searchByLink(String link) {
         if (!singleLoad) {
             CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-            animePagingDataFlowable =
-                    PagingRx.cachedIn(repository.searchByLink(link), viewModelScope);
+            animePagingDataFlowable = PagingRx.cachedIn(repository.searchByLink(link), viewModelScope);
 
-            compositeDisposable.add(
-                    animePagingDataFlowable
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(animePagingData::setValue));
+            compositeDisposable.add(animePagingDataFlowable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(animePagingData::setValue));
             singleLoad = true;
         }
     }

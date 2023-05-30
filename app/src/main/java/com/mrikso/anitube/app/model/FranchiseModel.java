@@ -5,8 +5,8 @@ public class FranchiseModel extends BaseAnimeModel {
     private String episodes;
     private String releaseYear;
 
-    public FranchiseModel(String title, String posterUrl, String animeUrl, boolean isCurrent) {
-        super(title, posterUrl, animeUrl);
+    public FranchiseModel(int animeId, String title, String posterUrl, String animeUrl, boolean isCurrent) {
+        super(animeId, title, posterUrl, animeUrl);
         this.isCurrent = isCurrent;
     }
 

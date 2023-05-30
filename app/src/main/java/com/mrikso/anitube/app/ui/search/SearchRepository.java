@@ -33,10 +33,7 @@ public class SearchRepository {
     private AnimeReleasesMapper mapper;
 
     @Inject
-    public SearchRepository(
-            AnitubeApiService apiService,
-            SearchDatabase searchDatabase,
-            AnimeReleasesMapper mapper) {
+    public SearchRepository(AnitubeApiService apiService, SearchDatabase searchDatabase, AnimeReleasesMapper mapper) {
         this.apiService = apiService;
         this.searchDatabase = searchDatabase;
         this.mapper = mapper;
@@ -48,29 +45,23 @@ public class SearchRepository {
     }
 
     public void addRecentSearch(String query) {
-        Executors.newSingleThreadExecutor()
-                .execute(
-                        () -> {
-                            if (searchDao.getSearchesByName(query) == null) {
-                                searchDao.insertSearch(new RecentSearch(query));
-                            }
-                        });
+        Executors.newSingleThreadExecutor().execute(() -> {
+            if (searchDao.getSearchesByName(query) == null) {
+                searchDao.insertSearch(new RecentSearch(query));
+            }
+        });
     }
 
     public void removeRecentSearch(String query) {
-        Executors.newSingleThreadExecutor()
-                .execute(
-                        () -> {
-                            searchDao.deleteSearchesByName(query);
-                        });
+        Executors.newSingleThreadExecutor().execute(() -> {
+            searchDao.deleteSearchesByName(query);
+        });
     }
 
     public void clearAllRecentSearch() {
-        Executors.newSingleThreadExecutor()
-                .execute(
-                        () -> {
-                            searchDao.clearSearches();
-                        });
+        Executors.newSingleThreadExecutor().execute(() -> {
+            searchDao.clearSearches();
+        });
     }
 
     public Single<List<SimpleModel>> runQickSearch(String query, String dle_login_hash) {
@@ -83,22 +74,18 @@ public class SearchRepository {
     public Flowable<PagingData<AnimeReleaseModel>> getSearchResult(String query) {
 
         // Create new paging config
-        PagingConfig config =
-                new PagingConfig(
-                        11, //  Count of items in one page
-                        11, //  Number of items to prefetch
-                        false, // Enable placeholders for data which is not yet loaded
-                        11, // initialLoadSize - Count of items to be loaded initially
-                        11 * 600);
+        PagingConfig config = new PagingConfig(
+                11, //  Count of items in one page
+                11, //  Number of items to prefetch
+                false, // Enable placeholders for data which is not yet loaded
+                11, // initialLoadSize - Count of items to be loaded initially
+                11 * 600);
         // Create new Pager
-        Pager<Integer, AnimeReleaseModel> pager =
-                new Pager<>(
-                        config,
-                        /*  null,
-                        new AnimeSearchRemoteMediator(apiService, animeDatabase,query, new AnimeReleasesMapper(preferences)),*/
-                        () ->
-                                new AnimeSearchPagingSource(
-                                        apiService, mapper, query)); // et paging source
+        Pager<Integer, AnimeReleaseModel> pager = new Pager<>(
+                config,
+                /*  null,
+                new AnimeSearchRemoteMediator(apiService, animeDatabase,query, new AnimeReleasesMapper(preferences)),*/
+                () -> new AnimeSearchPagingSource(apiService, mapper, query)); // et paging source
 
         return PagingRx.getFlowable(pager).doOnError(t -> t.printStackTrace());
     }

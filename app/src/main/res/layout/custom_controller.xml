@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/exo_controller"
-	android:background="#80000000">
+	android:background="@color/ui_controls_background">
 
 	<!-- тулбар плеєра -->
 	<LinearLayout
@@ -68,15 +68,15 @@
 				tools:text="Назва аніме" />
 
 		</LinearLayout>
-	
+
 		<com.google.android.material.textfield.TextInputLayout
-		android:id="@+id/exo_quality_til"
+			android:id="@+id/exo_quality_til"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
 			app:boxBackgroundColor="#24252a"
 			android:focusable="false"
-			android:focusableInTouchMode="false" 
+			android:focusableInTouchMode="false"
 			android:layout_marginStart="16dp"
 			app:boxCornerRadiusTopStart="8dp"
 			app:boxCornerRadiusTopEnd="8dp"
@@ -89,7 +89,6 @@
 			app:boxStrokeWidth="0dp">
 
 			<com.mrikso.anitube.app.view.CustomAutoCompleteTextView
-			
 				android:id="@+id/exo_quality"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
@@ -228,15 +227,15 @@
 			android:orientation="horizontal"
 			android:gravity="center">
 			<TextView
-				android:id="@+id/exo_position"
+				android:id="@id/exo_position"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:fontFamily="@font/roboto_regular"
 				android:includeFontPadding="false"
 				android:textColor="@color/white" />
 
-			<com.google.android.exoplayer2.ui.DefaultTimeBar
-				android:id="@+id/exo_progress"
+			<androidx.media3.ui.DefaultTimeBar
+				android:id="@id/exo_progress"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"

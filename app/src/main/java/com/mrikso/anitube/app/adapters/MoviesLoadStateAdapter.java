@@ -16,8 +16,7 @@ import com.mrikso.anitube.app.databinding.LoadStateItemBinding;
 
 import org.jetbrains.annotations.NotNull;
 
-public class MoviesLoadStateAdapter
-        extends LoadStateAdapter<MoviesLoadStateAdapter.LoadStateViewHolder> {
+public class MoviesLoadStateAdapter extends LoadStateAdapter<MoviesLoadStateAdapter.LoadStateViewHolder> {
     // Define Retry Callback
     private View.OnClickListener mRetryCallback;
 
@@ -28,8 +27,7 @@ public class MoviesLoadStateAdapter
 
     @NotNull
     @Override
-    public LoadStateViewHolder onCreateViewHolder(
-            @NotNull ViewGroup parent, @NotNull LoadState loadState) {
+    public LoadStateViewHolder onCreateViewHolder(@NotNull ViewGroup parent, @NotNull LoadState loadState) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         LoadStateItemBinding binding = LoadStateItemBinding.inflate(inflater, parent, false);
         // Return new LoadStateViewHolder object
@@ -37,8 +35,7 @@ public class MoviesLoadStateAdapter
     }
 
     @Override
-    public void onBindViewHolder(
-            @NotNull LoadStateViewHolder holder, @NotNull LoadState loadState) {
+    public void onBindViewHolder(@NotNull LoadStateViewHolder holder, @NotNull LoadState loadState) {
         // Call Bind Method to bind visibility  of views
         holder.bind(loadState);
     }
@@ -51,9 +48,7 @@ public class MoviesLoadStateAdapter
         // Define Retry button
         private Button mRetry;
 
-        LoadStateViewHolder(
-                @NonNull LoadStateItemBinding binding,
-                @NonNull View.OnClickListener retryCallback) {
+        LoadStateViewHolder(@NonNull LoadStateItemBinding binding, @NonNull View.OnClickListener retryCallback) {
 
             super(binding.getRoot());
             mProgressBar = binding.progressBar;
@@ -71,11 +66,9 @@ public class MoviesLoadStateAdapter
                 mErrorMsg.setText(loadStateError.getError().getLocalizedMessage());
             }
             // set visibility of widgets based on LoadState
-            mProgressBar.setVisibility(
-                    loadState instanceof LoadState.Loading ? View.VISIBLE : View.GONE);
+            mProgressBar.setVisibility(loadState instanceof LoadState.Loading ? View.VISIBLE : View.GONE);
             mRetry.setVisibility(loadState instanceof LoadState.Error ? View.VISIBLE : View.GONE);
-            mErrorMsg.setVisibility(
-                    loadState instanceof LoadState.Error ? View.VISIBLE : View.GONE);
+            mErrorMsg.setVisibility(loadState instanceof LoadState.Error ? View.VISIBLE : View.GONE);
         }
     }
 }

@@ -6,11 +6,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mrikso.anitube.app.databinding.ItemInteresingAnimeBinding;
 import com.mrikso.anitube.app.model.InteresingModel;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,7 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ItemInteresingAnimeBinding binding =
-                ItemInteresingAnimeBinding.inflate(inflater, parent, false);
+        ItemInteresingAnimeBinding binding = ItemInteresingAnimeBinding.inflate(inflater, parent, false);
         return new ViewHolder(binding);
     }
 
@@ -54,15 +53,10 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
         }
 
         public void bind(InteresingModel model) {
-
-            Glide.with(binding.getRoot().getContext())
-                    .load(ApiClient.BASE_URL + model.getPosterUrl())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(binding.carouselImageView);
+            ViewUtils.loadImage(binding.carouselImageView, ParserUtils.normaliseImageUrl(model.getPosterUrl()));
+            ViewUtils.loadImage(binding.carouselBg, ApiClient.ANIME_CAROUSEL_BG_URL);
             if (listener != null) {
-                binding.getRoot()
-                        .setOnClickListener(
-                                v -> listener.onCarouselItemSelected(model.getAnimeUrl()));
+                binding.getRoot().setOnClickListener(v -> listener.onCarouselItemSelected(model.getAnimeUrl()));
             }
         }
     }

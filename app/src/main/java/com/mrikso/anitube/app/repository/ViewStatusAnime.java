@@ -1,9 +1,10 @@
 package com.mrikso.anitube.app.repository;
 
 public enum ViewStatusAnime {
-    STATUS_SEEN(4), // переглянуто
+    STATUS_NONE_WATCH(1), // не дивлюсь
     STATUS_WILL(2), // заплановано
     STATUS_WATCH(3), // переглядаю
+    STATUS_SEEN(4), // переглянуто
     STATUS_PONED(5), // відкладено
     STATUS_ADAND(6); // покинуто
 

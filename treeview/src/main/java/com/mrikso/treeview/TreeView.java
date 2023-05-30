@@ -41,13 +41,11 @@ public class TreeView extends RecyclerView {
 
         if (adapter != null) {
             adapter.setIdentationWidth(
-                    getResources()
-                            .getDimensionPixelSize(R.dimen.treeview_default_indentation_width));
+                    getResources().getDimensionPixelSize(R.dimen.treeview_default_indentation_width));
         }
     }
 
-    public abstract static class Adapter<VH extends ViewHolder, T>
-            extends RecyclerView.Adapter<VH> {
+    public abstract static class Adapter<VH extends ViewHolder, T> extends RecyclerView.Adapter<VH> {
         private static final int ANIM_TIME = 200;
         private int indentationWidth;
         public Adapter.OnTreeItemClickListener<T> listener;
@@ -94,45 +92,38 @@ public class TreeView extends RecyclerView {
                 leadingIcon.setVisibility(View.GONE);
             }
 
-            itemView.setOnClickListener(
-                    (v) -> {
-                        if (listener != null) {
-                            listener.onClick(item);
-                        }
+            itemView.setOnClickListener((v) -> {
+                if (listener != null) {
+                    listener.onClick(item);
+                }
 
-                        // click with debounce
-                        long lastClickTime = (long) itemView.getTag();
-                        if (System.currentTimeMillis() - lastClickTime < ANIM_TIME) {
-                            return;
-                        }
-                        itemView.setTag(System.currentTimeMillis());
+                // click with debounce
+                long lastClickTime = (long) itemView.getTag();
+                if (System.currentTimeMillis() - lastClickTime < ANIM_TIME) {
+                    return;
+                }
+                itemView.setTag(System.currentTimeMillis());
 
-                        if (item.isExpandable()) {
-                            if (item.isExpanded()) {
-                                int removedCount =
-                                        removeAllExpandedItemRecursive(
-                                                item, holder.getLayoutPosition() + 1);
-                                notifyItemRangeRemoved(
-                                        holder.getLayoutPosition() + 1, removedCount);
-                            } else {
-                                item.setExpanded(true);
-                                int insertedCount =
-                                        insertAllExpandedItemRecursive(
-                                                item, holder.getLayoutPosition() + 1);
-                                notifyItemRangeInserted(
-                                        holder.getLayoutPosition() + 1, insertedCount);
-                                item.setExpanded(false);
-                            }
+                if (item.isExpandable()) {
+                    if (item.isExpanded()) {
+                        int removedCount = removeAllExpandedItemRecursive(item, holder.getLayoutPosition() + 1);
+                        notifyItemRangeRemoved(holder.getLayoutPosition() + 1, removedCount);
+                    } else {
+                        item.setExpanded(true);
+                        int insertedCount = insertAllExpandedItemRecursive(item, holder.getLayoutPosition() + 1);
+                        notifyItemRangeInserted(holder.getLayoutPosition() + 1, insertedCount);
+                        item.setExpanded(false);
+                    }
 
-                            leadingIcon
-                                    .animate()
-                                    .setDuration(ANIM_TIME)
-                                    .rotationBy(item.isExpanded() ? -90 : 90)
-                                    .start();
+                    leadingIcon
+                            .animate()
+                            .setDuration(ANIM_TIME)
+                            .rotationBy(item.isExpanded() ? -90 : 90)
+                            .start();
 
-                            item.setExpanded(!item.isExpanded());
-                        }
-                    });
+                    item.setExpanded(!item.isExpanded());
+                }
+            });
         }
 
         private int computeIndentPadding(TreeItem<T> item) {

@@ -6,7 +6,10 @@ import com.mrikso.anitube.app.repository.ViewStatusAnime;
 
 public class WatchAnimeStatusModel {
     private String status;
-    @ColorRes private int color;
+
+    @ColorRes
+    private int color;
+
     private ViewStatusAnime viewStatus;
     private boolean selected;
 

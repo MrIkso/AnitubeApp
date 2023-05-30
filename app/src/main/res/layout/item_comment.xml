@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_profile"
+                android:layout_height="60dp"
+                android:layout_width="60dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_username"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/iv_profile"
+                android:layout_width="wrap_content"
+                android:paddingStart="5dp"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_usergroup"
+                android:layout_below="@id/tv_username"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/iv_profile"
+                android:layout_width="wrap_content"
+                android:paddingStart="5dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_time"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+			android:paddingTop="8dp"
+			android:paddingBottom="8dp"
+            android:id="@+id/tv_comment" />
+
+    </LinearLayout>
+
+</LinearLayout>

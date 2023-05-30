@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:padding="16dp"
     android:textSize="14sp"
-    android:textColor="@color/white"
     android:fontFamily="@font/roboto_regular"
     android:maxLines="1"
     android:ellipsize="end">

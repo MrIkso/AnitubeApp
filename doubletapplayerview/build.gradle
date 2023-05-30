@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+
+android {
+	namespace 'com.mrikso.player'
+	compileSdk 33
+	buildToolsVersion "33.0.0"
+
+	defaultConfig {
+		minSdkVersion 16
+		targetSdkVersion 33
+
+		vectorDrawables.useSupportLibrary = true
+
+		consumerProguardFiles 'consumer-rules.pro'
+	}
+
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+
+	dependencies {
+		implementation "androidx.recyclerview:recyclerview:1.3.0"
+		implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+		def media3_version = '1.0.2'
+		// For media playback using ExoPlayer
+		implementation "androidx.media3:media3-exoplayer:$media3_version"
+		implementation "androidx.media3:media3-session:$media3_version"
+		implementation "androidx.media3:media3-datasource:$media3_version"
+		implementation "androidx.media3:media3-decoder:$media3_version"
+		implementation "androidx.media3:media3-common:$media3_version"
+		implementation "androidx.media3:media3-exoplayer-dash:$media3_version"
+		implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
+		implementation "androidx.media3:media3-exoplayer-smoothstreaming:$media3_version"
+		implementation"androidx.media3:media3-exoplayer-rtsp:$media3_version"
+		// For building media playback UIs
+		implementation "androidx.media3:media3-ui:$media3_version"
+	}
+}

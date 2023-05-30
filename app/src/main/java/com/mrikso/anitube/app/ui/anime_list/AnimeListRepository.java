@@ -32,21 +32,19 @@ public class AnimeListRepository {
 
     public Flowable<PagingData<AnimeReleaseModel>> getAnimeListByPage() {
         // Create new paging config
-        PagingConfig config =
-                new PagingConfig(
-                        11, //  Count of items in one page
-                        11, //  Number of items to prefetch
-                        false, // Enable placeholders for data which is not yet loaded
-                        11, // initialLoadSize - Count of items to be loaded initially
-                        11 * 600);
+        PagingConfig config = new PagingConfig(
+                11, //  Count of items in one page
+                11, //  Number of items to prefetch
+                false, // Enable placeholders for data which is not yet loaded
+                11, // initialLoadSize - Count of items to be loaded initially
+                11 * 600);
         // Create new Pager
-        Pager<Integer, AnimeReleaseModel> pager =
-                new Pager<>(
-                        config,
-                        //  null,
-                        //  new AnimeReleaseRemoteMediator(apiService, database, new
-                        // AnimeReleasesMapper(preferences)),
-                        () -> new AnimeReleasePagingSource(apiService, mapper)); // et paging source
+        Pager<Integer, AnimeReleaseModel> pager = new Pager<>(
+                config,
+                //  null,
+                //  new AnimeReleaseRemoteMediator(apiService, database, new
+                // AnimeReleasesMapper(preferences)),
+                () -> new AnimeReleasePagingSource(apiService, mapper)); // et paging source
 
         return PagingRx.getFlowable(pager).doOnError(t -> t.printStackTrace());
     }

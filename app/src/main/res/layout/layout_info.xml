@@ -5,17 +5,18 @@
 	android:layout_height="wrap_content"
 	android:layout_width="fill_parent"
 	android:orientation="vertical"
-	android:layout_marginTop="16.0dip"
+	android:layout_marginTop="16dp"
 	android:id="@+id/ll_info">
 
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
-		android:paddingEnd="16.0dip"
 		android:orientation="vertical"
-		android:paddingStart="16.0dip">
+	>
 
 		<LinearLayout
+			android:paddingEnd="16dp"
+			android:paddingStart="16dp"
 			android:layout_height="fill_parent"
 			android:layout_width="fill_parent"
 			android:orientation="vertical">
@@ -38,8 +39,7 @@
 					android:layout_height="wrap_content"
 					android:layout_width="fill_parent"
 					android:gravity="center_vertical"
-					android:linksClickable="true"
-					android:layout_marginStart="8.0dip"
+					android:layout_marginStart="8dp"
 					android:id="@+id/tv_year" />
 
 			</LinearLayout>
@@ -50,7 +50,7 @@
 				android:visibility="gone"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:layout_marginTop="2.0dip"
+				android:layout_marginTop="2dp"
 				android:id="@+id/director_layout">
 
 				<TextView
@@ -64,7 +64,7 @@
 					android:layout_width="fill_parent"
 					android:gravity="center_vertical"
 					android:linksClickable="true"
-					android:layout_marginStart="8.0dip"
+					android:layout_marginStart="8dp"
 					android:id="@+id/tv_director" />
 
 			</LinearLayout>
@@ -74,7 +74,7 @@
 				android:layout_width="fill_parent"
 				android:visibility="gone"
 				android:orientation="horizontal"
-				android:layout_marginTop="2.0dip"
+				android:layout_marginTop="2dp"
 				android:id="@+id/studio_layout">
 
 				<TextView
@@ -88,7 +88,7 @@
 					android:layout_width="fill_parent"
 					android:gravity="center_vertical"
 					android:linksClickable="true"
-					android:layout_marginStart="8.0dip"
+					android:layout_marginStart="8dp"
 					android:lineSpacingExtra="4.0sp"
 					android:id="@+id/tv_studio" />
 
@@ -100,7 +100,7 @@
 				android:visibility="gone"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:layout_marginTop="2.0dip"
+				android:layout_marginTop="2dp"
 				android:id="@+id/episodes_layout">
 
 				<TextView
@@ -114,7 +114,7 @@
 					android:layout_width="fill_parent"
 					android:gravity="center_vertical"
 					android:linksClickable="true"
-					android:layout_marginStart="8.0dip"
+					android:layout_marginStart="8dp"
 					android:id="@+id/tv_episodes" />
 
 			</LinearLayout>
@@ -125,7 +125,7 @@
 				android:visibility="gone"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:layout_marginTop="2.0dip"
+				android:layout_marginTop="2dp"
 				android:id="@+id/translation_layout">
 
 				<TextView
@@ -139,7 +139,7 @@
 					android:layout_width="fill_parent"
 					android:gravity="center_vertical"
 					android:linksClickable="true"
-					android:layout_marginStart="8.0dip"
+					android:layout_marginStart="8dp"
 					android:id="@+id/tv_transators" />
 
 			</LinearLayout>
@@ -150,7 +150,7 @@
 				android:visibility="gone"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:layout_marginTop="2.0dip"
+				android:layout_marginTop="2dp"
 				android:id="@+id/dubbers_layout">
 
 				<TextView
@@ -164,19 +164,31 @@
 					android:layout_width="fill_parent"
 					android:gravity="center_vertical"
 					android:linksClickable="true"
-					android:layout_marginStart="8.0dip"
+					android:layout_marginStart="8dp"
 					android:id="@+id/tv_dubbers" />
 
 			</LinearLayout>
 
 		</LinearLayout>
 
-		<com.google.android.material.chip.ChipGroup
+		<TextView
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
+			android:padding="10dp"
+			style="@style/LayoutHeader"
+			android:text="@string/genre" />
+
+		<com.google.android.material.chip.ChipGroup
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:paddingStart="10dp"
+			android:paddingEnd="10dp"
 			android:visibility="gone"
-			android:layout_marginBottom="2.0dip"
-			android:layout_marginTop="16.0dip"
+			android:layout_marginBottom="2dp"
+			app:chipSpacingVertical="4dp"
+			app:chipSpacingHorizontal="4dp"
+			app:chipSpacing="0dp"
+			app:singleLine="false"
 			android:id="@+id/genres_chip_group" />
 
 	</LinearLayout>

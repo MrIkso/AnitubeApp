@@ -50,8 +50,7 @@ public class HeaderDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(
-            Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.set(0, mLayout.getMeasuredHeight(), 0, 0);
         } else {

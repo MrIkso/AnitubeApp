@@ -1,205 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/nav_graph"
-	app:startDestination="@id/nav_home">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
 
-	<fragment
-		android:id="@+id/nav_home"
-		android:name="com.mrikso.anitube.app.ui.home.HomeFragment"
-		android:label="home"
-		tools:layout="@layout/fragment_home">
-		<action
-			android:id="@+id/action_nav_home_to_nav_details_anime_info"
-			app:destination="@id/nav_details_anime_info" />
+    <fragment
+        android:id="@+id/nav_home"
+        android:name=".ui.home.HomeFragment"
+        android:label="home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_details_anime_info"
+            app:destination="@id/nav_details_anime_info" />
 
-		<action
-			android:id="@+id/action_nav_home_to_nav_search"
-			app:destination="@id/nav_search" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_search"
+            app:destination="@id/nav_search" />
 
-		<action
-			android:id="@+id/action_nav_home_to_nav_profile"
-			app:destination="@id/nav_profile" />
-	</fragment>
+        <action
+            android:id="@+id/action_nav_home_to_nav_profile"
+            app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_collection_detail"
+            app:destination="@id/nav_collection_detail" />
 
-	<fragment
-		android:id="@+id/nav_anime_list"
-		android:name="com.mrikso.anitube.app.ui.anime_list.AnimeListFragment"
-		android:label="anime_list"
-		tools:layout="@layout/fragment_anime_list">
-		<action
-			android:id="@+id/action_nav_anime_list_to_nav_details_anime_info"
-			app:destination="@id/nav_details_anime_info" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_simple_list"
+            app:destination="@id/nav_simple_list" />
+    </fragment>
 
-		<action
-			android:id="@+id/action_nav_anime_list_to_nav_search"
-			app:destination="@id/nav_search" />
-		<action
-			android:id="@+id/action_nav_anime_list_to_nav_profile"
-			app:destination="@id/nav_profile" />
-	</fragment>
+    <fragment
+        android:id="@+id/nav_anime_list"
+        android:name=".ui.anime_list.AnimeListFragment"
+        android:label="anime_list"
+        tools:layout="@layout/fragment_anime_list">
+        <action
+            android:id="@+id/action_nav_anime_list_to_nav_details_anime_info"
+            app:destination="@id/nav_details_anime_info" />
 
-	<fragment
-		android:id="@+id/nav_search"
-		android:name="com.mrikso.anitube.app.ui.search.SearchFragment"
-		android:label="search"
-		tools:layout="@layout/fragment_search">
-		<action
-			android:id="@+id/action_nav_search_to_nav_details"
-			app:destination="@id/nav_details_anime_info" />
-	</fragment>
+        <action
+            android:id="@+id/action_nav_anime_list_to_nav_search"
+            app:destination="@id/nav_search" />
+        <action
+            android:id="@+id/action_nav_anime_list_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
 
-	<fragment
-		android:id="@+id/nav_library"
-		android:name="com.mrikso.anitube.app.ui.library.LibraryFragment"
-		android:label="library"
-		tools:layout="@layout/fragment_library">
+    <fragment
+        android:id="@+id/nav_search"
+        android:name=".ui.search.SearchFragment"
+        android:label="search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_nav_search_to_nav_details"
+            app:destination="@id/nav_details_anime_info" />
+    </fragment>
 
-		<action
-			android:id="@+id/action_nav_library_to_nav_details"
-			app:destination="@id/nav_details_anime_info" />
-	</fragment>
+    <fragment
+        android:id="@+id/nav_library"
+        android:name=".ui.library.LibraryFragment"
+        android:label="library"
+        tools:layout="@layout/fragment_library">
 
-	<fragment
-		android:id="@+id/nav_profile"
-		android:name="com.mrikso.anitube.app.ui.profile.ProfileFragment"
-		android:label="profile"
-		tools:layout="@layout/fragment_profile">
-		<argument
-			android:name="url"
-			app:argType="string" />
-	</fragment>
+        <action
+            android:id="@+id/action_nav_library_to_nav_details"
+            app:destination="@id/nav_details_anime_info" />
+    </fragment>
 
-	<fragment
-		android:id="@+id/nav_login"
-		android:name="com.mrikso.anitube.app.ui.login.LoginFragment"
-		android:label="login"
-		tools:layout="@layout/fragment_login">
-		<action
-			android:id="@+id/action_nav_login_to_nav_profile"
-			app:destination="@id/nav_profile"
-			app:popUpTo="@id/nav_login"
-			app:popUpToInclusive="true" />
-	</fragment>
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name=".ui.profile.ProfileFragment"
+        android:label="profile"
+        tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="url"
+            app:argType="string" />
 
-	<fragment
-		android:id="@+id/nav_details_anime_info"
-		android:name="com.mrikso.anitube.app.ui.detail.DetailsAnimeFragmemt"
-		android:label="anime_info"
-		tools:layout="@layout/fragment_details_anime">
-		<deepLink
-			app:uri="anitube.in.ua/.*"
-			android:autoVerify="true" />
+        <action
+            android:id="@+id/action_nav_profile_to_nav_login"
+            app:destination="@id/nav_login"
+            app:popUpTo="@id/nav_profile"
+            app:popUpToInclusive="true" />
+    </fragment>
 
-		<argument
-			android:name="url"
-			app:argType="string" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name=".ui.login.LoginFragment"
+        android:label="login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_nav_login_to_nav_profile"
+            app:destination="@id/nav_profile"
+            app:popUpTo="@id/nav_login"
+            app:popUpToInclusive="true" />
+    </fragment>
 
-		<action
-			android:id="@+id/actin_nav_details_anime_info_to_nav_watch"
-			app:destination="@id/nav_watch" />
-		<action
-			android:id="@+id/actin_nav_details_anime_info_to_nav_details_anime_info"
-			app:destination="@id/nav_details_anime_info" />
-		<action
-			android:id="@+id/action_nav_details_anime_to_nav_search_result"
-			app:destination="@id/nav_search_result" />
-		<action
-			android:id="@+id/action_nav_details_anime_to_nav_screenshots"
-			app:destination="@id/nav_screenshots" />
+    <fragment
+        android:id="@+id/nav_details_anime_info"
+        android:name=".ui.detail.DetailsAnimeFragmemt"
+        android:label="anime_info"
+        tools:layout="@layout/fragment_details_anime">
+        <deepLink
+            app:uri="anitube.in.ua/.*"
+            android:autoVerify="true" />
 
-	</fragment>
+        <argument
+            android:name="url"
+            app:argType="string" />
 
-	<fragment
-		android:id="@+id/nav_watch"
-		android:name="com.mrikso.anitube.app.ui.watch.WatchAnimeFragment"
-		android:label="watch_anime"
-		tools:layout="@layout/fragment_watch">
-		<argument
-			android:name="title"
-			app:argType="string" />
-		<argument
-			android:name="isHavePlaylistsAjax"
-			app:argType="boolean" />
-		<argument
-			android:name="id"
-			app:argType="integer" />
-		<argument
-			android:name="url"
-			app:argType="string" />
-		<action
-			android:id="@+id/action_nav_watch_to_nav_player_activity"
-			app:destination="@id/nav_player_activity" />
-	</fragment>
+        <action
+            android:id="@+id/actin_nav_details_anime_info_to_nav_watch"
+            app:destination="@id/nav_watch" />
+        <action
+            android:id="@+id/actin_nav_details_anime_info_to_nav_details_anime_info"
+            app:destination="@id/nav_details_anime_info" />
+        <action
+            android:id="@+id/action_nav_details_anime_to_nav_search_result"
+            app:destination="@id/nav_search_result" />
+        <action
+            android:id="@+id/action_nav_details_anime_to_nav_screenshots"
+            app:destination="@id/nav_screenshots" />
 
-	<fragment
-		android:id="@+id/nav_search_result"
-		android:name="com.mrikso.anitube.app.ui.search_result.SearchResultFragment"
-		android:label="search_result"
-		tools:layout="@layout/fragment_search_result">
+        <action
+            android:id="@+id/actin_nav_details_anime_info_nav_comments"
+            app:destination="@id/nav_comments" />
 
-		<argument
-			android:name="title"
-			app:argType="string" />
-		<argument
-			android:name="url"
-			app:argType="string" />
-		<action
-			android:id="@+id/action_nav_search_result_to_nav_details"
-			app:destination="@id/nav_details_anime_info" />
+    </fragment>
 
-	</fragment>
+    <fragment
+        android:id="@+id/nav_watch"
+        android:name=".ui.watch.WatchAnimeFragment"
+        android:label="watch_anime"
+        tools:layout="@layout/fragment_watch">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="posterUrl"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
 
-	<activity
-		android:id="@+id/nav_player_activity"
-		android:name=".ui.player.PlayerActivity"
-		android:label="Player"
-		tools:layout="@layout/activity_player">
+        <argument
+            android:name="isHavePlaylistsAjax"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_nav_watch_to_nav_player_activity"
+            app:destination="@id/nav_player_activity" />
+    </fragment>
 
-		<argument
-			android:name="title"
-			app:argType="string" />
-		<argument
-			android:name="subTitle"
-			app:argType="string" />
-		<argument
-			android:name="episodeNumber"
-			app:argType="integer" />
-		<argument
-			android:name="episodeUrl"
-			app:argType=".model.VideoLinksModel" />
-		<argument
-			android:name="episodesTotal"
-			app:argType="java.util.HashMap"
-			app:nullable="true" />
+    <fragment
+        android:id="@+id/nav_search_result"
+        android:name=".ui.search_result.SearchResultFragment"
+        android:label="search_result"
+        tools:layout="@layout/fragment_search_result">
 
-	</activity>
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_nav_search_result_to_nav_details"
+            app:destination="@id/nav_details_anime_info" />
 
-	<fragment
-		android:id="@+id/nav_screenshots"
-		android:name="com.mrikso.anitube.app.ui.screenshots.ScreenshotsFragment"
-		android:label="screenshots"
-		tools:layout="@layout/fragment_screenshots">
+    </fragment>
 
-		<argument
-			android:name="position"
-			app:argType="integer" />
-		<argument
-			android:name="screenshots"
-			app:argType="java.util.ArrayList"
-			app:nullable="true" />
-	</fragment>
+    <activity
+        android:id="@+id/nav_player_activity"
+        android:name=".ui.player.PlayerActivity"
+        android:label="Player"
+        tools:layout="@layout/activity_player">
 
-	<fragment
-		android:id="@+id/nav_collections"
-		android:name="com.mrikso.anitube.app.ui.collections.CollectionsFragment"
-		android:label="collections"
-		tools:layout="@layout/fragment_collections">
-		<action
-			android:id="@+id/action_nav_collections_to_nav_details_anime_info"
-			app:destination="@id/nav_details_anime_info" />
-	</fragment>
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="subTitle"
+            app:argType="string" />
+        <argument
+            android:name="episodeNumber"
+            app:argType="integer" />
+        <argument
+            android:name="episodeUrl"
+            app:argType=".model.VideoLinksModel" />
+        <argument
+            android:name="episodesTotal"
+            app:argType="java.util.HashMap"
+            app:nullable="true" />
+
+        <argument
+            android:name="animeModel"
+            app:argType=".model.BaseAnimeModel" />
+        <argument
+            android:name="episodeSource"
+            app:argType="string" />
+    </activity>
+
+    <fragment
+        android:id="@+id/nav_screenshots"
+        android:name=".ui.screenshots.ScreenshotsFragment"
+        android:label="screenshots"
+        tools:layout="@layout/fragment_screenshots">
+
+        <argument
+            android:name="position"
+            app:argType="integer" />
+        <argument
+            android:name="screenshots"
+            app:argType="java.util.ArrayList"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_collections"
+        android:name=".ui.collections.CollectionsFragment"
+        android:label="collections"
+        tools:layout="@layout/fragment_collections">
+        <action
+            android:id="@+id/action_nav_collections_to_nav_collection_detail"
+            app:destination="@id/nav_collection_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_collection_detail"
+        android:name=".ui.collections.CollectionDetailsFragment"
+        android:label="collection detail"
+        tools:layout="@layout/fragment_collection_detail">
+        <argument
+            android:name="collection"
+            app:argType=".model.CollectionModel" />
+        <action
+            android:id="@+id/action_nav_collection_detail_to_nav_details_anime_info"
+            app:destination="@id/nav_details_anime_info" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_simple_list"
+        android:name=".ui.home.SimpleListFragment"
+        android:label="simple list"
+        tools:layout="@layout/fragment_search_result">
+        <argument
+            android:name="isYears"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_nav_simple_list_to_nav_search_result"
+            app:destination="@id/nav_search_result" />
+    </fragment>
+	
+    <fragment
+        android:id="@+id/nav_comments"
+        android:name=".ui.comments.CommentsFragment"
+        android:label="comments"
+        tools:layout="@layout/fragment_comments">
+        <argument
+            android:name="animeId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_nav_comments_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name=".ui.preferences.SettingsFragment"
+        android:label="@string/settings" />
 
 </navigation>

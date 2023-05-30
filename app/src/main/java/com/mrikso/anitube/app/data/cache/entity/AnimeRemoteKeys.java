@@ -5,7 +5,9 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "anime_remote_keys")
 public class AnimeRemoteKeys {
-    @PrimaryKey int animeId;
+    @PrimaryKey
+    int animeId;
+
     Integer prevKey;
     Integer nextKey;
 

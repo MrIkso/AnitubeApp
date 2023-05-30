@@ -1,17 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- Default screen margins, per the Android Design guidelines. -->
 	<dimen name="main_radius">16dp</dimen>
-	<dimen name="layout_margin_bottom">16.0dip</dimen>
-	<dimen name="layout_margin_end">16.0dip</dimen>
-	<dimen name="layout_margin_start">16.0dip</dimen>
-	<dimen name="layout_margin_top">16.0dip</dimen>
-	<dimen name="layout_padding_bottom">16.0dip</dimen>
-	<dimen name="layout_padding_end">16.0dip</dimen>
-	<dimen name="layout_padding_start">16.0dip</dimen>
-	<dimen name="layout_padding_top">16.0dip</dimen>
+	<dimen name="layout_margin_bottom">16dp</dimen>
+	<dimen name="layout_margin_end">16dp</dimen>
+	<dimen name="layout_margin_start">16dp</dimen>
+	<dimen name="layout_margin_top">16dp</dimen>
+	<dimen name="layout_padding_bottom">16dp</dimen>
+	<dimen name="layout_padding_end">16dp</dimen>
+	<dimen name="layout_padding_start">16dp</dimen>
+	<dimen name="layout_padding_top">16dp</dimen>
 	<dimen name="list_horizontal_padding">16dp</dimen>
 	<dimen name="list_vertical_padding">16dp</dimen>
-	<dimen name="gradient_height">100dip</dimen>
+	<dimen name="layout_padding_small">8dp</dimen>
+	<dimen name="layout_padding">16dp</dimen>
+	<dimen name="gradient_height">100dp</dimen>
 	<dimen name="h1_text_size">48sp</dimen>
 	<dimen name="h2_text_size">18sp</dimen>
 </resources>

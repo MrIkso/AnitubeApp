@@ -1,68 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	android:gravity="center_vertical"
-	android:orientation="horizontal"
-	android:id="@+id/search_bar_root">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:id="@+id/search_bar_root">
 
-	<androidx.cardview.widget.CardView
-		android:background="?attr/selectableItemBackground"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_marginBottom="0.0dip"
-		android:layout_marginEnd="16.0dip"
-		app:cardElevation="1.5dip"
-		android:layout_marginStart="16.0dip"
-		app:cardCornerRadius="24.0dip"
-		android:layout_weight="1.0"
-		android:id="@+id/search_cardView">
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Outlined"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="8dp"
+        app:cardElevation="1.5dp"
+        android:layout_marginStart="16dp"
+        app:cardCornerRadius="24dp"
+        android:layout_weight="1.0"
+        android:id="@+id/search_cardView">
 
-		<LinearLayout
-			android:layout_height="48.0dip"
-			android:layout_width="fill_parent"
-			android:orientation="horizontal"
-			android:id="@+id/search_linearLayout">
+        <LinearLayout
+            android:layout_height="48dp"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:id="@+id/search_linearLayout">
 
-			<ImageView
-				android:layout_height="fill_parent"
-				android:layout_width="wrap_content"
-				android:src="@drawable/ic_search"
-				android:scaleType="center"
-				android:background="?attr/selectableItemBackground"
-				android:clickable="true"
-				android:paddingStart="8.0dip"
-				android:minWidth="48.0dip"
-				android:id="@+id/search_btn" />
+            <ImageView
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_search"
+                android:scaleType="center"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:paddingStart="8dp"
+                android:minWidth="48dp"
+                android:id="@+id/search_btn" />
 
-			<TextView
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:layout_marginEnd="48dp"
-				android:textSize="16sp"
-				android:layout_marginStart="48dp"
-				android:layout_gravity="center_vertical"
-				android:id="@+id/search_tv"
-				android:text="@string/search_for_anime" />
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginEnd="48dp"
+                android:textSize="16sp"
+                android:layout_marginStart="48dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/search_tv"
+                android:text="@string/search_for_anime" />
 
-		</LinearLayout>
+        </LinearLayout>
 
-	</androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-	<com.google.android.material.imageview.ShapeableImageView
-		android:layout_height="48.0dip"
-		android:layout_width="48.0dip"
-		app:srcCompat="@drawable/ic_person"
-		app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay"
-		android:scaleType="center"
-		android:layout_marginEnd="16.0dip"
-		android:background="?attr/selectableItemBackground"
-		android:clickable="true"
-		android:layout_marginStart="8.0dip"
-		android:focusable="true"
-		android:minWidth="48.0dip"
-		android:id="@+id/profile_avatar" />
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        android:layout_marginEnd="16dp"
+		android:padding="5dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="center"
+        android:focusable="true"
+        android:layout_marginStart="8dp"
+        android:minWidth="48dp"
+        android:id="@+id/profile_avatar"
+        app:srcCompat="@drawable/ic_person"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay"
+        app:strokeWidth="2dp"
+        app:strokeColor="?attr/colorPrimary"
+    />
 
 </LinearLayout>

@@ -18,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class AnimeSearchPagingSource extends RxPagingSource<Integer, AnimeReleaseModel> {
-    @NonNull private final AnitubeApiService service;
+    @NonNull
+    private final AnitubeApiService service;
+
     private final AnimeReleasesMapper mapper;
     private final String query;
 
@@ -34,8 +36,7 @@ public class AnimeSearchPagingSource extends RxPagingSource<Integer, AnimeReleas
 
     @NotNull
     @Override
-    public Single<LoadResult<Integer, AnimeReleaseModel>> loadSingle(
-            @NotNull LoadParams<Integer> loadParams) {
+    public Single<LoadResult<Integer, AnimeReleaseModel>> loadSingle(@NotNull LoadParams<Integer> loadParams) {
 
         // If page number is already there then init page variable with it otherwise we are loading
         // fist page
@@ -48,22 +49,19 @@ public class AnimeSearchPagingSource extends RxPagingSource<Integer, AnimeReleas
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(data -> Single.just(mapper.transform(data)))
-                .map(
-                        data -> {
-                            maxPage = data.getMaxPage();
-                            return data.getAnimeReleases();
-                        })
+                .map(data -> {
+                    maxPage = data.getMaxPage();
+                    return data.getAnimeReleases();
+                })
                 .map(animes -> toLoadResult(animes, page))
-                .doOnError(
-                        (t) -> {
-                            t.printStackTrace();
-                        })
+                .doOnError((t) -> {
+                    t.printStackTrace();
+                })
                 .onErrorReturn(LoadResult.Error::new);
     }
 
     // Method to map AnimeReleaseModel to LoadResult object
-    private LoadResult<Integer, AnimeReleaseModel> toLoadResult(
-            List<AnimeReleaseModel> data, int page) {
+    private LoadResult<Integer, AnimeReleaseModel> toLoadResult(List<AnimeReleaseModel> data, int page) {
         //  Log.d("AnimeSearchPagingSource", "toLoadResult:data size " + data.size());
 
         return new LoadResult.Page<>(
@@ -78,8 +76,7 @@ public class AnimeSearchPagingSource extends RxPagingSource<Integer, AnimeReleas
             return null;
         }
 
-        LoadResult.Page<Integer, AnimeReleaseModel> anchorPage =
-                state.closestPageToPosition(anchorPosition);
+        LoadResult.Page<Integer, AnimeReleaseModel> anchorPage = state.closestPageToPosition(anchorPosition);
         if (anchorPage == null) {
             return null;
         }

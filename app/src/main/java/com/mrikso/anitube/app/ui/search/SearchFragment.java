@@ -41,8 +41,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 @AndroidEntryPoint
 public class SearchFragment extends Fragment
-        implements RecentSearchesAdapter.OnItemClickListener,
-                SuggestionAdapter.OnSuggestionClickListener {
+        implements RecentSearchesAdapter.OnItemClickListener, SuggestionAdapter.OnSuggestionClickListener {
     private RecentSearchesAdapter recentSearchAtapter;
     private SuggestionAdapter suggestionAdapter;
     private AnimePagingAdapter pagingAdapter;
@@ -59,9 +58,7 @@ public class SearchFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -79,35 +76,32 @@ public class SearchFragment extends Fragment
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
         AppCompatAutoCompleteTextView searchEdit = binding.etSearch;
-        searchEdit.addTextChangedListener(
-                new TextWatcherAdapter() {
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        if (searchEdit.hasFocus()) {
-                            //  Log.i("beb", "text changed");
-                            if (editable != null) {
-                                String content = editable.toString();
-                                binding.clear.setVisibility(
-                                        TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
-                                if (content != null && content.length() >= 3) {
-                                    quickSearch(content);
-                                }
-                            }
+        searchEdit.addTextChangedListener(new TextWatcherAdapter() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (searchEdit.hasFocus()) {
+                    //  Log.i("beb", "text changed");
+                    if (editable != null) {
+                        String content = editable.toString();
+                        binding.clear.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+                        if (content != null && content.length() >= 3) {
+                            quickSearch(content);
                         }
                     }
-                });
+                }
+            }
+        });
 
-        searchEdit.setOnEditorActionListener(
-                new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            performSearch(searchEdit.getText().toString(), true);
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+        searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    performSearch(searchEdit.getText().toString(), true);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         binding.clear.setOnClickListener(v -> searchEdit.setText(""));
 
@@ -123,44 +117,25 @@ public class SearchFragment extends Fragment
     }
 
     protected void observeEvents() {
-        viewModel
-                .getSearchHistoryData()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (results != null && !results.isEmpty())
-                                recentSearchAtapter.setData(results);
-                        });
+        viewModel.getSearchHistoryData().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) recentSearchAtapter.setData(results);
+        });
 
-        viewModel
-                .getQuickSearchResult()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (results != null && !results.isEmpty())
-                                suggestionAdapter.setData(results);
-                        });
+        viewModel.getQuickSearchResult().observe(getViewLifecycleOwner(), results -> {
+            if (results != null && !results.isEmpty()) suggestionAdapter.setData(results);
+        });
 
-        viewModel
-                .isShowSearchResultAdapter()
-                .observe(
-                        getViewLifecycleOwner(),
-                        result -> {
-                            // Log.i("tag", "isShowSearchResultAdapter observe called");
-                            binding.recyclerView.setAdapter(
-                                    result ? pagingAdapter : recentSearchAtapter);
-                        });
+        viewModel.isShowSearchResultAdapter().observe(getViewLifecycleOwner(), result -> {
+            // Log.i("tag", "isShowSearchResultAdapter observe called");
+            binding.recyclerView.setAdapter(result ? pagingAdapter : recentSearchAtapter);
+        });
 
-        viewModel
-                .getAnimePagingData()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            // Log.i("tag", "getSearchResult subscribe called");
-                            if (results != null) {
-                                showResults(results);
-                            }
-                        });
+        viewModel.getAnimePagingData().observe(getViewLifecycleOwner(), results -> {
+            // Log.i("tag", "getSearchResult subscribe called");
+            if (results != null) {
+                showResults(results);
+            }
+        });
     }
 
     protected void initViews() {
@@ -171,8 +146,7 @@ public class SearchFragment extends Fragment
 
         binding.loadStateLayout.stateFrame.setVisibility(View.GONE);
 
-        pagingAdapter =
-                new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        pagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
         pagingAdapter.setOnItemClickListener(item -> openDeatailsFragment(item));
         suggestionAdapter = new SuggestionAdapter(requireContext(), 0);
         suggestionAdapter.setOnClickListener(this);
@@ -213,9 +187,7 @@ public class SearchFragment extends Fragment
     }
 
     private void quickSearch(String query) {
-        String hash =
-                PreferenceUtils.getPrefString(
-                        requireContext(), PreferenceKeys.PREF_KEY_DLE_HASH, "");
+        String hash = PreferenceUtils.getPrefString(requireContext(), PreferenceKeys.PREF_KEY_DLE_HASH, "");
         viewModel.runQuickSearch(query, hash);
     }
 
@@ -225,44 +197,39 @@ public class SearchFragment extends Fragment
     }
 
     private void handlePagingState() {
-        pagingAdapter.addLoadStateListener(
-                combinedLoadStates -> {
-                    LoadState refreshLoadState = combinedLoadStates.getRefresh();
-                    LoadState appendLoadState = combinedLoadStates.getAppend();
-                    if (refreshLoadState instanceof LoadState.Loading) {
-                        binding.content.setVisibility(View.GONE);
-                        binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
-                        binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
-                    }
-                    if (refreshLoadState instanceof LoadState.NotLoading) {
-                        if (refreshLoadState.getEndOfPaginationReached()
-                                && pagingAdapter.getItemCount() < 1) {
-                            showNoDataState();
-                        } else {
-                            binding.content.setVisibility(View.VISIBLE);
-                        }
-                        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                        binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+        pagingAdapter.addLoadStateListener(combinedLoadStates -> {
+            LoadState refreshLoadState = combinedLoadStates.getRefresh();
+            LoadState appendLoadState = combinedLoadStates.getAppend();
+            if (refreshLoadState instanceof LoadState.Loading) {
+                binding.content.setVisibility(View.GONE);
+                binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
+                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+            }
+            if (refreshLoadState instanceof LoadState.NotLoading) {
+                if (refreshLoadState.getEndOfPaginationReached() && pagingAdapter.getItemCount() < 1) {
+                    showNoDataState();
+                } else {
+                    binding.content.setVisibility(View.VISIBLE);
+                }
+                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
 
-                    } else if (refreshLoadState instanceof LoadState.Error) {
-                        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                        binding.content.setVisibility(View.GONE);
-                        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                        binding.loadStateLayout.repeat.setOnClickListener(
-                                v -> pagingAdapter.retry());
-                        LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
-                        binding.loadStateLayout.errorMessageTv.setText(
-                                loadStateError.getError().getLocalizedMessage());
-                    }
-                    if (!(refreshLoadState instanceof LoadState.Loading)
-                            && appendLoadState instanceof LoadState.NotLoading) {
-                        if (appendLoadState.getEndOfPaginationReached()
-                                && pagingAdapter.getItemCount() < 1) {
-                            showNoDataState();
-                        }
-                    }
-                    return null;
-                });
+            } else if (refreshLoadState instanceof LoadState.Error) {
+                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                binding.content.setVisibility(View.GONE);
+                binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                binding.loadStateLayout.repeat.setOnClickListener(v -> pagingAdapter.retry());
+                LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
+                binding.loadStateLayout.errorMessage.setText(
+                        loadStateError.getError().getLocalizedMessage());
+            }
+            if (!(refreshLoadState instanceof LoadState.Loading) && appendLoadState instanceof LoadState.NotLoading) {
+                if (appendLoadState.getEndOfPaginationReached() && pagingAdapter.getItemCount() < 1) {
+                    showNoDataState();
+                }
+            }
+            return null;
+        });
     }
 
     private void showNoDataState() {
@@ -284,8 +251,7 @@ public class SearchFragment extends Fragment
 
     public RequestManager getGlide(Context context) {
         return Glide.with(context)
-                .applyDefaultRequestOptions(
-                        new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
+                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     @Override

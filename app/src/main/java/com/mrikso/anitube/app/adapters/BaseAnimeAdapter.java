@@ -1,13 +1,20 @@
 package com.mrikso.anitube.app.adapters;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.mrikso.anitube.app.databinding.ItemBestAnimeBinding;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.network.ApiClient;
@@ -54,14 +61,37 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
         }
 
         public void bind(BaseAnimeModel episode) {
-            binding.tvTitle.setText(episode.title);
+            binding.tvTitle.setText(episode.getTitle());
+
             Glide.with(binding.getRoot().getContext())
-                    .load(ApiClient.BASE_URL + episode.posterUrl)
+                    .load(ApiClient.BASE_URL + episode.getPosterUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(
+                                @Nullable GlideException e,
+                                Object model,
+                                Target<Drawable> target,
+                                boolean isFirstResource) {
+                            binding.progressIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(
+                                Drawable resource,
+                                Object model,
+                                Target<Drawable> target,
+                                DataSource dataSource,
+                                boolean isFirstResource) {
+                            binding.progressIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .into(binding.sivPoster);
+
             if (listener != null) {
-                binding.getRoot()
-                        .setOnClickListener(v -> listener.onBaseItemSelected(episode.animeUrl));
+                binding.getRoot().setOnClickListener(v -> listener.onBaseItemSelected(episode.getAnimeUrl()));
             }
         }
     }

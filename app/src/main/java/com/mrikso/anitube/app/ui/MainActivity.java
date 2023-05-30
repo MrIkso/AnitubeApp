@@ -1,11 +1,12 @@
 package com.mrikso.anitube.app.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -13,6 +14,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ActivityMainBinding;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -23,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavController navController;
     // private MenuItem selectedItem;
-    // private SharedViewModel viewModel = null;
+    private SharedViewModel viewModel = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,44 +39,42 @@ public class MainActivity extends AppCompatActivity {
 
         //  initViewModel();
         NavHostFragment navHostFragment =
-                (NavHostFragment)
-                        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
         // navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bttomNav, navController);
 
-        navController.addOnDestinationChangedListener(
-                (nav, destination, bundle) -> {
-                    switch (destination.getId()) {
-                        case R.id.nav_screenshots:
-                            hideBottomNavigation();
-                            break;
-                        default:
-                            showBottomNavigation();
-                            break;
-                    }
-                });
+        navController.addOnDestinationChangedListener((nav, destination, bundle) -> {
+            switch (destination.getId()) {
+                case R.id.nav_screenshots:
+                case R.id.nav_settings:
+                    hideBottomNavigation();
+                    break;
+                default:
+                    showBottomNavigation();
+                    break;
+            }
+        });
 
-        binding.bttomNav.setOnItemSelectedListener(
-                item -> {
-                    //  selectedItem = item;
-                    int selectedItemId = item.getItemId();
-                    handleBottomNavItemSelections(binding.bttomNav, selectedItemId);
-                    //                    if (selectedItemId == R.id.nav_home) {
-                    //                        navController.navigate(R.id.nav_home);
-                    //                    } else if (selectedItemId == R.id.nav_anime_list) {
-                    //                        navController.navigate(R.id.nav_anime_list);
-                    //                    } else if (selectedItemId == R.id.nav_search) {
-                    //                        navController.navigate(R.id.nav_anime_list);
-                    //                    } else if (selectedItemId == R.id.nav_profile) {
-                    //                        navController.navigate(R.id.nav_profile);
-                    //                    }
-                    //  if (selectedItemId != binding.bttomNav.getSelectedItemId()) {
+        binding.bttomNav.setOnItemSelectedListener(item -> {
+            //  selectedItem = item;
+            int selectedItemId = item.getItemId();
+            handleBottomNavItemSelections(binding.bttomNav, selectedItemId);
+            //                    if (selectedItemId == R.id.nav_home) {
+            //                        navController.navigate(R.id.nav_home);
+            //                    } else if (selectedItemId == R.id.nav_anime_list) {
+            //                        navController.navigate(R.id.nav_anime_list);
+            //                    } else if (selectedItemId == R.id.nav_search) {
+            //                        navController.navigate(R.id.nav_anime_list);
+            //                    } else if (selectedItemId == R.id.nav_profile) {
+            //                        navController.navigate(R.id.nav_profile);
+            //                    }
+            //  if (selectedItemId != binding.bttomNav.getSelectedItemId()) {
 
-                    NavigationUI.onNavDestinationSelected(item, navController);
-                    //   }
-                    return true;
-                });
+            NavigationUI.onNavDestinationSelected(item, navController);
+            //   }
+            return true;
+        });
 
         handleIntent(getIntent());
     }
@@ -98,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
         // viewModel = null;
     }
 
-    //    private void initViewModel() {
-    //        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-    //    }
+    private void initViewModel() {
+        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -121,10 +122,15 @@ public class MainActivity extends AppCompatActivity {
 
     void handleIntent(Intent intent) {
         if (intent != null && intent.getData() != null) {
-            Uri uri = intent.getData();
-            Bundle bundle = new Bundle();
-            bundle.putString("url", uri.toString());
-            navController.navigate(R.id.nav_details_anime_info, bundle);
+            String uriLink = intent.getData().toString();
+            if (ParserUtils.isAnimeLink(uriLink)) {
+                Bundle bundle = new Bundle();
+                bundle.putString("url", uriLink);
+                navController.navigate(R.id.nav_details_anime_info, bundle);
+            } else {
+                Toast.makeText(this, "This url not supported", Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 }

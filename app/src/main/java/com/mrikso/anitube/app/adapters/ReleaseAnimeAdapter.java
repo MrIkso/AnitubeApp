@@ -1,15 +1,21 @@
 package com.mrikso.anitube.app.adapters;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.databinding.ItemAnimeReleaseBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
@@ -23,7 +29,6 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
     private List<AnimeReleaseModel> results = new ArrayList<>();
 
     private OnItemClickListener listener;
-    private ItemAnimeReleaseBinding binding;
 
     public void setResults(List<AnimeReleaseModel> results) {
         this.results.addAll(results);
@@ -34,7 +39,7 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        binding = ItemAnimeReleaseBinding.inflate(inflater, parent, false);
+        ItemAnimeReleaseBinding binding = ItemAnimeReleaseBinding.inflate(inflater, parent, false);
         return new ViewHolder(binding);
     }
 
@@ -65,8 +70,7 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
 
                 binding.statusLayout.setVisibility(View.VISIBLE);
                 binding.statusLayout.setBackgroundColor(
-                        ContextCompat.getColor(
-                                binding.getRoot().getContext(), statusModel.getColor()));
+                        ContextCompat.getColor(binding.getRoot().getContext(), statusModel.getColor()));
                 binding.status.setText(statusModel.getStatus());
             } else {
                 binding.statusLayout.setVisibility(View.GONE);
@@ -77,20 +81,41 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
             }
             if (!Strings.isNullOrEmpty(episode.getRating())) {
 
-                binding.rating.setVisibility(View.VISIBLE);
-                binding.rating.setText(episode.getRating());
+                binding.llScore.setVisibility(View.VISIBLE);
+                binding.rating.setRating(Float.parseFloat(episode.getRating()) / 2f);
+                binding.tvScore.setText(String.format("%s/10", episode.getRating()));
             }
             binding.description.setText(episode.getDescription());
 
             Glide.with(binding.getRoot().getContext())
                     .load(ApiClient.BASE_URL + episode.getPosterUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(
+                                @Nullable GlideException e,
+                                Object model,
+                                Target<Drawable> target,
+                                boolean isFirstResource) {
+                            binding.progressIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(
+                                Drawable resource,
+                                Object model,
+                                Target<Drawable> target,
+                                DataSource dataSource,
+                                boolean isFirstResource) {
+                            binding.progressIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .into(binding.poster);
 
             if (listener != null) {
-                binding.getRoot()
-                        .setOnClickListener(
-                                v -> listener.onReleaseItemSelected(episode.getAnimeUrl()));
+                binding.getRoot().setOnClickListener(v -> listener.onReleaseItemSelected(episode.getAnimeUrl()));
             }
         }
     }

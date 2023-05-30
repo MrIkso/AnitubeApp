@@ -1,6 +1,7 @@
 package com.mrikso.anitube.app.repository;
 
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
+import com.mrikso.anitube.app.model.CommentsResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 
 import io.reactivex.rxjava3.core.Single;
@@ -37,6 +38,10 @@ public class AnitubeRepository {
         return anitubeApi.login("submit", username, password);
     }
 
+    public Single<Document> getRamdomAnime() {
+        return anitubeApi.getRandomAnime();
+    }
+
     public Single<Document> addOrRemoveFromFavorites(int animeId, boolean isAdd, String dleHash) {
         return anitubeApi.addOrRemoveFromFavorites(animeId, isAdd ? "plus" : "minus", dleHash);
     }
@@ -48,5 +53,9 @@ public class AnitubeRepository {
     public Single<String> getPlaylist(int animeId) {
         long currentTimeMillis = new Date().getTime();
         return anitubeApi.getPlaylist(animeId, "playlist", currentTimeMillis);
+    }
+
+    public Single<CommentsResponse> getCommentsForAnime(int page, int animeId) {
+        return anitubeApi.getCommentsForAnime(page, animeId);
     }
 }

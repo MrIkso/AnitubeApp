@@ -9,8 +9,7 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.treeview.TreeView;
 
-public class VideoSourceTreeAdapter
-        extends TreeView.Adapter<VideoSourceTreeAdapter.ViewHolder, PlayerModel> {
+public class VideoSourceTreeAdapter extends TreeView.Adapter<VideoSourceTreeAdapter.ViewHolder, PlayerModel> {
 
     public VideoSourceTreeAdapter() {
         setDisablePadding(true);

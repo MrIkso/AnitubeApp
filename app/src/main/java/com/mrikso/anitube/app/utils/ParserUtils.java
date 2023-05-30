@@ -21,7 +21,7 @@ public class ParserUtils {
 
     public static List<SimpleModel> getDataFromAttr(Element el) {
         Elements elements = el.getElementsByTag("a");
-        List<SimpleModel> dataList = new ArrayList<>();
+        List<SimpleModel> dataList = new ArrayList<>(elements.size());
         for (Element element : elements) {
             dataList.add(buidlSimpleModel(element));
         }
@@ -55,12 +55,14 @@ public class ParserUtils {
     }
 
     public static SimpleModel buidlSimpleModel(Element element) {
+        // Log.i("ParserUtils", element.text().trim() + " " + element.attr("href"));
         return new SimpleModel(element.text().trim(), element.attr("href"));
     }
 
     public static String parseRatingBlock(Element element) {
-        Element rateElement =
-                element.selectFirst("div.story_c_rate > div.lexington-box > div > span");
+        Element rateElement = element.selectFirst("div.story_c_rate > div.lexington-box")
+                .getElementsByTag("span")
+                .first();
         if (rateElement != null) {
             String rate = rateElement.text();
             return rate;
@@ -81,23 +83,22 @@ public class ParserUtils {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(content);
         boolean found = matcher.find();
-        if (found) return matcher.group(group);
-        else return null;
+        return found ? matcher.group(group) : null;
     }
 
     public static String standardizeQuality(String rawQuality) {
         if (Strings.isNullOrEmpty(rawQuality)) {
             return null;
         }
-        if (rawQuality.endsWith("p")) {
-            return StringUtils.removeLastChar(rawQuality);
+        if (!rawQuality.endsWith("p")) {
+            return rawQuality + "p";
         }
         return rawQuality;
     }
 
     public static String normaliseImageUrl(String rawUrl) {
         if (rawUrl.startsWith("//")) {
-            return "http:" + rawUrl;
+            return "https:" + rawUrl;
         } else if (rawUrl.startsWith("/")) {
             return ApiClient.BASE_URL + rawUrl;
         }
@@ -105,12 +106,24 @@ public class ParserUtils {
     }
 
     public static void parseDleHash(String data) {
-        Executors.newSingleThreadExecutor()
-                .execute(
-                        () -> {
-                            String hash = DleHashParser.getHash(data);
-                            PreferencesHelper.getInstance().setDleHash(hash);
-                        });
+        Executors.newSingleThreadExecutor().execute(() -> {
+            String hash = DleHashParser.getHash(data);
+            PreferencesHelper.getInstance().setDleHash(hash);
+        });
+    }
+
+    public static boolean isAnimeLink(String url) {
+        // перевіряємо, що посилання має "/<цифри>-<текст>"
+        String[] urlParts = url.split("/");
+        if (urlParts.length < 4) {
+            return false;
+        }
+        String lastPart = urlParts[urlParts.length - 1];
+        if (lastPart.matches("\\d+-\\S+\\.html")) {
+            return true;
+        }
+
+        return false;
     }
 
     public static int getAnimeId(String url) {

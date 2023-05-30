@@ -31,47 +31,41 @@ public class csstExtractor extends BaseVideoLinkExtracror {
 
     @Override
     public Single<Pair<LoadState, VideoLinksModel>> parse() {
-        return Single.fromCallable(
-                () -> {
-                    extract();
-                    Gson gson = new Gson();
-                    String json =
-                            ParserUtils.getMatcherResult(
-                                    PLAYER_JS_PATTERN, getDocument().data(), 1);
-                    int lastIndex = json.lastIndexOf(",");
-                    if (lastIndex >= 0) {
-                        json = json.substring(0, lastIndex) + "}";
-                    }
-                    Log.i(TAG, json);
-                    PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
-                    VideoLinksModel model = new VideoLinksModel(url);
-                    Map<String, String> qualityMap = new HashMap<>();
-                    String file = playerJs.getFile();
-                    if (file.contains(",")) {
+        return Single.fromCallable(() -> {
+            extract();
+            Gson gson = new Gson();
+            String json = ParserUtils.getMatcherResult(
+                    PLAYER_JS_PATTERN, getDocument().data(), 1);
+            int lastIndex = json.lastIndexOf(",");
+            if (lastIndex >= 0) {
+                json = json.substring(0, lastIndex) + "}";
+            }
+            Log.i(TAG, json);
+            PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
+            VideoLinksModel model = new VideoLinksModel(url);
+            Map<String, String> qualityMap = new HashMap<>();
+            String file = playerJs.getFile();
+            if (file.contains(",")) {
 
-                        String[] fileArray = file.split(",");
-                        for (String fileBase : fileArray) {
-                            Pattern pattern = Pattern.compile(FILE_PATTERN);
-                            Matcher matcher = pattern.matcher(fileBase);
-                            if (matcher.find()) {
-                                String quality =
-                                        ParserUtils.standardizeQuality(matcher.group(1)); // "360p"
-                                String url = StringUtils.removeLastChar(matcher.group(2));
-                                Log.i(TAG, quality + " " + url);
-                                qualityMap.put(quality, url);
-                            }
-                        }
-                        model.setLinksQuality(qualityMap);
-                    } else {
-                        model.setSingleDirectUrl(
-                                file.endsWith("/") ? StringUtils.removeLastChar(file) : file);
+                String[] fileArray = file.split(",");
+                for (String fileBase : fileArray) {
+                    Pattern pattern = Pattern.compile(FILE_PATTERN);
+                    Matcher matcher = pattern.matcher(fileBase);
+                    if (matcher.find()) {
+                        String quality = ParserUtils.standardizeQuality(matcher.group(1)); // "360p"
+                        String url = StringUtils.removeLastChar(matcher.group(2));
+                        Log.i(TAG, quality + " " + url);
+                        qualityMap.put(quality, url);
                     }
-                    model.setDefaultQuality(
-                            ParserUtils.standardizeQuality(playerJs.getDefaultQuality()));
-                    model.setHeaders(
-                            Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
-                    model.setSubtileUrl(playerJs.getSubtitle());
-                    return new Pair<>(LoadState.DONE, model);
-                });
+                }
+                model.setLinksQuality(qualityMap);
+            } else {
+                model.setSingleDirectUrl(file.endsWith("/") ? StringUtils.removeLastChar(file) : file);
+            }
+            model.setDefaultQuality(ParserUtils.standardizeQuality(playerJs.getDefaultQuality()));
+            model.setHeaders(Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
+            model.setSubtileUrl(playerJs.getSubtitle());
+            return new Pair<>(LoadState.DONE, model);
+        });
     }
 }

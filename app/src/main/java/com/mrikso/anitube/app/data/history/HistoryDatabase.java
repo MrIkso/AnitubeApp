@@ -5,11 +5,14 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+
 import com.mrikso.anitube.app.data.history.dao.HistoryDao;
+import com.mrikso.anitube.app.data.history.dao.LastWatchedEpisodeDao;
 import com.mrikso.anitube.app.data.history.enity.HistoryEnity;
+import com.mrikso.anitube.app.data.history.enity.LastWatchedEpisodeEnity;
 
 @Database(
-        entities = {HistoryEnity.class},
+        entities = {HistoryEnity.class, LastWatchedEpisodeEnity.class},
         version = 1,
         exportSchema = false)
 public abstract class HistoryDatabase extends RoomDatabase {
@@ -20,16 +23,15 @@ public abstract class HistoryDatabase extends RoomDatabase {
     public static HistoryDatabase getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance =
-                        Room.databaseBuilder(
-                                        context.getApplicationContext(),
-                                        HistoryDatabase.class,
-                                        HistoryDatabase.DATABASE_NAME)
-                                .build();
+                sInstance = Room.databaseBuilder(
+                                context.getApplicationContext(), HistoryDatabase.class, HistoryDatabase.DATABASE_NAME)
+                        .build();
             }
         }
         return sInstance;
     }
 
-    public abstract HistoryDao searchDao();
+    public abstract HistoryDao historyDao();
+
+    public abstract LastWatchedEpisodeDao lastWatchedEpisodeDao();
 }

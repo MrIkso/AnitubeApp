@@ -20,11 +20,11 @@ public class Converters {
 
     @TypeConverter
     public static String fromSimpleModel(SimpleModel simpleModel) {
-        return simpleModel == null ? null : simpleModel.getText();
+        return simpleModel == null ? null : simpleModel.getText() + "," + simpleModel.getUrl();
     }
 
     @TypeConverter
     public static SimpleModel toSimpleModel(String name) {
-        return name == null ? null : new SimpleModel(name, null);
+        return name == null ? null : new SimpleModel(name.split(",")[0], name.split(",")[1]);
     }
 }

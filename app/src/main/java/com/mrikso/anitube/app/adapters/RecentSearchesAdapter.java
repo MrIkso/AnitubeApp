@@ -28,15 +28,12 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_ITEM) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             ItemSearchBinding binding = ItemSearchBinding.inflate(inflater, parent, false);
             return new ItemViewHolder(binding);
         } else if (viewType == TYPE_HEADER) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            ItemSearchHeaderBinding header =
-                    ItemSearchHeaderBinding.inflate(inflater, parent, false);
+            ItemSearchHeaderBinding header = ItemSearchHeaderBinding.inflate(inflater, parent, false);
             return new HeaderViewHolder(header);
         } else return null;
     }
@@ -77,9 +74,7 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bind(RecentSearch model) {
             binding.queryTv.setText(model.getSearch_name());
             if (listener != null) {
-                binding.getRoot()
-                        .setOnClickListener(
-                                v -> listener.onRecentItemClicked(model.getSearch_name()));
+                binding.getRoot().setOnClickListener(v -> listener.onRecentItemClicked(model.getSearch_name()));
             }
         }
     }
@@ -94,12 +89,11 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void bind() {
             if (listener != null) {
-                binding.clearHistory.setOnClickListener(
-                        v -> {
-                            listener.onDeleteAllSearchHistory();
-                            searchesList.clear();
-                            notifyDataSetChanged();
-                        });
+                binding.clearHistory.setOnClickListener(v -> {
+                    listener.onDeleteAllSearchHistory();
+                    searchesList.clear();
+                    notifyDataSetChanged();
+                });
             }
         }
     }

@@ -58,8 +58,7 @@ public class ScreenshotsAdapter extends RecyclerView.Adapter<ScreenshotsAdapter.
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.sivScreenshot);
             if (listener != null) {
-                binding.getRoot()
-                        .setOnClickListener(v -> listener.onScreenshotItemSelected(position));
+                binding.getRoot().setOnClickListener(v -> listener.onScreenshotItemSelected(position));
             }
         }
     }

@@ -4,33 +4,29 @@
 	 xmlns:app="http://schemas.android.com/apk/res-auto"
 	 android:layout_height="wrap_content"
 	 android:layout_width="fill_parent"
-	 android:paddingEnd="12.0dip"
 	 android:background="?attr/selectableItemBackground"
 	 android:clickable="true"
+	 android:padding="10dp"
 	 android:orientation="horizontal"
 	 android:baselineAligned="false"
-	 android:paddingBottom="8.0dip"
-	 android:paddingStart="12.0dip"
-	 android:layout_marginTop="8dp"
 	 android:focusable="true">
 
-	<androidx.cardview.widget.CardView
-		 android:layout_height="wrap_content"
-		 android:layout_width="wrap_content"
-		 android:layout_marginBottom="8.0dip"
+	<com.google.android.material.card.MaterialCardView
+		 android:layout_height="158dp"
+		 android:layout_width="114dp"
+		 android:layout_margin="6dp"
 		 app:cardElevation="0dp"
-		 android:backgroundTint="@android:color/transparent"
-		 android:layout_marginTop="8.0dip"
+		 style="?attr/materialCardViewFilledStyle"
+		 app:cardCornerRadius="8dp"
 		 android:id="@+id/card_view">
 
 		<RelativeLayout
-			 android:layout_height="158.0dip"
-			 android:layout_width="114.0dip"
-			 android:animateLayoutChanges="true">
+			 android:layout_height="match_parent"
+			 android:layout_width="match_parent">
 
 			<com.google.android.material.imageview.ShapeableImageView
-				 android:layout_height="fill_parent"
-				 android:layout_width="fill_parent"
+				 android:layout_height="match_parent"
+				 android:layout_width="match_parent"
 				 android:scaleType="centerCrop"
 				 app:shapeAppearanceOverlay="@style/CardViewShapeableImageView"
 				 android:layout_alignParentLeft="true"
@@ -38,8 +34,17 @@
 				 android:layout_alignParentTop="true"
 				 android:id="@+id/poster" />
 
+			<com.google.android.material.progressindicator.CircularProgressIndicator
+				 android:layout_height="wrap_content"
+				 android:layout_width="wrap_content"
+				 android:layout_centerInParent="true"
+				 android:indeterminate="true"
+				 app:indicatorSize="40dp"
+				 app:trackThickness="20dp"
+				 android:id="@+id/progress_indicator" />
+
 			<RelativeLayout
-				 android:layout_height="20.0dip"
+				 android:layout_height="20dp"
 				 android:layout_width="wrap_content"
 				 android:visibility="gone"
 				 android:gravity="center"
@@ -64,14 +69,13 @@
 
 		</RelativeLayout>
 
-	</androidx.cardview.widget.CardView>
+	</com.google.android.material.card.MaterialCardView>
 
 	<LinearLayout
 		 android:layout_height="wrap_content"
 		 android:layout_width="fill_parent"
 		 android:orientation="vertical"
-		 android:layout_marginTop="4.0dip"
-		 android:layout_marginStart="24.0dip">
+		 android:layout_marginStart="10dp">
 
 		<LinearLayout
 			 android:layout_height="wrap_content"
@@ -94,7 +98,7 @@
 			 android:layout_width="wrap_content"
 			 android:gravity="center_vertical"
 			 android:orientation="horizontal"
-			 android:layout_marginTop="2.0dip">
+			 android:layout_marginTop="2dp">
 
 			<TextView
 				 android:layout_height="wrap_content"
@@ -107,11 +111,10 @@
 			<TextView
 				 android:layout_height="wrap_content"
 				 android:layout_width="wrap_content"
-				 android:paddingRight="8.0dip"
+				 android:paddingRight="8dp"
 				 android:textSize="14.0sp"
-				 android:paddingLeft="8.0dip"
+				 android:paddingLeft="8dp"
 				 android:textStyle="bold"
-				 android:id="@+id/dot"
 				 android:text="•" />
 
 			<TextView
@@ -120,16 +123,33 @@
 				 android:textSize="14.0sp"
 				 android:id="@+id/year" />
 
+		</LinearLayout>
+
+		<LinearLayout
+			 android:layout_height="wrap_content"
+			 android:layout_width="wrap_content"
+			 android:visibility="gone"
+			 android:orientation="horizontal"
+			 android:layout_marginTop="8dp"
+			 android:id="@+id/ll_score">
+
+			<RatingBar
+				 android:layout_height="wrap_content"
+				 android:layout_width="wrap_content"
+				 android:progressBackgroundTint="?attr/colorSurfaceVariant"
+				 android:progressTint="@color/material_yellow"
+				 style="@style/Widget.AppCompat.RatingBar.Small"
+				 android:isIndicator="true"
+				 android:numStars="5"
+				 android:id="@+id/rating" />
+
 			<TextView
 				 android:layout_height="wrap_content"
 				 android:layout_width="wrap_content"
-				 android:visibility="gone"
-				 android:paddingRight="8.0dip"
-				 android:textSize="14.0sp"
-				 android:paddingLeft="8.0dip"
-				 android:textStyle="bold"
-				 android:id="@+id/rating"
-				 android:text="9.2" />
+				 android:paddingLeft="8dp"
+				 android:includeFontPadding="false"
+				 style="@style/TextLabel"
+				 android:id="@+id/tv_score" />
 
 		</LinearLayout>
 
@@ -138,8 +158,8 @@
 			 android:layout_width="fill_parent"
 			 android:ellipsize="end"
 			 android:textSize="12.5sp"
-			 android:layout_marginTop="2.0dip"
-			 android:maxLines="4"
+			 android:layout_marginTop="2dp"
+			 android:maxLines="3"
 			 android:lineSpacingExtra="2.0sp"
 			 android:id="@+id/description" />
 

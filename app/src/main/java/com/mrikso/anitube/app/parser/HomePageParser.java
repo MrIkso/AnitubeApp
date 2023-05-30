@@ -6,11 +6,15 @@ import androidx.core.util.Pair;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
+import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.model.InteresingModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.SimpleModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,25 +28,34 @@ public class HomePageParser {
     private List<InteresingModel> interestingAnimeList = new ArrayList<>();
     private List<BaseAnimeModel> bestAnimeList = new ArrayList<>();
     private List<AnimeReleaseModel> releasesAnimeList = new ArrayList<>();
-    private Pair<String, String> userData = new Pair<>(null, null);
+    private List<CollectionModel> newCollectionsList = new ArrayList<>();
+    private List<SimpleModel> genresList = new ArrayList<>();
+    private List<SimpleModel> calendarList = new ArrayList<>();
+    private Subject<Pair<String, String>> userData = PublishSubject.create();
+
     private LoadState state;
 
-    private final Document doc;
+    private static HomePageParser homePageParser;
 
-    public HomePageParser(Document doc) {
-        this.doc = doc;
+    public static HomePageParser getInstance() {
+        if (homePageParser == null) {
+            homePageParser = new HomePageParser();
+        }
+        return homePageParser;
     }
 
-    public void parseHome() {
+    public HomePageParser() {}
+
+    public void parseHome(Document doc) {
         interestingAnimeList.clear();
         bestAnimeList.clear();
         releasesAnimeList.clear();
+        newCollectionsList.clear();
+        genresList.clear();
+        calendarList.clear();
 
         ParserUtils.parseDleHash(doc.html());
-
-        if (PreferencesHelper.getInstance().isLogin()) {
-            userData = getUserData();
-        }
+        parseUserData(doc);
 
         Elements slideBody =
                 doc.getElementById("header_img").select("div.slide_block").select("div.slide_body");
@@ -55,8 +68,12 @@ public class HomePageParser {
             InteresingModel interesting = new InteresingModel(imageUrl, url);
             interestingAnimeList.add(interesting);
         }
-
-        Elements contentElement = doc.select("div.content");
+        Elements navControlsElement =
+                doc.select("#header_menu > div > div.inc_tab > div.case.visible.genres");
+        if (navControlsElement != null) {
+            parseGenresAndCalendarList(navControlsElement);
+        }
+        Element contentElement = doc.selectFirst("div.content");
         Elements bestAnimes =
                 contentElement
                         .select("div.box")
@@ -69,34 +86,40 @@ public class HomePageParser {
 
         for (Element beastAnime : bestAnimes) {
             Element posterAnimeElement = beastAnime.selectFirst("div.sl_poster");
-            String urlPoster = posterAnimeElement.getElementsByTag("a").attr("href");
-            String imgUrl = posterAnimeElement.getElementsByTag("img").attr("src");
-            String name = beastAnime.selectFirst("div.text_content").getElementsByTag("a").text();
+            String animeUrl = posterAnimeElement.getElementsByTag("a").attr("href");
+            String urlPoster = posterAnimeElement.getElementsByTag("img").attr("src");
+            String animeTitle =
+                    beastAnime.selectFirst("div.text_content").getElementsByTag("a").text();
             // Log.d(TAG, urlPoster + " " + imgUrl + " " + name);
-            bestAnimeList.add(new BaseAnimeModel(name, imgUrl, urlPoster));
+            bestAnimeList.add(
+                    new BaseAnimeModel(
+                            ParserUtils.getAnimeId(animeUrl), animeTitle, urlPoster, animeUrl));
         }
 
         Elements newsAnimes = contentElement.select("div.news_2");
         //	Log.d(TAG, newsAnimes.html());
         for (Element newAmime : newsAnimes) {
-            AnimeReleaseModel animeRelease = new AnimeReleaseModel();
+
             Element title = newAmime.select("div.title2").first();
             if (title != null) {
                 Element title_a = title.getElementsByTag("a").first();
 
                 String animeUrl = title_a.attr("href");
                 String animeTitle = title_a.text();
+                int animeId = ParserUtils.getAnimeId(animeUrl);
                 // витягування статусу аніме в списку
                 // body > div.content > div.box.lcol > div:nth-child(2) > div.news_2_c >
                 // div.news_2_c_l > a > span
                 Element news_2_c_l = newAmime.selectFirst("div.news_2_c_l");
+                String urlPoster = news_2_c_l.getElementsByTag("img").first().attr("src");
 
+                AnimeReleaseModel animeRelease =
+                        new AnimeReleaseModel(animeId, animeTitle, urlPoster, animeUrl);
                 Element statusAnimeElement = news_2_c_l.selectFirst("a > span");
                 if (statusAnimeElement != null) {
                     String statusAnime = statusAnimeElement.text();
                     animeRelease.setWatchStatusModdel(ParserUtils.getWatchModel(statusAnime));
                 }
-                String urlPoster = news_2_c_l.getElementsByTag("img").first().attr("src");
 
                 Element infaBase = newAmime.selectFirst("div.news_2_c_r");
                 Element infa = infaBase.selectFirst("div.news_2_c_inf");
@@ -128,11 +151,7 @@ public class HomePageParser {
                 Element newsElement = infaBase.selectFirst(".news_2_c_text");
                 String description = newsElement.text().replace("Опис:", "").trim();
 
-                animeRelease.setTitle(animeTitle);
-                animeRelease.setPosterUrl(urlPoster);
-                animeRelease.setAnimeUrl(animeUrl);
                 animeRelease.setEpisodes(episodes);
-
                 animeRelease.setDescription(description);
 
                 releasesAnimeList.add(animeRelease);
@@ -140,18 +159,62 @@ public class HomePageParser {
             }
         }
 
+        Element collectionlElement = contentElement.selectFirst("div.colekcii > ul > center");
+        if (collectionlElement != null) {
+            parseNewCollections(collectionlElement);
+        }
+
         state = LoadState.DONE;
     }
 
-    public Pair<String, String> getUserData() {
-        Log.i(TAG, "getUserData call");
-        Element logavaElement = doc.selectFirst("#logform");
-        if (logavaElement != null) {
-            Element ava = logavaElement.selectFirst("div.log_ava").getElementsByTag("img").first();
-            String avaUrl = ava.attr("src");
-            Element profileElement = logavaElement.selectFirst("div.log_links > ul > li > a");
-            String profileUrl = profileElement.attr("href");
-            return new Pair<>(avaUrl, profileUrl);
+    public void parseUserData(Document doc) {
+        if (PreferencesHelper.getInstance().isLogin()) {
+            Pair<String, String> data = getUserData(doc);
+            if (data != null) userData.onNext(data);
+        }
+    }
+
+    private void parseGenresAndCalendarList(Elements elements) {
+
+        Element genres = elements.get(0);
+        genresList = ParserUtils.getDataFromAttr(genres.selectFirst("ul"));
+
+        Element calendar = elements.get(1);
+        calendarList = ParserUtils.getDataFromAttr(calendar.selectFirst("ul"));
+    }
+
+    private void parseNewCollections(Element collectiosElement) {
+        Elements collectionsEls = collectiosElement.getElementsByTag("a");
+        for (Element element : collectionsEls) {
+            String url = element.attr("href");
+            Element poster = element.selectFirst("div.li_poster");
+            String posterUrl = ParserUtils.getImageUrl(poster);
+            int count = Integer.parseInt(poster.selectFirst("span.comm > sup").text());
+            String name = element.selectFirst("div.li_text").text();
+
+            CollectionModel collectionModel = new CollectionModel();
+            collectionModel.setCollectionUrl(url);
+            collectionModel.setNameCollection(name);
+            collectionModel.setPosterUrl(posterUrl);
+            collectionModel.setCountAnime(count);
+
+            newCollectionsList.add(collectionModel);
+            Log.d(TAG, collectionModel.toString());
+        }
+    }
+
+    public Pair<String, String> getUserData(Document doc) {
+        // Log.i(TAG, "getUserData call");
+        Element logFormElement = doc.selectFirst("#logform");
+        if (logFormElement != null) {
+            // Log.i(TAG, logFormElement.html());
+            Element avaElement = logFormElement.selectFirst("div.log_ava > img");
+            Element profileElement = logFormElement.selectFirst("div.log_links > ul > li > a");
+            if (avaElement != null && profileElement != null) {
+                String avaUrl = avaElement.attr("src");
+                String profileUrl = profileElement.attr("href");
+                return new Pair<>(avaUrl, profileUrl);
+            }
         }
         return null;
     }
@@ -168,11 +231,23 @@ public class HomePageParser {
         return this.releasesAnimeList;
     }
 
+    public List<CollectionModel> getNewCollectionsList() {
+        return this.newCollectionsList;
+    }
+
     public LoadState getLoadState() {
         return this.state;
     }
 
-    public Pair<String, String> getUser() {
+    public Subject<Pair<String, String>> getUser() {
         return this.userData;
+    }
+
+    public List<SimpleModel> getGenresList() {
+        return this.genresList;
+    }
+
+    public List<SimpleModel> getCalendarList() {
+        return this.calendarList;
     }
 }

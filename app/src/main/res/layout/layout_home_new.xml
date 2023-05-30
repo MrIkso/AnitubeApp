@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content"
+	android:layout_width="fill_parent"
+	android:orientation="vertical">
+
+
+	<TextView
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:padding="10dp"
+		style="@style/LayoutHeader"
+		android:layout_marginTop="0dp"
+		android:text="@string/home_new_anime" />
+
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:id="@+id/new_anime_recycler_view" />
+
+	<View
+		android:layout_height="0.5dp"
+		android:layout_width="wrap_content"
+		android:layout_marginEnd="16dp"
+		android:layout_marginTop="16dp"
+		android:layout_marginStart="16dp" />
+
+</LinearLayout>

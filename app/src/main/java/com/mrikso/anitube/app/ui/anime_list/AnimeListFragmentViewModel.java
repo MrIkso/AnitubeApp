@@ -27,8 +27,7 @@ public class AnimeListFragmentViewModel extends ViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private AnimeListRepository repository;
-    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData =
-            new MutableLiveData<>();
+    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
     private MutableLiveData<Pair<String, String>> userData = new MutableLiveData<>(null);
 
@@ -40,27 +39,21 @@ public class AnimeListFragmentViewModel extends ViewModel {
 
     private void init() {
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        animePagingDataFlowable =
-                PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
+        animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
 
-        compositeDisposable.add(
-                animePagingDataFlowable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(animePagingData::setValue));
-        compositeDisposable.add(
-                repository
-                        .getUserData()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                results -> {
-                                    if (results != null
-                                            && results.first != null
-                                            && results.second != null) {
-                                        userData.postValue(results);
-                                    }
-                                }));
+        compositeDisposable.add(animePagingDataFlowable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(animePagingData::setValue));
+        compositeDisposable.add(repository
+                .getUserData()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(results -> {
+                    if (results != null && results.first != null && results.second != null) {
+                        userData.postValue(results);
+                    }
+                }));
     }
 
     @Override

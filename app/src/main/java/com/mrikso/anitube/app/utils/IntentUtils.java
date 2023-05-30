@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 
 public class IntentUtils {
@@ -19,5 +20,19 @@ public class IntentUtils {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    public static void shareLink(Context context, String url) {
+        new ShareCompat.IntentBuilder(context)
+                .setType("text/plain")
+                .setText(url)
+                .startChooser();
+    }
+
+    public static void openWitch(Context context, String content, String mimeType) {
+        new ShareCompat.IntentBuilder(context)
+                .setType("text/plain")
+                .setText(content)
+                .startChooser();
     }
 }

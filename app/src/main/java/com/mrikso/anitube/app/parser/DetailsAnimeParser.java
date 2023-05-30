@@ -11,8 +11,11 @@ import com.mrikso.anitube.app.model.DubbersTeam;
 import com.mrikso.anitube.app.model.FranchiseModel;
 import com.mrikso.anitube.app.model.ScreenshotModel;
 import com.mrikso.anitube.app.model.SimpleModel;
+import com.mrikso.anitube.app.model.TorrentModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
+import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.StringUtils;
 
 import io.reactivex.rxjava3.core.Single;
 
@@ -35,20 +38,24 @@ public class DetailsAnimeParser {
     }
 
     private AnimeDetailsModel parseAnimePage(Document doc) {
-
-        AnimeDetailsModel animeDetailsModel = new AnimeDetailsModel();
-
-        Element storyElement = doc.selectFirst("#dle-content > article.story");
-
-        Element playlistsAjaxElement = storyElement.selectFirst("div.playlists-ajax");
-        if (playlistsAjaxElement != null) {
-            animeDetailsModel.setHavePlaylistsAjax(true);
-        }
+        Element rootContentElement = doc.selectFirst("div.content");
+        Element storyElement = rootContentElement.selectFirst("#dle-content > article.story");
 
         // #dle-content > article > div:nth-child(1) > div.story_c
         Element storyPostElement = storyElement.selectFirst("div.story_c_left");
         String animeUrl = doc.head().selectFirst("link[rel=canonical]").attr("href");
         String urlPoster = ParserUtils.getImageUrl(storyPostElement);
+        Element titleElement = storyElement.selectFirst("div.story_c h2");
+
+        String title = titleElement.text();
+        int animeId = ParserUtils.getAnimeId(animeUrl);
+
+        AnimeDetailsModel animeDetailsModel = new AnimeDetailsModel(animeId, title, urlPoster, animeUrl);
+
+        Element playlistsAjaxElement = storyElement.selectFirst("div.playlists-ajax");
+        if (playlistsAjaxElement != null) {
+            animeDetailsModel.setHavePlaylistsAjax(true);
+        }
 
         Element ageElement = storyPostElement.selectFirst("span.story_age");
         if (ageElement != null) {
@@ -56,9 +63,6 @@ public class DetailsAnimeParser {
             animeDetailsModel.setAge(age);
         }
 
-        Element titleElement = storyElement.selectFirst("div.story_c h2");
-
-        String title = titleElement.text();
         Element favElementHeader = titleElement.selectFirst("ul > li > a");
         if (favElementHeader != null) {
             boolean isFav = favElementHeader.attr("href").contains("doaction=del");
@@ -84,7 +88,7 @@ public class DetailsAnimeParser {
 
         parseRelatedBlock(storyElement.selectFirst("div.box"), animeDetailsModel, animeUrl);
 
-        animeDetailsModel.setRating(ParserUtils.parseRatingBlock(storyElement));
+        animeDetailsModel.setRating(ParserUtils.parseRatingBlock(rootContentElement));
 
         // витягування схожих аніме
         // body > div.content > div:nth-child(10) > div > ul
@@ -94,7 +98,11 @@ public class DetailsAnimeParser {
             parseSimilarBlock(similarsElement, animeDetailsModel);
         }
 
-        int animeId = ParserUtils.getAnimeId(animeUrl);
+        Elements torrentsElement = rootContentElement.select("div.box > div.torrent_info_block");
+        if (torrentsElement != null) {
+            parseTorrentsBlock(torrentsElement, animeDetailsModel);
+        }
+
         String listContent = ParserUtils.getMatcherResult(LIST_PATTERN, doc.html(), 2);
         if (!Strings.isNullOrEmpty(listContent)) {
             String[] listContentSplit = listContent.split("\\|");
@@ -107,8 +115,7 @@ public class DetailsAnimeParser {
 
                         if (Integer.parseInt(elementSplit[0]) == animeId) {
                             int currentStatus = Integer.parseInt(elementSplit[1]);
-                            WatchAnimeStatusModel watchModel =
-                                    ParserUtils.getWatchModel(currentStatus);
+                            WatchAnimeStatusModel watchModel = ParserUtils.getWatchModel(currentStatus);
                             animeDetailsModel.setWatchStatusModdel(watchModel);
                         }
                     }
@@ -116,10 +123,6 @@ public class DetailsAnimeParser {
             }
         }
 
-        animeDetailsModel.setAnimeId(animeId);
-        animeDetailsModel.setAnimeUrl(animeUrl);
-        animeDetailsModel.setTitle(title);
-        animeDetailsModel.setPosterUrl(urlPoster);
         animeDetailsModel.setTrailerModel(trailerModel);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -131,8 +134,7 @@ public class DetailsAnimeParser {
     private void parseDetails(Element storyElements, AnimeDetailsModel model) {
 
         // витягування оригінальної назви
-        Element originalTitleElement =
-                storyElements.selectFirst("div.story_c_r strong:contains(Оригінальна назва)");
+        Element originalTitleElement = storyElements.selectFirst("div.story_c_r strong:contains(Оригінальна назва)");
         if (originalTitleElement != null) {
             String originalTitle = originalTitleElement.nextSibling().toString().trim();
             model.setOriginalTitle(originalTitle);
@@ -141,25 +143,23 @@ public class DetailsAnimeParser {
         // витягування року випуску аніме
         Element yearElement = storyElements.selectFirst("div.story_c_r strong:contains(Рік)");
         if (yearElement != null) {
-            SimpleModel year =
-                    ParserUtils.buidlSimpleModel(yearElement.nextElementSibling().selectFirst("a"));
+            SimpleModel year = ParserUtils.buidlSimpleModel(
+                    yearElement.nextElementSibling().selectFirst("a"));
             model.setReleaseYear(year);
         }
 
         // витягування жанру
-        Elements genreLinksElement =
-                storyElements
-                        .selectFirst("div.story_c_r strong:contains(Жанр:)")
-                        .nextElementSiblings()
-                        .select("a[href*=/anime/]");
+        Elements genreLinksElement = storyElements
+                .selectFirst("div.story_c_r strong:contains(Жанр:)")
+                .nextElementSiblings()
+                .select("a[href*=/anime/]");
         if (genreLinksElement != null) {
             List<SimpleModel> genre = ParserUtils.getSimpleDataFromElements(genreLinksElement);
             model.setGenres(genre);
         }
 
         // витягування режисера
-        Element directorElement =
-                storyElements.selectFirst("div.story_c_r strong:contains(Режисер)");
+        Element directorElement = storyElements.selectFirst("div.story_c_r strong:contains(Режисер)");
         if (directorElement != null) {
             String director = directorElement.nextSibling().toString().trim();
             model.setDirector(director);
@@ -184,14 +184,12 @@ public class DetailsAnimeParser {
         // витягування перекладу
         Elements translationElement = storyElements.select("div.story_c_r a[href*=/translation/]");
         if (translationElement != null) {
-            List<SimpleModel> translation =
-                    ParserUtils.getSimpleDataFromElements(translationElement);
+            List<SimpleModel> translation = ParserUtils.getSimpleDataFromElements(translationElement);
             model.setTranslators(translation);
         }
 
         // витягування озвучення
-        Element voicedElement =
-                storyElements.selectFirst("div.story_c_r strong:contains(Ролі озвучували)");
+        Element voicedElement = storyElements.selectFirst("div.story_c_r strong:contains(Ролі озвучували)");
         if (voicedElement != null) {
             parseDubbersBlock(voicedElement, model);
         }
@@ -229,7 +227,7 @@ public class DetailsAnimeParser {
             }
             model.setDubbersTeamList(dubbersTeamList);
         } else {
-            List<SimpleModel> voiced = ParserUtils.getDataFromAttr(voicedElements);
+            List<SimpleModel> voiced = ParserUtils.getDataFromAttr(voicedElements.select("a[href*=/voiced/]"));
             if (voiced != null) {
                 model.setVoicers(voiced);
             }
@@ -256,8 +254,9 @@ public class DetailsAnimeParser {
             String posterUrl = ParserUtils.getImageUrl(similar.selectFirst("div.sl_poster"));
             Element textElement = similar.selectFirst("div.text_content a");
             String title = textElement.text();
-            String url = textElement.attr("href");
-            BaseAnimeModel similarModel = new BaseAnimeModel(title, posterUrl, url);
+            String animeUrl = textElement.attr("href");
+            int animeId = ParserUtils.getAnimeId(animeUrl);
+            BaseAnimeModel similarModel = new BaseAnimeModel(animeId, title, posterUrl, animeUrl);
             similarsList.add(similarModel);
         }
 
@@ -271,6 +270,46 @@ public class DetailsAnimeParser {
             List<FranchiseModel> franchises = fran.parseFranshises(currentUrl, relatedElement);
             model.setFranchiseList(franchises);
         }
+    }
+
+    private void parseTorrentsBlock(Elements torrents, AnimeDetailsModel model) {
+        List<TorrentModel> torrentsList = new ArrayList<>(torrents.size());
+        for (Element element : torrents) {
+            String name = StringUtils.removeLastChar(
+                    element.selectFirst("div.torrent_title").text().trim());
+            Element left_torrent_info_block = element.selectFirst("div.left_torrent_info_block");
+            int seeds = Integer.parseInt(left_torrent_info_block
+                    .selectFirst("div.col_download > span")
+                    .text()
+                    .trim());
+            int leechers = Integer.parseInt(left_torrent_info_block
+                    .selectFirst("div.col_distribution > span")
+                    .text()
+                    .trim());
+            Elements torrentInfo = left_torrent_info_block.select("div.info_file_torrent");
+
+            int downloadedCount = Integer.parseInt(
+                    torrentInfo.get(0).text().replaceFirst("Завантажено:", "").trim());
+            String size = torrentInfo.get(1).text().replaceFirst("Розмір:", "").trim();
+
+            Element right_torrent_info_block = element.selectFirst("div.right_torrent_info_block");
+            Elements torrentUrls = right_torrent_info_block.select("div.btn_block_right_torrent_info_block");
+
+            String torrentUrl =
+                    ApiClient.BASE_URL + torrentUrls.get(0).selectFirst("a").attr("href");
+            String magrentUrl = torrentUrls.get(1).selectFirst("a").attr("href");
+            TorrentModel torrentModel = new TorrentModel();
+            torrentModel.setName(name);
+            torrentModel.setSize(size);
+            torrentModel.setDownloadedCount(downloadedCount);
+            torrentModel.setSeeds(seeds);
+            torrentModel.setLeechers(leechers);
+            torrentModel.setTorrentUrl(torrentUrl);
+            torrentModel.setMagnetUrl(magrentUrl);
+            torrentsList.add(torrentModel);
+        }
+        model.setTorrensList(torrentsList);
+        // #torrent_1522_info > div.right_torrent_info_block > div:nth-child(1) > span
     }
 
     private String buildTrailerUrl(String previewUrl) {

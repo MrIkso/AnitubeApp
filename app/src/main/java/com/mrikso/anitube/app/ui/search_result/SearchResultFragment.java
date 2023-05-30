@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
@@ -43,9 +44,7 @@ public class SearchResultFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -55,24 +54,8 @@ public class SearchResultFragment extends Fragment {
         super.onViewCreated(view, bundle);
         initViews();
         initializeListeners();
-        observeEvents();
         loadData();
-    }
-
-    private void observeEvents() {
-        viewModel
-                .getAnimePagingData()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (binding != null) {
-                                if (results != null) {
-                                    showAnimeList(results);
-                                } else {
-                                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
+        initObservers();
     }
 
     private void initializeListeners() {
@@ -84,56 +67,46 @@ public class SearchResultFragment extends Fragment {
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-        animePpagingAdapter =
-                new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
-        animePpagingAdapter.setOnItemClickListener(
-                link -> {
-                    openDetailsFragment(link);
-                });
-        animePpagingAdapter.addLoadStateListener(
-                combinedLoadStates -> {
-                    LoadState refreshLoadState = combinedLoadStates.getRefresh();
-                    LoadState appendLoadState = combinedLoadStates.getAppend();
-                    if (refreshLoadState instanceof LoadState.Loading) {
-                        binding.content.setVisibility(View.GONE);
-                        binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
-                        binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
-                    }
-                    if (refreshLoadState instanceof LoadState.NotLoading) {
-                        if (refreshLoadState.getEndOfPaginationReached()
-                                && animePpagingAdapter.getItemCount() < 1) {
-                            showNoDataState();
-                        } else {
-                            binding.content.setVisibility(View.VISIBLE);
-                        }
-                        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                        binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
-                    } else if (refreshLoadState instanceof LoadState.Error) {
-                        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                        binding.content.setVisibility(View.GONE);
-                        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                        binding.loadStateLayout.repeat.setOnClickListener(
-                                v -> animePpagingAdapter.retry());
-                        LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
-                        binding.loadStateLayout.errorMessageTv.setText(
-                                loadStateError.getError().getLocalizedMessage());
-                    }
-                    if (!(refreshLoadState instanceof LoadState.Loading)
-                            && appendLoadState instanceof LoadState.NotLoading) {
-                        if (appendLoadState.getEndOfPaginationReached()
-                                && animePpagingAdapter.getItemCount() < 1) {
-                            showNoDataState();
-                        }
-                    }
-                    return null;
-                });
+        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        animePpagingAdapter.setOnItemClickListener(link -> {
+            openDetailsFragment(link);
+        });
+        animePpagingAdapter.addLoadStateListener(combinedLoadStates -> {
+            LoadState refreshLoadState = combinedLoadStates.getRefresh();
+            LoadState appendLoadState = combinedLoadStates.getAppend();
+            if (refreshLoadState instanceof LoadState.Loading) {
+                binding.content.setVisibility(View.GONE);
+                binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
+                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+            }
+            if (refreshLoadState instanceof LoadState.NotLoading) {
+                if (refreshLoadState.getEndOfPaginationReached() && animePpagingAdapter.getItemCount() < 1) {
+                    showNoDataState();
+                } else {
+                    binding.content.setVisibility(View.VISIBLE);
+                }
+                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+            } else if (refreshLoadState instanceof LoadState.Error) {
+                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                binding.content.setVisibility(View.GONE);
+                binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                binding.loadStateLayout.repeat.setOnClickListener(v -> animePpagingAdapter.retry());
+                LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
+                binding.loadStateLayout.errorMessage.setText(
+                        loadStateError.getError().getLocalizedMessage());
+            }
+            if (!(refreshLoadState instanceof LoadState.Loading) && appendLoadState instanceof LoadState.NotLoading) {
+                if (appendLoadState.getEndOfPaginationReached() && animePpagingAdapter.getItemCount() < 1) {
+                    showNoDataState();
+                }
+            }
+            return null;
+        });
 
-        binding.recyclerView.setAdapter(
-                animePpagingAdapter.withLoadStateFooter(
-                        new MoviesLoadStateAdapter(
-                                v -> {
-                                    animePpagingAdapter.retry();
-                                })));
+        binding.recyclerView.setAdapter(animePpagingAdapter.withLoadStateFooter(new MoviesLoadStateAdapter(v -> {
+            animePpagingAdapter.retry();
+        })));
     }
 
     private void openDetailsFragment(final String link) {
@@ -143,24 +116,26 @@ public class SearchResultFragment extends Fragment {
     }
 
     private void showNoDataState() {
-        // TODO: Implement this method
+        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_history_desc);
+
         binding.content.setVisibility(View.GONE);
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
     private void initObservers() {
-        viewModel
-                .getAnimePagingData()
-                .observe(
-                        getViewLifecycleOwner(),
-                        results -> {
-                            if (binding != null) {
-                                if (results != null) {
-                                    showAnimeList(results);
-                                } else {
-                                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
+        viewModel.getAnimePagingData().observe(getViewLifecycleOwner(), results -> {
+            if (binding != null) {
+                if (results != null) {
+                    showAnimeList(results);
+                } else {
+                    showNoDataState();
+                }
+            }
+        });
     }
 
     private void showAnimeList(final PagingData<AnimeReleaseModel> results) {
@@ -170,20 +145,13 @@ public class SearchResultFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
         animePpagingAdapter = null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        viewModel = null;
+        binding = null;
     }
 
     public RequestManager getGlide(Context context) {
         return Glide.with(context)
-                .applyDefaultRequestOptions(
-                        new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
+                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     private void loadData() {

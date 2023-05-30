@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.google.android.material.chip.ChipGroup
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_height="wrap_content"
-	android:layout_width="match_parent"
-	android:layout_marginLeft="16.0dip"
-	android:layout_marginRight="16.0dip"
-	android:layout_marginHorizontal="16.0dip"
-	android:id="@+id/players_chip_group" />
+<com.google.android.material.chip.ChipGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginHorizontal="16dp"
+    app:chipSpacingVertical="4dp"
+    app:chipSpacingHorizontal="4dp"
+    app:chipSpacing="0dp"
+    app:singleLine="false"
+    android:id="@+id/players_chip_group" />

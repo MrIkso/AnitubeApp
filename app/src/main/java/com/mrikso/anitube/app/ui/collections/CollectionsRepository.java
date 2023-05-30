@@ -26,21 +26,19 @@ public class CollectionsRepository {
 
     public Flowable<PagingData<CollectionModel>> getCollections() {
         // Create new paging config
-        PagingConfig config =
-                new PagingConfig(
-                        11, //  Count of items in one page
-                        11, //  Number of items to prefetch
-                        false, // Enable placeholders for data which is not yet loaded
-                        11, // initialLoadSize - Count of items to be loaded initially
-                        11 * 600);
+        PagingConfig config = new PagingConfig(
+                11, //  Count of items in one page
+                11, //  Number of items to prefetch
+                false, // Enable placeholders for data which is not yet loaded
+                11, // initialLoadSize - Count of items to be loaded initially
+                11 * 600);
         // Create new Pager
-        Pager<Integer, CollectionModel> pager =
-                new Pager<>(
-                        config,
-                        //  null,
-                        //  new AnimeReleaseRemoteMediator(apiService, database, new
-                        // AnimeReleasesMapper(preferences)),
-                        () -> new CollectionsPagingSource(apiService, mapper)); // et paging source
+        Pager<Integer, CollectionModel> pager = new Pager<>(
+                config,
+                //  null,
+                //  new AnimeReleaseRemoteMediator(apiService, database, new
+                // AnimeReleasesMapper(preferences)),
+                () -> new CollectionsPagingSource(apiService, mapper)); // et paging source
 
         return PagingRx.getFlowable(pager).doOnError(t -> t.printStackTrace());
     }

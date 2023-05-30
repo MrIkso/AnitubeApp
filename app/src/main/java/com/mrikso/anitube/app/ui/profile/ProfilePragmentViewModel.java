@@ -29,8 +29,7 @@ public class ProfilePragmentViewModel extends ViewModel {
     private final String TAG = "ProfilePragmentViewModel";
     private AnitubeRepository repository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<Pair<LoadState, UserProfileModel>> loadSate =
-            new MutableLiveData<>(null);
+    private MutableLiveData<Pair<LoadState, UserProfileModel>> loadSate = new MutableLiveData<>(null);
     private boolean singleLoad;
 
     @Inject
@@ -54,28 +53,24 @@ public class ProfilePragmentViewModel extends ViewModel {
     }
 
     public void loadPage(String url) {
-        compositeDisposable.add(
-                repository
-                        .getPage(url)
-                        .subscribeOn(Schedulers.io())
-                        .doOnSubscribe(
-                                v -> {
-                                    loadSate.setValue(new Pair<>(LoadState.LOADING, null));
-                                    Log.d(TAG, "start loading");
-                                })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                response -> {
-                                    Executors.newSingleThreadExecutor()
-                                            .execute(
-                                                    () -> {
-                                                        parsUserPage(response);
-                                                    });
-                                },
-                                throwable -> {
-                                    throwable.printStackTrace();
-                                    loadSate.postValue(new Pair<>(LoadState.ERROR, null));
-                                }));
+        compositeDisposable.add(repository
+                .getPage(url)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(v -> {
+                    loadSate.setValue(new Pair<>(LoadState.LOADING, null));
+                    Log.d(TAG, "start loading");
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> {
+                            Executors.newSingleThreadExecutor().execute(() -> {
+                                parsUserPage(response);
+                            });
+                        },
+                        throwable -> {
+                            throwable.printStackTrace();
+                            loadSate.postValue(new Pair<>(LoadState.ERROR, null));
+                        }));
     }
 
     private void parsUserPage(final Document response) {

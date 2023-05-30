@@ -19,9 +19,7 @@ public abstract class BaseFragment<VB extends ViewBinding, VM extends ViewModel>
     private VB binding;
 
     protected abstract VB inflateBinding(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            boolean attachToParent);
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, boolean attachToParent);
 
     protected abstract VM viewModel();
 
@@ -34,9 +32,7 @@ public abstract class BaseFragment<VB extends ViewBinding, VM extends ViewModel>
     @Nullable
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = inflateBinding(inflater, container, false);
 
         if (binding == null) {

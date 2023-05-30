@@ -22,10 +22,14 @@
 		 android:layout_width="match_parent"
 		 android:layout_marginEnd="16dp"
 		 android:orientation="vertical"
-		 android:layout_marginTop="16dp"
 		 android:layout_marginStart="16dp"
 		 android:id="@+id/radio_group">
-
+		 <RadioButton
+			 android:layout_height="wrap_content"
+			 android:layout_width="match_parent"
+			 android:id="@+id/anime_status_no_watch"
+			 android:text="@string/anime_status_no_watch" />
+			 
 		<RadioButton
 			 android:layout_height="wrap_content"
 			 android:layout_width="match_parent"
