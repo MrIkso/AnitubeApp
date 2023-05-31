@@ -68,32 +68,30 @@ public class HomePageParser {
             InteresingModel interesting = new InteresingModel(imageUrl, url);
             interestingAnimeList.add(interesting);
         }
-        Elements navControlsElement =
-                doc.select("#header_menu > div > div.inc_tab > div.case.visible.genres");
+        Elements navControlsElement = doc.select("#header_menu > div > div.inc_tab > div.case.visible.genres");
         if (navControlsElement != null) {
             parseGenresAndCalendarList(navControlsElement);
         }
         Element contentElement = doc.selectFirst("div.content");
-        Elements bestAnimes =
-                contentElement
-                        .select("div.box")
-                        .first()
-                        .select("div.example")
-                        .select("div.carousel")
-                        .select("div.carousel_container")
-                        .select("ul.portfolio_items")
-                        .select("li");
+        Elements bestAnimes = contentElement
+                .select("div.box")
+                .first()
+                .select("div.example")
+                .select("div.carousel")
+                .select("div.carousel_container")
+                .select("ul.portfolio_items")
+                .select("li");
 
         for (Element beastAnime : bestAnimes) {
             Element posterAnimeElement = beastAnime.selectFirst("div.sl_poster");
             String animeUrl = posterAnimeElement.getElementsByTag("a").attr("href");
             String urlPoster = posterAnimeElement.getElementsByTag("img").attr("src");
-            String animeTitle =
-                    beastAnime.selectFirst("div.text_content").getElementsByTag("a").text();
+            String animeTitle = beastAnime
+                    .selectFirst("div.text_content")
+                    .getElementsByTag("a")
+                    .text();
             // Log.d(TAG, urlPoster + " " + imgUrl + " " + name);
-            bestAnimeList.add(
-                    new BaseAnimeModel(
-                            ParserUtils.getAnimeId(animeUrl), animeTitle, urlPoster, animeUrl));
+            bestAnimeList.add(new BaseAnimeModel(ParserUtils.getAnimeId(animeUrl), animeTitle, urlPoster, animeUrl));
         }
 
         Elements newsAnimes = contentElement.select("div.news_2");
@@ -113,8 +111,7 @@ public class HomePageParser {
                 Element news_2_c_l = newAmime.selectFirst("div.news_2_c_l");
                 String urlPoster = news_2_c_l.getElementsByTag("img").first().attr("src");
 
-                AnimeReleaseModel animeRelease =
-                        new AnimeReleaseModel(animeId, animeTitle, urlPoster, animeUrl);
+                AnimeReleaseModel animeRelease = new AnimeReleaseModel(animeId, animeTitle, urlPoster, animeUrl);
                 Element statusAnimeElement = news_2_c_l.selectFirst("a > span");
                 if (statusAnimeElement != null) {
                     String statusAnime = statusAnimeElement.text();
@@ -141,12 +138,11 @@ public class HomePageParser {
                 }
 
                 // Отримання кількості серій та їх тривалості
-                String episodes =
-                        infa.select("div.news_2_infa dt:contains(Серій:)")
-                                .first()
-                                .nextSibling()
-                                .toString()
-                                .trim();
+                String episodes = infa.select("div.news_2_infa dt:contains(Серій:)")
+                        .first()
+                        .nextSibling()
+                        .toString()
+                        .trim();
 
                 Element newsElement = infaBase.selectFirst(".news_2_c_text");
                 String description = newsElement.text().replace("Опис:", "").trim();

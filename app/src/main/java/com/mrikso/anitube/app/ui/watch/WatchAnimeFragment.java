@@ -47,9 +47,7 @@ import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @AndroidEntryPoint
 public class WatchAnimeFragment extends Fragment
@@ -359,8 +357,8 @@ public class WatchAnimeFragment extends Fragment
     private void openPlayerActivity(VideoLinksModel model) {
         List<EpisodeModel> listEpisodes = episodesAdapter.getCurrentList();
 
-        HashMap<Integer, EpisodeModel> map = new HashMap<>();
-        IntStream.range(0, listEpisodes.size()).forEach(i -> map.put(i, listEpisodes.get(i)));
+        // HashMap<Integer, EpisodeModel> map = new HashMap<>();
+        //  IntStream.range(0, listEpisodes.size()).forEach(i -> map.put(i, listEpisodes.get(i)));
 
         WatchAnimeFragmentArgs arg = WatchAnimeFragmentArgs.fromBundle(getArguments());
         WatchAnimeFragmentDirections.ActionNavWatchToNavPlayerActivity action =
@@ -369,7 +367,6 @@ public class WatchAnimeFragment extends Fragment
                         listEpisodes.get(currentEpisode).getName(),
                         currentEpisode + 1,
                         model,
-                        map,
                         animeModel,
                         episodePath);
         Navigation.findNavController(requireView()).navigate(action);

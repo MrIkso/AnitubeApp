@@ -89,8 +89,7 @@ public class AppModules {
     @Provides
     @Named("Normal")
     public static OkHttpClient provideHttpClint(
-            HttpLoggingInterceptor httpLoggingInterceptor,
-            UserAgentInterceptor userAgentInterceptor) {
+            HttpLoggingInterceptor httpLoggingInterceptor, UserAgentInterceptor userAgentInterceptor) {
         return new OkHttpClient.Builder()
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
@@ -157,17 +156,14 @@ public class AppModules {
 
     @Singleton
     @Provides
-    public static LibaryRepository provideLibaryRepository(
-            AnitubeApiService apiService, AnimeReleasesMapper mapper) {
+    public static LibaryRepository provideLibaryRepository(AnitubeApiService apiService, AnimeReleasesMapper mapper) {
         return new LibaryRepository(apiService, mapper);
     }
 
     @Singleton
     @Provides
     public static SearchRepository provideSearchRepository(
-            AnitubeApiService apiService,
-            SearchDatabase searchDatabase,
-            AnimeReleasesMapper mapper) {
+            AnitubeApiService apiService, SearchDatabase searchDatabase, AnimeReleasesMapper mapper) {
         return new SearchRepository(apiService, searchDatabase, mapper);
     }
 

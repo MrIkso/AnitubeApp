@@ -192,11 +192,6 @@
             android:name="episodeUrl"
             app:argType=".model.VideoLinksModel" />
         <argument
-            android:name="episodesTotal"
-            app:argType="java.util.HashMap"
-            app:nullable="true" />
-
-        <argument
             android:name="animeModel"
             app:argType=".model.BaseAnimeModel" />
         <argument

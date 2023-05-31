@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "AhsdiVideosExtractor";
@@ -44,9 +46,17 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         for (Variant variant : masterPlayList.variants()) {
             String newUri = variant.uri();
             // String[] parts = newUri.split("/");
-            String resolution = String.valueOf(variant.resolution().get().height());
-            Log.i(TAG, " " + resolution + "=>" + newUri);
-            qualitiesMap.put(ParserUtils.standardizeQuality(resolution), newUri);
+
+            Pattern pattern = Pattern.compile("hls\\/(\\d+)\\/index\\.m3u8");
+            Matcher matcher = pattern.matcher(newUri);
+
+            if (matcher.find()) {
+                String resolution = matcher.group(1);
+                Log.i(TAG, " " + resolution + "=>" + newUri);
+                qualitiesMap.put(ParserUtils.standardizeQuality(resolution), newUri);
+            } else {
+                qualitiesMap.put("AUTO", newUri);
+            }
         }
         model.setHeaders(Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
         model.setLinksQuality(qualitiesMap);

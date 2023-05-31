@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -28,8 +26,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private final Object mutex = new Object();
     private boolean mHasLoaded;
-	ActivitySplashBinding binding;
-	
+    ActivitySplashBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
@@ -40,13 +38,13 @@ public class SplashActivity extends AppCompatActivity {
 
         /* Use a WebView to bypass cloudflare challenge (Retrieve cookie) */
         // any api url is fine :|
-		
-		binding = ActivitySplashBinding.inflate(getLayoutInflater());
-		
+
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+
         setContentView(binding.getRoot());
-		WebView webView = binding.webView;
-		//new WebView(this);
-		
+        WebView webView = binding.webView;
+        // new WebView(this);
+
         // uncomment this part to simulate no-cookie state, for debugging
         CookieManager.getInstance().removeAllCookies(null);
         CookieManager.getInstance().flush();
@@ -55,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         //  webSettings.setBuiltInZoomControls(true);
         // webSettings.setDisplayZoomControls(false);
 
-       // webView.getSettings().setUserAgentString(ApiClient.MOBILE_USER_AGENT);
+        // webView.getSettings().setUserAgentString(ApiClient.MOBILE_USER_AGENT);
 
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
@@ -64,24 +62,21 @@ public class SplashActivity extends AppCompatActivity {
 
         if (BuildConfig.DEBUG) webView.setWebContentsDebuggingEnabled(true);
 
-         webView.loadUrl(ApiClient.BASE_URL);
+        webView.loadUrl(ApiClient.BASE_URL);
 
         // saveCookie();
-    //Intent refreshCookieIntent = new Intent(SplashActivity.this, MainActivity.class);
-        //startActivity(refreshCookieIntent);
-       // finish();
-        
-            webView.setWebViewClient(
-                    new WebViewClient() {
+        // Intent refreshCookieIntent = new Intent(SplashActivity.this, MainActivity.class);
+        // startActivity(refreshCookieIntent);
+        // finish();
 
-                        @Override
-                        public void onPageFinished(WebView view, String url) {
-                            super.onPageFinished(view, url);
+        webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
                 saveCookie();
-                }
-
-                    });
-        
+            }
+        });
     }
 
     private void saveCookie() {
@@ -101,8 +96,8 @@ public class SplashActivity extends AppCompatActivity {
 
         if (cookies == null || !cookies.contains("cf_clearance=")) {
             Log.e("SplashActivitiy", "Not found required cookie: cf_clearance, I think API call won't work");
-          //  closeActivity();
-            	saveCookie();
+            //  closeActivity();
+            saveCookie();
         } else {
             String[] parts = cookies.split(";");
             PreferencesHelper.getInstance().saveCooikes(Arrays.stream(parts).collect(Collectors.toSet()));
