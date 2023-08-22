@@ -63,7 +63,7 @@ public class DetailsAnimeFragmemt extends Fragment
     private BaseAnimeAdapter similarAnimeAdapter;
     private FranchisesAdapter franchisesAdapter;
     private List<ScreenshotModel> screenshotsList = null;
-    private int mode = 1;
+    private int mode = 0;
     private int animeId;
 
     @Override
@@ -78,6 +78,16 @@ public class DetailsAnimeFragmemt extends Fragment
     public View onCreateView(
             @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentDetailsAnimeBinding.inflate(inflater, container, false);
+        /*
+            Window window = getActivity().getWindow();
+               window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        window.setStatusBarColor(Color.TRANSPARENT);
+               window.setNavigationBarColor(Color.TRANSPARENT);
+               window.setNavigationBarContrastEnforced(false);
+               window.setDecorFitsSystemWindows(false);
+               window.getDecorView().setSystemUiVisibility(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+               binding.getRoot().setFitsSystemWindows(false);
+            */
         return binding.getRoot();
     }
 
@@ -116,6 +126,12 @@ public class DetailsAnimeFragmemt extends Fragment
                 case DONE:
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                    break;
+                case NO_NETTWORK:
+                    binding.clContent.setVisibility(View.GONE);
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.errorMessage.setText("no network");
                     break;
             }
         });

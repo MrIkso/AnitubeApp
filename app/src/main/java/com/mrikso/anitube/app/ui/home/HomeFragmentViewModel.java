@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.model.ActionModel;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
@@ -18,6 +19,7 @@ import com.mrikso.anitube.app.model.SimpleModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.utils.InternetConnection;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -74,6 +76,10 @@ public class HomeFragmentViewModel extends ViewModel {
     }
 
     private void loadData() {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(LoadState.NO_NETTWORK);
+            return;
+        }
 
         Disposable disposable = repository
                 .getHome()

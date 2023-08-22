@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.utils;
 
+import android.util.Log;
+
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.model.SimpleModel;
@@ -97,12 +99,15 @@ public class ParserUtils {
     }
 
     public static String normaliseImageUrl(String rawUrl) {
-        if (rawUrl.startsWith("//")) {
+        Log.i("ParserUtils", "rawUrl:" + rawUrl);
+        if (rawUrl.startsWith(ApiClient.BASE_URL)) {
+            return rawUrl;
+        } else if (rawUrl.startsWith("//")) {
             return "https:" + rawUrl;
         } else if (rawUrl.startsWith("/")) {
             return ApiClient.BASE_URL + rawUrl;
         }
-        return rawUrl;
+        return ApiClient.BASE_URL + "/" + rawUrl;
     }
 
     public static void parseDleHash(String data) {

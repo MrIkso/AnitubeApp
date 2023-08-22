@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <public />
-
     <public name="YouTubeOverlay_yt_playerView" type="attr" />
     <public name="YouTubeOverlay_yt_seekSeconds" type="attr" />
     <public name="YouTubeOverlay_yt_animationDuration" type="attr" />

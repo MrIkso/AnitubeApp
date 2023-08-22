@@ -54,6 +54,10 @@ public class HomePageParser {
         genresList.clear();
         calendarList.clear();
 
+        //		if(doc.select("div.top") != null){
+        //			state = LoadState.ERROR;
+        //			return;
+        //		}
         ParserUtils.parseDleHash(doc.html());
         parseUserData(doc);
 
@@ -90,7 +94,7 @@ public class HomePageParser {
                     .selectFirst("div.text_content")
                     .getElementsByTag("a")
                     .text();
-            // Log.d(TAG, urlPoster + " " + imgUrl + " " + name);
+            Log.d(TAG, urlPoster + " " + animeUrl + " " + animeTitle);
             bestAnimeList.add(new BaseAnimeModel(ParserUtils.getAnimeId(animeUrl), animeTitle, urlPoster, animeUrl));
         }
 

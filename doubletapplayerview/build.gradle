@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 
 android {
 	namespace 'com.mrikso.player'
-	compileSdk 33
-	buildToolsVersion "33.0.0"
+	compileSdk 34
+	buildToolsVersion "34.0.0"
 
 	defaultConfig {
 		minSdkVersion 16
@@ -43,5 +43,6 @@ android {
 		implementation"androidx.media3:media3-exoplayer-rtsp:$media3_version"
 		// For building media playback UIs
 		implementation "androidx.media3:media3-ui:$media3_version"
+
 	}
 }

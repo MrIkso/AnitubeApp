@@ -44,7 +44,7 @@ public class ChangeAnimeStatusDialog extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int mode = getArguments().getInt(MODE_NUMBER, 1);
+        int mode = getArguments().getInt(MODE_NUMBER, 0);
         setCheckedRadioButton(mode);
         if (listener != null) {
             sendChekedResult();

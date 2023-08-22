@@ -39,12 +39,12 @@ import androidx.media3.common.PlaybackException;
 import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackSelectionParameters;
-import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 
+import com.github.anilbeesetti.nextlib.ffcodecs.NextRenderersFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.common.base.Strings;
@@ -259,7 +259,10 @@ public class PlayerActivity extends AppCompatActivity {
         ((DoubleTapPlayerView) playerView).setDoubleTapEnabled(true);
 
         playerView.setLocked(isLock);
-        var renderersFactory = new DefaultRenderersFactory(this).setEnableDecoderFallback(true);
+        var renderersFactory = new NextRenderersFactory(this)
+                .setEnableDecoderFallback(true)
+                .setExtensionRendererMode(NextRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
+        // new DefaultRenderersFactory(this).setEnableDecoderFallback(true);
 
         exoPlayer = new ExoPlayer.Builder(this, renderersFactory)
                 .setSeekBackIncrementMs(INCREMENT_MILLIS)

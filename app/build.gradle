@@ -7,8 +7,8 @@ plugins {
 }
 
 android {
-	compileSdk 33
-	buildToolsVersion "33.0.0"
+	compileSdk 34
+	buildToolsVersion "34.0.0"
 	namespace = "com.mrikso.anitube.app"
 
 	defaultConfig {
@@ -98,10 +98,10 @@ dependencies {
 	implementation 'com.github.MZCretin:ExpandableTextView:v1.6.1-x'
 
 	constraints {
-		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.21") {
+		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0") {
 			because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
 		}
-		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21") {
+		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0") {
 			because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
 		}
 	}
@@ -156,6 +156,8 @@ dependencies {
 	// Utility
 	implementation 'com.blankj:utilcodex:1.31.1'
 	implementation 'io.lindstrom:m3u8-parser:0.24'
+	implementation 'com.github.anilbeesetti:nextlib:v0.2.0'
+
 	// newpipe yt taken from https://github.com/TeamNewPipe/NewPipe/blob/dev/app/build.gradle#L204
 	implementation 'com.github.TeamNewPipe:NewPipeExtractor:8495ad619e'
 

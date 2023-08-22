@@ -13,6 +13,7 @@ import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.parser.DetailsAnimeParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.FileCache;
+import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -56,6 +57,10 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     }
 
     public void loadAnime(String url) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(LoadState.NO_NETTWORK);
+            return;
+        }
         Disposable disposable = repository
                 .getPage(url)
                 .subscribeOn(Schedulers.io())

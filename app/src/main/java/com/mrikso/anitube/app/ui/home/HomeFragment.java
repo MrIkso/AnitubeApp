@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //    Log.i(TAG, "onCreate");
-        viewModel = new ViewModelProvider(getActivity()).get(HomeFragmentViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(HomeFragmentViewModel.class);
         viewModel.loadHome();
     }
 
@@ -194,6 +194,12 @@ public class HomeFragment extends Fragment
                     binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                     binding.homeContent.setVisibility(View.VISIBLE);
                     break;
+                case NO_NETTWORK:
+                    binding.homeContent.setVisibility(View.GONE);
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.errorMessage.setText("no network");
+                    break;
             }
         });
 
@@ -221,7 +227,6 @@ public class HomeFragment extends Fragment
         });
         viewModel.getNewACollections().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-
                 collectionsAdapter.submitList(results);
             }
         });

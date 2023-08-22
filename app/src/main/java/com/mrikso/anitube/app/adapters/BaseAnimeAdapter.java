@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.mrikso.anitube.app.databinding.ItemBestAnimeBinding;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
-import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ParserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,6 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
     private List<BaseAnimeModel> results = new ArrayList<>();
 
     private OnItemClickListener listener;
-    private ItemBestAnimeBinding binding;
 
     public void setResults(List<BaseAnimeModel> results) {
         this.results.addAll(results);
@@ -37,7 +36,7 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        binding = ItemBestAnimeBinding.inflate(inflater, parent, false);
+        ItemBestAnimeBinding binding = ItemBestAnimeBinding.inflate(inflater, parent, false);
         return new ViewHolder(binding);
     }
 
@@ -64,7 +63,7 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
             binding.tvTitle.setText(episode.getTitle());
 
             Glide.with(binding.getRoot().getContext())
-                    .load(ApiClient.BASE_URL + episode.getPosterUrl())
+                    .load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(new RequestListener<Drawable>() {
                         @Override
