@@ -69,7 +69,7 @@ dependencies {
 
 	// Paging
 	def paging_version = "3.1.1"
-	def room_version = "2.5.1"
+	def room_version = "2.6.0-alpha03"
 	def lifecycle_version = "2.6.0"
 	def navigation_version = "2.5.3"
 
