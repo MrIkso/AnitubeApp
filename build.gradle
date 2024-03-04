@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-	ext.hilt_version = "2.46.1"
-	ext.nav_version = "2.5.3"
+	ext.hilt_version = "2.50"
+	ext.nav_version = "2.7.6"
 
 	dependencies {
 		classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
@@ -10,11 +10,11 @@ buildscript {
 }
 
 plugins {
-	id 'com.android.application' version '8.0.1' apply false
-	id 'com.android.library' version '8.0.1' apply false
-	id 'org.jetbrains.kotlin.android' version '1.9.0' apply false
-	id "com.diffplug.spotless" version "6.5.0"
-	id "com.github.ben-manes.versions" version "0.46.0"
+	id 'com.android.application' version '8.2.1' apply false
+	id 'com.android.library' version '8.2.1' apply false
+	id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
+	id "com.diffplug.spotless" version "6.24.0"
+	id "com.github.ben-manes.versions" version "0.49.0"
 }
 
 spotless {
@@ -35,4 +35,8 @@ spotless {
 				'junit', 'net', 'io', 'org', 'okhttp3', 'retrofit2',
 				'java', 'javax', '', 'static *'
 	}
+}
+
+task cleanBuild(type: Delete) {
+	delete rootProject.buildDir
 }

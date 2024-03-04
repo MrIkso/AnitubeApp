@@ -32,7 +32,7 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "AhsdiVideosExtractor";
     private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
     private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
-
+	
     public AhsdiVideosExtractor(String url, OkHttpClient client) {
         super(url, client);
     }

@@ -82,6 +82,10 @@ public class DirectVideoUrlParser {
             } else if (iframeDomain.contains("moonanime.art")) {
                 Single<Pair<LoadState, VideoLinksModel>> model = new MoonAnimeArtExtractor(iframeUrl).parse();
                 return model;
+            } else if (iframeDomain.contains("monstro.site")) {
+				//плеєр монстр
+                Single<Pair<LoadState, VideoLinksModel>> model = new csstExtractor(iframeUrl).parse();
+                return model;
             } else if (iframeDomain.contains("veoh.com")) {
                 Single<Pair<LoadState, VideoLinksModel>> model = new VeohVideodExtractor(iframeUrl).parse();
                 return model;

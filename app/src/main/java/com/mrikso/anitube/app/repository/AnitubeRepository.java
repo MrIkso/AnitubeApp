@@ -50,9 +50,8 @@ public class AnitubeRepository {
         return anitubeApi.changeAnimeStatus(animeId, viewStatus);
     }
 
-    public Single<String> getPlaylist(int animeId) {
-        long currentTimeMillis = new Date().getTime();
-        return anitubeApi.getPlaylist(animeId, "playlist", currentTimeMillis);
+    public Single<String> getPlaylist(int animeId,String dleHash ) {
+        return anitubeApi.getPlaylist(animeId, "playlist", dleHash);
     }
 
     public Single<CommentsResponse> getCommentsForAnime(int page, int animeId) {

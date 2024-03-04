@@ -59,7 +59,7 @@ public class SplashActivity extends AppCompatActivity {
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-
+		
         if (BuildConfig.DEBUG) webView.setWebContentsDebuggingEnabled(true);
 
         webView.loadUrl(ApiClient.BASE_URL);
@@ -81,6 +81,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void saveCookie() {
         Handler handler = new Handler();
+		
         handler.postDelayed(
                 () -> {
                     checkCookie();

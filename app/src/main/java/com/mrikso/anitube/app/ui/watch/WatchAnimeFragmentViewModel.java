@@ -17,6 +17,7 @@ import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.FileCache;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.viewmodel.ListRepository;
 import com.mrikso.treeview.TreeItem;
 
@@ -76,7 +77,7 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
     private void loadData(boolean isHavePlaylistsAjax, int animeId, String url) {
         if (isHavePlaylistsAjax) {
             Disposable disposable = repository
-                    .getPlaylist(animeId)
+                    .getPlaylist(animeId, PreferencesHelper.getInstance().getDleHash())
                     .subscribeOn(Schedulers.io())
                     .doOnSubscribe(new Consumer<Disposable>() {
                         @Override

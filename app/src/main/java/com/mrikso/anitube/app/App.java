@@ -35,4 +35,5 @@ public class App extends Application {
     public PreferencesHelper getPreferenceHelper() {
         return this.preferenceHelper;
     }
+	
 }

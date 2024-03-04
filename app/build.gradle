@@ -14,7 +14,7 @@ android {
 	defaultConfig {
 		applicationId "com.mrikso.anitube.app"
 		minSdk 28
-		targetSdk 33
+		targetSdk 34
 		versionCode 1
 		versionName "1.0.0"
 		archivesBaseName = "AnitubeApp-$versionName($versionCode)"
@@ -68,14 +68,14 @@ android {
 dependencies {
 
 	// Paging
-	def paging_version = "3.1.1"
-	def room_version = "2.6.0-alpha03"
-	def lifecycle_version = "2.6.0"
-	def navigation_version = "2.5.3"
+	def paging_version = "3.2.1"
+	def room_version = "2.6.1"
+	def lifecycle_version = "2.7.0"
+	def navigation_version = "2.7.6"
 
 	// AndroidX
 	implementation 'androidx.appcompat:appcompat:1.6.1'
-	implementation 'com.google.android.material:material:1.9.0'
+	implementation 'com.google.android.material:material:1.11.0'
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 	// navigation
@@ -97,15 +97,6 @@ dependencies {
 
 	implementation 'com.github.MZCretin:ExpandableTextView:v1.6.1-x'
 
-	constraints {
-		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0") {
-			because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
-		}
-		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0") {
-			because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
-		}
-	}
-
 	// Retrofit
 	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 	implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
@@ -119,13 +110,13 @@ dependencies {
 
 	// RxJava
 	implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
-	implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+	implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
 
 	implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
 
 	// Glide
-	implementation 'com.github.bumptech.glide:glide:4.15.1'
-	kapt 'com.github.bumptech.glide:compiler:4.15.1'
+	implementation 'com.github.bumptech.glide:glide:4.16.0'
+	kapt 'com.github.bumptech.glide:compiler:4.16.0'
 
 	implementation "androidx.paging:paging-runtime:$paging_version"
 	// RxJava3 support for paging library
@@ -135,7 +126,7 @@ dependencies {
 	//	implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
 	//	implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
 	//implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.5'
-	def media3_version = '1.0.2'
+	def media3_version = '1.2.0'
 	// For media playback using ExoPlayer
 	implementation "androidx.media3:media3-exoplayer:$media3_version"
 	implementation "androidx.media3:media3-session:$media3_version"
@@ -155,11 +146,11 @@ dependencies {
 
 	// Utility
 	implementation 'com.blankj:utilcodex:1.31.1'
-	implementation 'io.lindstrom:m3u8-parser:0.24'
-	implementation 'com.github.anilbeesetti:nextlib:v0.2.0'
+	implementation 'io.lindstrom:m3u8-parser:0.27'
+	implementation 'com.github.anilbeesetti:nextlib:v0.6.0'
 
 	// newpipe yt taken from https://github.com/TeamNewPipe/NewPipe/blob/dev/app/build.gradle#L204
-	implementation 'com.github.TeamNewPipe:NewPipeExtractor:8495ad619e'
+	implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.23.1'
 
 	// TouchImageView
 	implementation "com.github.MikeOrtiz:TouchImageView:3.3"

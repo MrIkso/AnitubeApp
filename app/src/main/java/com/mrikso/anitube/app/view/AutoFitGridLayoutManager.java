@@ -22,7 +22,7 @@ public class AutoFitGridLayoutManager extends GridLayoutManager {
             columnWidthChanged = true;
         }
     }
-
+	
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (columnWidthChanged && columnWidth > 0) {
