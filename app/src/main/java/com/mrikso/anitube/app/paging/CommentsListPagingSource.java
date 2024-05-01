@@ -56,7 +56,7 @@ public class CommentsListPagingSource extends RxPagingSource<Integer, CommentMod
     private LoadResult<Integer, CommentModel> toLoadResult(List<CommentModel> data, int page) {
         // Log.i("CommentsListPagingSource", "maxPage" + maxPage);
 
-        return new LoadResult.Page<>(data, null, (data != null && !data.isEmpty()) ? page + 1 : null);
+        return new LoadResult.Page<>(data, null, !data.isEmpty() ? page + 1 : null);
     }
 
     @Nullable

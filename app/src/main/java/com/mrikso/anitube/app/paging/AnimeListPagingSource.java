@@ -55,17 +55,18 @@ public class AnimeListPagingSource extends RxPagingSource<Integer, AnimeReleaseM
                     return new Pair<>(maxPage, data.getAnimeReleases());
                 })
                 .map(animes -> toLoadResult(animes.second, page, animes.first))
-                .doOnError((t) -> {
-                    t.printStackTrace();
-                })
+                .doOnError(Throwable::printStackTrace)
                 .onErrorReturn(LoadResult.Error::new);
     }
 
     // Method to map AnimeReleaseModel to LoadResult object
     private LoadResult<Integer, AnimeReleaseModel> toLoadResult(List<AnimeReleaseModel> data, int page, int maxPage) {
         Log.d("AnimelistPagingSource", "page: " + page + "maxPage: " + maxPage);
-        Integer nextKey = data != null && !data.isEmpty() && (page < maxPage) && (page != maxPage) ? page + 1 : null;
-        return new LoadResult.Page<>(data, null, nextKey);
+        Integer nextKey = data != null && !data.isEmpty() && page < maxPage ? page + 1 : null;
+        if (data != null) {
+            return new LoadResult.Page<>(data, null, nextKey);
+        }
+        return null;
     }
 
     @Nullable

@@ -65,7 +65,7 @@ public class AnimeSearchPagingSource extends RxPagingSource<Integer, AnimeReleas
         //  Log.d("AnimeSearchPagingSource", "toLoadResult:data size " + data.size());
 
         return new LoadResult.Page<>(
-                data, null, (data != null && !data.isEmpty() && page <= maxPage) ? page + 1 : null);
+                data, null, !data.isEmpty() && page <= maxPage ? page + 1 : null);
     }
 
     @Nullable

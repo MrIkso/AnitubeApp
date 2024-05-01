@@ -55,7 +55,7 @@ public class CollectionsPagingSource extends RxPagingSource<Integer, CollectionM
         // Log.i("CollectionsPagingSource", "maxPage" + maxPage);
 
         return new LoadResult.Page<>(
-                data, null, (data != null && !data.isEmpty() && (page <= maxPage)) ? page + 1 : null);
+                data, null, !data.isEmpty() && page <= maxPage ? page + 1 : null);
     }
 
     @Nullable

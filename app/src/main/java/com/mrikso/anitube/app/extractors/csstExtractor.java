@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class csstExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "csstExtractor";
     private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
-    private final String FILE_PATTERN = "\\[([\\d]+p?)\\](.*)";
+    private final String FILE_PATTERN = "\\[(\\d+p?)](.*)";
 
     public csstExtractor(String ifRame) {
         super(ifRame);
