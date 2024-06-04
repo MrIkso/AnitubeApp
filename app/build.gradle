@@ -57,102 +57,97 @@ android {
 		viewBinding true
 		buildConfig true
 	}
-
-	lintOptions {
+	lint {
 		abortOnError false
 	}
+
 }
 
 dependencies {
 
-	// Paging
-	def paging_version = "3.2.1"
-	def room_version = "2.6.1"
-	def lifecycle_version = "2.7.0"
-
 	// AndroidX
-	implementation 'androidx.appcompat:appcompat:1.6.1'
-	implementation 'com.google.android.material:material:1.11.0'
-	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+	implementation libs.androidx.appcompat
+	implementation libs.material
+	implementation libs.androidx.constraintlayout
+	implementation libs.androidx.swiperefreshlayout
 	// navigation
-	implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-	implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-	implementation 'androidx.core:core-splashscreen:1.0.1'
+	implementation libs.androidx.navigation.fragment.ktx
+	implementation libs.androidx.navigation.ui.ktx
+	implementation libs.androidx.core.splashscreen
 
 	// ViewModel
-	implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+	implementation libs.androidx.lifecycle.viewmodel.ktx
 	// LiveData
-	implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-	implementation 'androidx.preference:preference-ktx:1.2.1'
+	implementation libs.androidx.lifecycle.livedata.ktx
+	implementation libs.androidx.preference.ktx
 
 	// Room
-	implementation "androidx.room:room-runtime:$room_version"
-	implementation "androidx.room:room-paging:$room_version"
-	implementation "androidx.room:room-rxjava3:$room_version"
-	ksp "androidx.room:room-compiler:$room_version"
+	implementation libs.androidx.room.runtime
+	implementation libs.androidx.room.paging
+	implementation libs.androidx.room.rxjava3
+	ksp libs.androidx.room.compiler
 
-	implementation 'com.github.MZCretin:ExpandableTextView:v1.6.1-x'
+	implementation libs.expandabletextview
 
 	// Retrofit
-	implementation 'com.squareup.retrofit2:retrofit:2.11.0'
-	implementation 'com.squareup.retrofit2:converter-scalars:2.11.0'
-	implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
-	implementation('com.squareup.okhttp3:logging-interceptor:4.12.0')
+	implementation libs.retrofit
+	implementation libs.converter.scalars
+	implementation libs.converter.gson
+	implementation libs.logging.interceptor
 	// jsoup
-	implementation 'org.jsoup:jsoup:1.17.2'
+	implementation libs.jsoup
 
 	// Gson
-	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation libs.gson
 
 	// RxJava
-	implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
-	implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
+	implementation libs.rxandroid
+	implementation libs.rxjava
 
-	implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
+	implementation libs.rxjava3.retrofit.adapter
 
 	// Glide
-	implementation 'com.github.bumptech.glide:glide:4.16.0'
-	ksp 'com.github.bumptech.glide:compiler:4.16.0'
+	implementation libs.glide
+	ksp libs.compiler
 
-	implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+	implementation libs.androidx.paging.runtime.ktx
 	// RxJava3 support for paging library
-	implementation "androidx.paging:paging-rxjava3:$paging_version"
+	implementation libs.androidx.paging.rxjava3
 
 	//Exoplayer
 	//	implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
 	//	implementation 'com.google.android.exoplayer:exoplayer-core:2.18.5'
 	//implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.5'
-	def media3_version = '1.3.1'
+
 	// For media playback using ExoPlayer
-	implementation "androidx.media3:media3-exoplayer:$media3_version"
-	implementation "androidx.media3:media3-session:$media3_version"
-	implementation "androidx.media3:media3-datasource:$media3_version"
-	implementation "androidx.media3:media3-decoder:$media3_version"
-	implementation "androidx.media3:media3-common:$media3_version"
-	implementation "androidx.media3:media3-exoplayer-dash:$media3_version"
-	implementation "androidx.media3:media3-exoplayer-hls:$media3_version"
-	implementation "androidx.media3:media3-exoplayer-smoothstreaming:$media3_version"
-	implementation"androidx.media3:media3-exoplayer-rtsp:$media3_version"
+	implementation libs.androidx.media3.exoplayer
+	implementation libs.androidx.media3.session
+	implementation libs.androidx.media3.datasource
+	implementation libs.androidx.media3.decoder
+	implementation libs.androidx.media3.common
+	implementation libs.androidx.media3.exoplayer.dash
+	implementation libs.androidx.media3.exoplayer.hls
+	implementation libs.androidx.media3.exoplayer.smoothstreaming
+	implementation libs.androidx.media3.exoplayer.rtsp
 	// For building media playback UIs
-	implementation "androidx.media3:media3-ui:$media3_version"
+	implementation libs.androidx.media3.ui
 
 	// Dagger - Hilt
-	implementation "com.google.dagger:hilt-android:$hilt_version"
-	ksp "com.google.dagger:hilt-android-compiler:$hilt_version"
+	implementation libs.hilt.android
+	ksp libs.hilt.android.compiler
 
 	// Utility
-	implementation 'com.blankj:utilcodex:1.31.1'
-	implementation 'io.lindstrom:m3u8-parser:0.27'
-	implementation 'com.github.anilbeesetti:nextlib:v0.6.0'
+	implementation libs.utilcodex
+	implementation libs.m3u8.parser
+	implementation libs.nextlib
 
 	// newpipe yt taken from https://github.com/TeamNewPipe/NewPipe/blob/dev/app/build.gradle#L204
-	implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.24.0'
+	implementation libs.newpipeextractor
 
 	// TouchImageView
-	implementation "com.github.MikeOrtiz:TouchImageView:3.3"
+	implementation libs.touchimageview
 
-	implementation 'de.hdodenhof:circleimageview:3.1.0'
+	implementation libs.circleimageview
 
 	implementation project(path: ":treeview")
 	implementation project(path: ":bottomsheetMenu")
