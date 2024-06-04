@@ -20,7 +20,7 @@ public class TreeItem<T> implements Serializable {
 
     public TreeItem(@NonNull T value) {
         this.value = value;
-        this.children = new TreeItemChildrenList<T>(this);
+        this.children = new TreeItemChildrenList<>(this);
     }
 
     public boolean isExpanded() {
@@ -70,6 +70,7 @@ public class TreeItem<T> implements Serializable {
     }
     */
 
+    @NonNull
     @Override
     public String toString() {
         return printTree(0);
@@ -78,16 +79,16 @@ public class TreeItem<T> implements Serializable {
     private static final int indent = 2;
 
     private String printTree(int increment) {
-        String s = "";
-        String inc = "";
+        StringBuilder s;
+        StringBuilder inc = new StringBuilder();
         for (int i = 0; i < increment; ++i) {
-            inc = inc + " ";
+            inc.append(" ");
         }
-        s = inc + value;
+        s = new StringBuilder(inc.toString() + value);
         for (TreeItem<T> child : children) {
-            s += "\n" + "depth: " + child.getDepth() + child.printTree(increment + indent);
+            s.append("\n" + "depth: ").append(child.getDepth()).append(child.printTree(increment + indent));
         }
-        return s;
+        return s.toString();
     }
 
     private void ensureSelfIsExpandable() {

@@ -7,6 +7,7 @@ import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.paging.AnimeReleasePagingSource;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
@@ -26,7 +27,7 @@ public class AnimeListRepository {
         this.mapper = mapper;
     }
 
-    public Subject<Pair<String, String>> getUserData() {
+    public UserModel getUserData() {
         return mapper.getUserData();
     }
 

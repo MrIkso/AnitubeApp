@@ -2,6 +2,8 @@ package com.mrikso.anitube.app.network;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import okhttp3.Interceptor;
@@ -13,6 +15,7 @@ import java.util.Set;
 
 public class AddCookiesInterceptor implements Interceptor {
 
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();

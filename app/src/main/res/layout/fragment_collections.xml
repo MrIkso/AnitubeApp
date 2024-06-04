@@ -9,6 +9,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@id/container"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <com.google.android.material.appbar.AppBarLayout
@@ -61,6 +62,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include
+        tools:visibility="gone"
         android:id="@+id/load_state_layout"
         layout="@layout/load_state_layout" />
 

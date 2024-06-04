@@ -1,4 +1,4 @@
-package com.mrikso.anitube.app.ui.activity;
+package com.mrikso.anitube.app.ui.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import androidx.core.splashscreen.SplashScreen;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.databinding.ActivitySplashBinding;
 import com.mrikso.anitube.app.network.ApiClient;
-import com.mrikso.anitube.app.ui.MainActivity;
+import com.mrikso.anitube.app.ui.main.MainActivity;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import java.util.Arrays;

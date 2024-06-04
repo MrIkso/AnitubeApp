@@ -9,6 +9,7 @@ import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.UserModel;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -29,7 +30,7 @@ public class AnimeListFragmentViewModel extends ViewModel {
     private AnimeListRepository repository;
     private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
-    private MutableLiveData<Pair<String, String>> userData = new MutableLiveData<>(null);
+    private MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
 
     @Inject
     public AnimeListFragmentViewModel(AnimeListRepository repository) {
@@ -41,19 +42,21 @@ public class AnimeListFragmentViewModel extends ViewModel {
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
         animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
 
-        compositeDisposable.add(animePagingDataFlowable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(animePagingData::setValue));
-        compositeDisposable.add(repository
+        /*compositeDisposable.add(repository
                 .getUserData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(results -> {
-                    if (results != null && results.first != null && results.second != null) {
-                        userData.postValue(results);
-                    }
-                }));
+                    if (results != null) {*/
+                        userData.postValue(repository
+                                .getUserData());
+                   // }
+               // }));
+
+        compositeDisposable.add(animePagingDataFlowable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(animePagingData::setValue));
     }
 
     @Override
@@ -66,7 +69,7 @@ public class AnimeListFragmentViewModel extends ViewModel {
         return animePagingData;
     }
 
-    public LiveData<Pair<String, String>> getUserData() {
+    public LiveData<UserModel> getUserData() {
         return userData;
     }
 }

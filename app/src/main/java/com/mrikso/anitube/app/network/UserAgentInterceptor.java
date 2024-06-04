@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.network;
 
+import androidx.annotation.NonNull;
+
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -15,6 +17,7 @@ public class UserAgentInterceptor implements Interceptor {
         this.userAgent = userAgent;
     }
 
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request userAgentRequest =

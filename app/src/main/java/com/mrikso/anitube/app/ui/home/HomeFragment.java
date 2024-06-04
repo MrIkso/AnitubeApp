@@ -29,6 +29,7 @@ import com.mrikso.anitube.app.adapters.BaseAnimeAdapter;
 import com.mrikso.anitube.app.adapters.CollectionsAdapter;
 import com.mrikso.anitube.app.adapters.ReleaseAnimeAdapter;
 import com.mrikso.anitube.app.databinding.FragmentHomeBinding;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -194,7 +195,7 @@ public class HomeFragment extends Fragment
                     binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                     binding.homeContent.setVisibility(View.VISIBLE);
                     break;
-                case NO_NETTWORK:
+                case NO_NETWORK:
                     binding.homeContent.setVisibility(View.GONE);
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
@@ -323,9 +324,9 @@ public class HomeFragment extends Fragment
         Navigation.findNavController(requireView()).navigate(action);
     }
 
-    private void setUserData(Pair<String, String> data) {
-        profileLink = data.second;
-        ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
+    private void setUserData(UserModel data) {
+        profileLink = data.getUserUrl();
+        ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.getUserAvatar()));
 
         // ViewUtils.loadImage(
         //   binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));

@@ -50,6 +50,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -186,6 +187,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
     <include
+        tools:visibility="gone"
         android:layout_gravity="center"
         android:id="@+id/load_state_layout"
         android:layout_width="match_parent"

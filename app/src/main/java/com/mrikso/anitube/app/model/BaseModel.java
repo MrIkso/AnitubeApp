@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public abstract class BaseModel implements Serializable {
@@ -27,6 +29,7 @@ public abstract class BaseModel implements Serializable {
         this.name = name;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "BaseModel[id=" + id + ", name=" + name + "]";

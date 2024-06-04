@@ -228,7 +228,7 @@
         android:id="@+id/nav_collection_detail"
         android:name=".ui.collections.CollectionDetailsFragment"
         android:label="collection detail"
-        tools:layout="@layout/fragment_collection_detail">
+        tools:layout="@layout/fragment_collection_details">
         <argument
             android:name="collection"
             app:argType=".model.CollectionModel" />
@@ -266,6 +266,7 @@
     <fragment
         android:id="@+id/nav_settings"
         android:name=".ui.preferences.SettingsFragment"
+        tools:layout="@layout/fragment_preferences"
         android:label="@string/settings" />
 
 </navigation>

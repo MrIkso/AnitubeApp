@@ -83,17 +83,17 @@ public class ProfileFragment extends Fragment {
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
         binding.toolbar.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.action_logout:
-                    DialogUtils.showConfirmation(
-                            requireContext(),
-                            R.string.dialog_confirm_title,
-                            R.string.dialog_confirm_logout,
-                            () -> logout());
-                    return true;
-                case R.id.action_settings:
-                    Navigation.findNavController(requireView()).navigate(R.id.nav_settings);
-                    return true;
+            int itemId = menuItem.getItemId();
+            if (itemId == R.id.action_logout) {
+                DialogUtils.showConfirmation(
+                        requireContext(),
+                        R.string.dialog_confirm_title,
+                        R.string.dialog_confirm_logout,
+                        this::logout);
+                return true;
+            } else if (itemId == R.id.action_settings) {
+                Navigation.findNavController(requireView()).navigate(R.id.nav_settings);
+                return true;
             }
             return true;
         });

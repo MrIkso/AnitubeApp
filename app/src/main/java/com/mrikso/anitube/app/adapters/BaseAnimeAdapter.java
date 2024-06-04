@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.ViewHolder> {
-    private List<BaseAnimeModel> results = new ArrayList<>();
+    private final List<BaseAnimeModel> results = new ArrayList<>();
 
     private OnItemClickListener listener;
 
@@ -52,7 +52,7 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ItemBestAnimeBinding binding;
+        private final ItemBestAnimeBinding binding;
 
         public ViewHolder(@NonNull ItemBestAnimeBinding binding) {
             super(binding.getRoot());
@@ -65,12 +65,12 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
             Glide.with(binding.getRoot().getContext())
                     .load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .listener(new RequestListener<Drawable>() {
+                    .listener(new RequestListener<>() {
                         @Override
                         public boolean onLoadFailed(
                                 @Nullable GlideException e,
                                 Object model,
-                                Target<Drawable> target,
+                                @NonNull Target<Drawable> target,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
                             return false;
@@ -78,10 +78,10 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
 
                         @Override
                         public boolean onResourceReady(
-                                Drawable resource,
-                                Object model,
+                                @NonNull Drawable resource,
+                                @NonNull Object model,
                                 Target<Drawable> target,
-                                DataSource dataSource,
+                                @NonNull DataSource dataSource,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
                             return false;

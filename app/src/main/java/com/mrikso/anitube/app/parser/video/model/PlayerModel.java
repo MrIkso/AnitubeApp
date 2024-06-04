@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.parser.video.model;
 
+import androidx.annotation.NonNull;
+
 import com.mrikso.anitube.app.model.BaseModel;
 
 import java.io.Serializable;
@@ -21,6 +23,7 @@ public class PlayerModel extends BaseModel implements Serializable {
         return this.episodes;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + " PlayerModel[episodes=" + episodes + "]";

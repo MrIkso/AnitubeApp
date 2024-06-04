@@ -10,7 +10,7 @@
     app:behavior_hideable="true"
     app:behavior_peekHeight="200dp"
     app:layout_behavior="@string/bottom_sheet_behavior"
-	style="@style/Widget.Material3.BottomSheet">>
+	style="@style/Widget.Material3.BottomSheet">
 	
     <View
         android:id="@+id/viewHand"

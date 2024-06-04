@@ -24,6 +24,7 @@ import com.google.android.material.progressindicator.IndeterminateDrawable;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.FragmentLoginBinding;
 import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.model.UserModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -71,10 +72,9 @@ public class LoginFragment extends Fragment {
 
                     @Override
                     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_settings:
-                                Navigation.findNavController(requireView()).navigate(R.id.nav_settings);
-                                return true;
+                        if (menuItem.getItemId() == R.id.action_settings) {
+                            Navigation.findNavController(requireView()).navigate(R.id.nav_settings);
+                            return true;
                         }
                         return false;
                     }
@@ -134,12 +134,12 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void openLoginFragment(Pair<String, String> userData) {
+    private void openLoginFragment(UserModel userData) {
         Toast.makeText(requireContext(), getText(R.string.login_successful_login), Toast.LENGTH_SHORT)
                 .show();
 
         LoginFragmentDirections.ActionNavLoginToNavProfile action =
-                LoginFragmentDirections.actionNavLoginToNavProfile(userData.second);
+                LoginFragmentDirections.actionNavLoginToNavProfile(userData.getUserUrl());
         Navigation.findNavController(requireView()).navigate(action);
     }
 

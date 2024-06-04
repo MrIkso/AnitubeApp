@@ -1,12 +1,6 @@
-package com.mazenrashed
+package com.mrikso
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +10,10 @@ import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.mazenrashed.bottomsheetmenulib.MenuBottomSheetAdapter
-import com.mazenrashed.bottomsheetmenulib.MenuBottomSheetItem
-import com.mazenrashed.bottomsheetmenulib.R
-import com.mazenrashed.bottomsheetmenulib.base.BaseAdapter
-import com.mazenrashed.bottomsheetmenulib.databinding.BottomSheetMenuBinding
+import com.mrikso.bottomsheetmenulib.MenuBottomSheetAdapter
+import com.mrikso.bottomsheetmenulib.MenuBottomSheetItem
+import com.mrikso.bottomsheetmenulib.base.BaseAdapter
+import com.mrikso.bottomsheetmenulib.databinding.BottomSheetMenuBinding
 
 
 class MenuBottomSheet : BottomSheetDialogFragment() {

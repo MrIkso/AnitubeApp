@@ -58,7 +58,7 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
 
     public void loadAnime(String url) {
         if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
-            loadSate.setValue(LoadState.NO_NETTWORK);
+            loadSate.setValue(LoadState.NO_NETWORK);
             return;
         }
         Disposable disposable = repository

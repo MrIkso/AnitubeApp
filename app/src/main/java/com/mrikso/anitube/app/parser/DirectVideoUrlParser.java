@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.extractors.AhsdiVideosExtractor;
+import com.mrikso.anitube.app.extractors.BaseVideoLinkExtracror;
 import com.mrikso.anitube.app.extractors.FourSharedExtractor;
 import com.mrikso.anitube.app.extractors.GoogleDriveExtractor;
 import com.mrikso.anitube.app.extractors.MP4UploadExtractor;
@@ -30,11 +31,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 public class DirectVideoUrlParser {
-    private static String TAG = "DirectVideoUrlParser";
+    private static final String TAG = "DirectVideoUrlParser";
     private final OkHttpClient client;
     private final DomainsModel domainsModel;
 
@@ -62,49 +64,41 @@ public class DirectVideoUrlParser {
     public Single<Pair<LoadState, VideoLinksModel>> getDirectUrl(String iframeUrl) {
         try {
 
-            String iframeDomain = Utils.getDomainFromURL(iframeUrl).replace("https://", "");
+            String iframeDomain = Objects.requireNonNull(Utils.getDomainFromURL(iframeUrl)).replace("https://", "");
             Log.i(TAG, "iframeurl: " + iframeUrl + " iframeDomain: " + iframeDomain);
+            BaseVideoLinkExtracror extracror = null;
+
             if (iframeDomain.contains("tortuga.wtf")) {
-                Single<Pair<LoadState, VideoLinksModel>> m3u8Url = new AhsdiVideosExtractor(iframeUrl, client).parse();
-                return m3u8Url;
+                 extracror = new AhsdiVideosExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("ashdi.vip")) {
-                Single<Pair<LoadState, VideoLinksModel>> m3u8Url = new AhsdiVideosExtractor(iframeUrl, client).parse();
-                return m3u8Url;
+                extracror = new AhsdiVideosExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("udrop.com")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new UdropExtractor(iframeUrl, client).parse();
-                return model;
+                extracror = new UdropExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("csst.online")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new csstExtractor(iframeUrl).parse();
-                return model;
+                extracror = new csstExtractor(iframeUrl);
             } else if (iframeDomain.contains("www.mp4upload.com")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new MP4UploadExtractor(iframeUrl, client).parse();
-                return model;
+                extracror = new MP4UploadExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("moonanime.art")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new MoonAnimeArtExtractor(iframeUrl).parse();
-                return model;
+                extracror = new MoonAnimeArtExtractor(iframeUrl);
             } else if (iframeDomain.contains("monstro.site")) {
-				//плеєр монстр
-                Single<Pair<LoadState, VideoLinksModel>> model = new csstExtractor(iframeUrl).parse();
-                return model;
+                //плеєр монстр
+                extracror = new csstExtractor(iframeUrl);
             } else if (iframeDomain.contains("veoh.com")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new VeohVideodExtractor(iframeUrl).parse();
-                return model;
+                extracror = new VeohVideodExtractor(iframeUrl);
             } else if (iframeDomain.contains("4shared.com")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new FourSharedExtractor(iframeUrl, client).parse();
-                return model;
+                extracror = new FourSharedExtractor(iframeUrl, client);
             } else if (domainsModel.getPeertube().contains(iframeDomain)) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new PeertubeExtractor(iframeUrl, client).parse();
-                return model;
+                extracror = new PeertubeExtractor(iframeUrl, client);
             } else if (domainsModel.getStreamsb().contains(iframeDomain)) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new StreamSBExtractor(iframeUrl, client).parse();
-                return model;
+                extracror = new StreamSBExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("drive.google.com")) {
-                Single<Pair<LoadState, VideoLinksModel>> model = new GoogleDriveExtractor(iframeUrl).parse();
-                return model;
-            } else {
-                Log.i(TAG, "unsupport, iframeurl: " + iframeUrl);
+                extracror = new GoogleDriveExtractor(iframeUrl);
+            }else {
+                Log.i(TAG, "unsupported, iframe: " + iframeUrl);
                 return Single.just(new Pair<>(LoadState.ERROR, new VideoLinksModel(iframeUrl)));
             }
+
+            return extracror.parse();
         } catch (Exception err) {
             err.printStackTrace();
             return Single.just(new Pair<>(LoadState.ERROR, new VideoLinksModel(iframeUrl)));

@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mrikso.anitube.app.model.AnimeListReleases;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
@@ -42,7 +43,7 @@ public class AnimeReleasesMapper {
         return releases;
     }
 
-    public Subject<Pair<String, String>> getUserData() {
+    public UserModel getUserData() {
         return homePage.getUser();
     }
 }

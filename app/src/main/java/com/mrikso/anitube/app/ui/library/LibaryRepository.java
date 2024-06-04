@@ -11,9 +11,14 @@ import com.mrikso.anitube.app.paging.AnimeListPagingSource;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
 
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import org.jsoup.nodes.Document;
+
+
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -29,24 +34,26 @@ public class LibaryRepository {
     }
 
     public Single<Document> getPaggingData(int page, int listType) {
+        String userName = mapper.getUserData().getUserName();
         switch (listType) {
             case AnimeListType.LIST_ALL:
-                return apiService.getAllMyLists(page);
+                return apiService.getAllMyLists(userName, page);
             case AnimeListType.LIST_ADAND:
-                return apiService.getAbandList(page);
+                return apiService.getAbandList(userName, page);
             case AnimeListType.LIST_FAVORITES:
                 return apiService.getFavorites(page);
             case AnimeListType.LIST_PONED:
-                return apiService.getPonedList(page);
+                return apiService.getPonedList(userName, page);
             case AnimeListType.LIST_SEEN:
-                return apiService.getSeenList(page);
+                return apiService.getSeenList(userName, page);
             case AnimeListType.LIST_WATCH:
-                return apiService.getWatchList(page);
+                return apiService.getWatchList(userName, page);
             case AnimeListType.LIST_WILL:
-                return apiService.getWllList(page);
+                return apiService.getWllList(userName, page);
         }
         return null;
     }
+
 
     public Flowable<PagingData<AnimeReleaseModel>> getAnimeListByPage(int listType) {
         // Create new paging config

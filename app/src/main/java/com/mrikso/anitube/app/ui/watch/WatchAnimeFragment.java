@@ -18,7 +18,7 @@ import androidx.navigation.Navigation;
 
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.google.android.material.chip.Chip;
-import com.mazenrashed.bottomsheetmenulib.MenuBottomSheet;
+import com.mrikso.bottomsheetmenulib.MenuBottomSheet;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.EpisodesAdapter;
@@ -200,22 +200,16 @@ public class WatchAnimeFragment extends Fragment
     }
 
     private void handleMenuClick(int resId, String url) {
-        switch (resId) {
-            case R.id.action_share:
-                IntentUtils.shareLink(requireContext(), url);
-                break;
-            case R.id.action_copy_url:
-                ClipboardUtils.copyText(url);
-                break;
-            case R.id.action_open_in_browser:
-                IntentUtils.openInBrowser(requireContext(), url);
-                break;
-            case R.id.action_set_watch_status:
-                sharedViewModel.addOrUpdateWatchedEpisode(currentEpisode, true, animeModel);
-                break;
-            case R.id.action_set_unwatch_status:
-                sharedViewModel.addOrUpdateWatchedEpisode(currentEpisode, false, animeModel);
-                break;
+        if (resId == R.id.action_share) {
+            IntentUtils.shareLink(requireContext(), url);
+        } else if (resId == R.id.action_copy_url) {
+            ClipboardUtils.copyText(url);
+        } else if (resId == R.id.action_open_in_browser) {
+            IntentUtils.openInBrowser(requireContext(), url);
+        } else if (resId == R.id.action_set_watch_status) {
+            sharedViewModel.addOrUpdateWatchedEpisode(currentEpisode, true, animeModel);
+        } else if (resId == R.id.action_set_unwatch_status) {
+            sharedViewModel.addOrUpdateWatchedEpisode(currentEpisode, false, animeModel);
         }
     }
 

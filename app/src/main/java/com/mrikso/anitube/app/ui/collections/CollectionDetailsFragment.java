@@ -85,10 +85,9 @@ public class CollectionDetailsFragment extends Fragment {
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
         binding.toolbar.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.action_share:
-                    IntentUtils.shareLink(requireContext(), ApiClient.BASE_URL + collection.getCollectionUrl());
-                    return true;
+            if (menuItem.getItemId() == R.id.action_share) {
+                IntentUtils.shareLink(requireContext(), ApiClient.BASE_URL + collection.getCollectionUrl());
+                return true;
             }
             return true;
         });

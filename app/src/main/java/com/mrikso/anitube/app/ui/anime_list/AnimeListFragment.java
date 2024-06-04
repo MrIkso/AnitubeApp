@@ -25,6 +25,7 @@ import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.FragmentAnimeListBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
@@ -138,7 +139,7 @@ public class AnimeListFragment extends Fragment {
         });
 
         viewModel.getUserData().observe(getViewLifecycleOwner(), results -> {
-            if (results != null && results.first != null && results.second != null) {
+            if (results != null) {
                 setUserData(results);
             }
         });
@@ -164,9 +165,9 @@ public class AnimeListFragment extends Fragment {
         Navigation.findNavController(requireView()).navigate(R.id.nav_search);
     }
 
-    private void setUserData(Pair<String, String> data) {
-        profileLink = data.second;
-        ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
+    private void setUserData(UserModel userModel) {
+        profileLink = userModel.getUserUrl();
+        ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(userModel.getUserAvatar()));
     }
 
     private void openProfileFragment() {

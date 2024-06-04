@@ -1,11 +1,11 @@
-package com.mazenrashed.bottomsheetmenulib
+package com.mrikso.bottomsheetmenulib
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mazenrashed.bottomsheetmenulib.base.BaseAdapter
-import com.mazenrashed.bottomsheetmenulib.base.BaseViewHolder
-import com.mazenrashed.bottomsheetmenulib.databinding.BottomSheetMenuItemBinding
+import com.mrikso.bottomsheetmenulib.base.BaseAdapter
+import com.mrikso.bottomsheetmenulib.base.BaseViewHolder
+import com.mrikso.bottomsheetmenulib.databinding.BottomSheetMenuItemBinding
 
 class MenuBottomSheetAdapter :
     BaseAdapter<MenuBottomSheetItem, MenuBottomSheetAdapter.MenuBottomSheetViewHolder>() {

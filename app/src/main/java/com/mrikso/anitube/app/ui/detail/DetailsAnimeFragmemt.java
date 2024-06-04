@@ -127,7 +127,7 @@ public class DetailsAnimeFragmemt extends Fragment
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                     break;
-                case NO_NETTWORK:
+                case NO_NETWORK:
                     binding.clContent.setVisibility(View.GONE);
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
@@ -159,7 +159,7 @@ public class DetailsAnimeFragmemt extends Fragment
         screenshotsAdapter.setOnItemClickListener(this);
         binding.layoutScreenshots.recyclerViewScreenshots.setAdapter(screenshotsAdapter);
 
-        franchisesAdapter = new FranchisesAdapter(i -> openDetailsFragment(i));
+        franchisesAdapter = new FranchisesAdapter(this::openDetailsFragment);
         binding.layoutFranchises.recyclerViewFranchies.setAdapter(franchisesAdapter);
 
         similarAnimeAdapter = new BaseAnimeAdapter();

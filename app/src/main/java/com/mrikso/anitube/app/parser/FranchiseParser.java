@@ -22,7 +22,7 @@ public class FranchiseParser {
 
             Element article = franchisesElement.selectFirst("article");
 
-            String imageUrl = article.selectFirst("img").attr("src");
+            String imageUrl = ParserUtils.getImageUrl(article);
             String animeTitle = article.selectFirst(".news_r_h .link").text().trim();
 
             List<Node> content = article.selectFirst(".news_r").childNodes();

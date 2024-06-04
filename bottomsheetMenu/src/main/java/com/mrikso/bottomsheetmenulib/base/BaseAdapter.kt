@@ -1,7 +1,6 @@
-package com.mazenrashed.bottomsheetmenulib.base
+package com.mrikso.bottomsheetmenulib.base
 
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +14,7 @@ abstract class BaseAdapter<M, V : BaseViewHolder<M>> : RecyclerView.Adapter<V>()
 
     var list = mutableListOf<M>()
     private var rvHandler: Handler = Handler()
-    protected var onItemClickListener: OnItemClickListener<M>? = null
+    private var onItemClickListener: OnItemClickListener<M>? = null
 
     fun isEmpty(): Boolean {
         return list.isEmpty()
@@ -78,7 +77,7 @@ abstract class BaseAdapter<M, V : BaseViewHolder<M>> : RecyclerView.Adapter<V>()
         }
     }
 
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener<M>?): BaseAdapter<M, V>? {
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener<M>?): BaseAdapter<M, V> {
         this.onItemClickListener = onItemClickListener
         return this
     }

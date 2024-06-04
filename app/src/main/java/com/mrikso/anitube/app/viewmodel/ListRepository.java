@@ -46,6 +46,6 @@ public class ListRepository {
     }
 
     public synchronized List<EpisodeModel> getList() {
-        return new ArrayList<>(currentList); // Вернуть копию списка для изоляции изменений
+        return currentList; // Вернуть копию списка для изоляции изменений
     }
 }

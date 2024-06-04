@@ -4,5 +4,5 @@ public enum LoadState {
     LOADING,
     ERROR,
     DONE,
-    NO_NETTWORK
+    NO_NETWORK
 }

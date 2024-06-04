@@ -1,4 +1,4 @@
-package com.mazenrashed.bottomsheetmenulib
+package com.mrikso.bottomsheetmenulib
 
 import android.graphics.drawable.Drawable
 import android.os.Parcelable

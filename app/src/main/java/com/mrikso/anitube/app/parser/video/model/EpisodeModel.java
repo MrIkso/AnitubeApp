@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.parser.video.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Objects;
 
 import java.io.Serializable;
@@ -87,6 +89,7 @@ public class EpisodeModel implements Serializable, Cloneable {
         return this.episodeId;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "EpisodeModel[playerId="

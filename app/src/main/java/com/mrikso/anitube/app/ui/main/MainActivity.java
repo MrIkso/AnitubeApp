@@ -1,4 +1,4 @@
-package com.mrikso.anitube.app.ui;
+package com.mrikso.anitube.app.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,14 +45,10 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.bttomNav, navController);
 
         navController.addOnDestinationChangedListener((nav, destination, bundle) -> {
-            switch (destination.getId()) {
-                case R.id.nav_screenshots:
-                case R.id.nav_settings:
-                    hideBottomNavigation();
-                    break;
-                default:
-                    showBottomNavigation();
-                    break;
+            if (destination.getId() == R.id.nav_screenshots || destination.getId() == R.id.nav_settings) {
+                hideBottomNavigation();
+            } else {
+                showBottomNavigation();
             }
         });
 

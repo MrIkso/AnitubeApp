@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/details_frame"
     android:clipToPadding="true"
     android:layout_width="match_parent"
@@ -27,6 +27,7 @@
                     android:orientation="vertical"
                     android:id="@+id/cl_content"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <FrameLayout
@@ -193,6 +194,7 @@
                     </LinearLayout>
                 </LinearLayout>
                 <include
+                    tools:visibility="gone"
                     android:layout_gravity="center"
                     android:id="@+id/load_state_layout"
                     android:layout_width="match_parent"

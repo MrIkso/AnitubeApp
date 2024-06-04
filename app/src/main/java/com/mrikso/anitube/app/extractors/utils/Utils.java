@@ -2,6 +2,8 @@ package com.mrikso.anitube.app.extractors.utils;
 
 import android.util.Base64;
 
+import androidx.annotation.Nullable;
+
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +18,7 @@ public class Utils {
         return matcher.find();
     }
 
+    @Nullable
     public static String getDomainFromURL(String url) {
         String regex = "^(?:https?:\\/\\/)?(?:[^@\\n]+@)?(?:www\\.)?([^:\\/\\n?]+)";
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);

@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.OptIn;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +40,7 @@ import androidx.media3.common.PlaybackException;
 import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackSelectionParameters;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.ui.AspectRatioFrameLayout;
@@ -79,12 +81,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 
 @AndroidEntryPoint
+@OptIn(markerClass = UnstableApi.class)
 public class PlayerActivity extends AppCompatActivity {
     private final CompositeDisposable disposables = new CompositeDisposable();
 
@@ -118,7 +119,6 @@ public class PlayerActivity extends AppCompatActivity {
     private LinearLayout exoMiddleControllers;
     private LinearLayout exoBottomControllers;
 
-    private final long INCREMENT_MILLIS = 5000L;
     private TrackSelectionParameters trackSelectionParameters;
     private ExoMediaSourceHelper mediaSourceHelper;
     public CustomPlayerView playerView;
@@ -264,6 +264,7 @@ public class PlayerActivity extends AppCompatActivity {
                 .setExtensionRendererMode(NextRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
         // new DefaultRenderersFactory(this).setEnableDecoderFallback(true);
 
+        long INCREMENT_MILLIS = 5000L;
         exoPlayer = new ExoPlayer.Builder(this, renderersFactory)
                 .setSeekBackIncrementMs(INCREMENT_MILLIS)
                 .setSeekForwardIncrementMs(INCREMENT_MILLIS)
@@ -554,7 +555,6 @@ public class PlayerActivity extends AppCompatActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void enterPiP() {
         final AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         if (AppOpsManager.MODE_ALLOWED
@@ -644,19 +644,14 @@ public class PlayerActivity extends AppCompatActivity {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, new SSLTrustManager[] {new SSLTrustManager()}, new java.security.SecureRandom());
             sslContext.createSSLEngine();
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
     }
 
-    private void setMediaSourceByModel(VideoLinksModel model) {
+     private void setMediaSourceByModel(VideoLinksModel model) {
         if (model.isIgnoreSSL()) {
             bypassSSL();
         }
@@ -671,9 +666,7 @@ public class PlayerActivity extends AppCompatActivity {
                 currentQuality = qualitiesMap.keySet().stream().findFirst().get();
             }
 
-            qualitiesMap.entrySet().stream()
-                    .forEach(e ->
-                            Log.i("tag", "currentQuality: " + currentQuality + " " + e.getKey() + " " + e.getValue()));
+            qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
             String playUrl = qualitiesMap.get(currentQuality);
 
             Log.i("PlayerActivity", "playUrl: " + playUrl);
@@ -720,6 +713,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (isLock) {
             return;
         } else {

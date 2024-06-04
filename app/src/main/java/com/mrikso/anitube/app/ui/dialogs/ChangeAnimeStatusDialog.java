@@ -47,34 +47,27 @@ public class ChangeAnimeStatusDialog extends BottomSheetDialogFragment {
         int mode = getArguments().getInt(MODE_NUMBER, 0);
         setCheckedRadioButton(mode);
         if (listener != null) {
-            sendChekedResult();
+            sendCheckedResult();
         }
 
         binding.buttonBottomSheetDialogBaseCancel.setOnClickListener(v -> dismiss());
     }
 
-    void sendChekedResult() {
+    void sendCheckedResult() {
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             ViewStatusAnime mode = ViewStatusAnime.STATUS_WATCH;
-            switch (checkedId) {
-                case R.id.anime_status_no_watch:
-                    mode = ViewStatusAnime.STATUS_NONE_WATCH;
-                    break;
-                case R.id.anime_status_adand:
-                    mode = ViewStatusAnime.STATUS_ADAND;
-                    break;
-                case R.id.anime_status_seen:
-                    mode = ViewStatusAnime.STATUS_SEEN;
-                    break;
-                case R.id.anime_status_will:
-                    mode = ViewStatusAnime.STATUS_WILL;
-                    break;
-                case R.id.anime_status_watch:
-                    mode = ViewStatusAnime.STATUS_WATCH;
-                    break;
-                case R.id.anime_status_poned:
-                    mode = ViewStatusAnime.STATUS_PONED;
-                    break;
+            if (checkedId == R.id.anime_status_no_watch) {
+                mode = ViewStatusAnime.STATUS_NONE_WATCH;
+            } else if (checkedId == R.id.anime_status_adand) {
+                mode = ViewStatusAnime.STATUS_ADAND;
+            } else if (checkedId == R.id.anime_status_seen) {
+                mode = ViewStatusAnime.STATUS_SEEN;
+            } else if (checkedId == R.id.anime_status_will) {
+                mode = ViewStatusAnime.STATUS_WILL;
+            } else if (checkedId == R.id.anime_status_watch) {
+                mode = ViewStatusAnime.STATUS_WATCH;
+            } else if (checkedId == R.id.anime_status_poned) {
+                mode = ViewStatusAnime.STATUS_PONED;
             }
             listener.onChecked(mode.getStatusCode());
             dismiss();

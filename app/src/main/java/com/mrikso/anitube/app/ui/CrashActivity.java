@@ -13,6 +13,8 @@ import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ActivityCrashBinding;
 
+import java.util.Objects;
+
 public class CrashActivity extends AppCompatActivity {
 
     private ActivityCrashBinding binding;
@@ -24,12 +26,12 @@ public class CrashActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
         setSupportActionBar(binding.topAppBar);
-        getSupportActionBar().setTitle(R.string.app_crashed);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_crashed);
 
         var error = new StringBuilder();
 
-        error.append("Manufacturer: " + DeviceUtils.getManufacturer() + "\n");
-        error.append("Device: " + DeviceUtils.getModel() + "\n");
+        error.append("Manufacturer: ").append(DeviceUtils.getManufacturer()).append("\n");
+        error.append("Device: ").append(DeviceUtils.getModel()).append("\n");
         error.append(getIntent().getStringExtra("Software"));
         error.append("App version: " + BuildConfig.VERSION_NAME);
         error.append("\n\n");
@@ -46,6 +48,7 @@ public class CrashActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         finishAffinity();
     }
 
@@ -61,7 +64,7 @@ public class CrashActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getTitle().equals(getString(R.string.close))) {
+        if (Objects.equals(item.getTitle(), getString(R.string.close))) {
             finishAffinity();
             return true;
         }

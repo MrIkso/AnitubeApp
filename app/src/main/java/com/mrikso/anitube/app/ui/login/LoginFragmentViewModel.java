@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.CookieParser;
@@ -35,7 +36,7 @@ public class LoginFragmentViewModel extends ViewModel {
     private final String TAG = "LoginFragmentViewModel";
     private AnitubeRepository repository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private MutableLiveData<Pair<LoadState, Pair<String, String>>> loadSate = new MutableLiveData<>(null);
+    private MutableLiveData<Pair<LoadState, UserModel>> loadSate = new MutableLiveData<>(null);
     private HomePageParser homePageParser = HomePageParser.getInstance();
 
     @Inject
@@ -48,7 +49,7 @@ public class LoginFragmentViewModel extends ViewModel {
                 .login(username, password)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(v -> {
-                    loadSate.setValue(new Pair<>(LoadState.LOADING, new Pair<>(null, null)));
+                    loadSate.setValue(new Pair<>(LoadState.LOADING, null));
                     Log.d(TAG, "start loading");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -60,11 +61,11 @@ public class LoginFragmentViewModel extends ViewModel {
                         },
                         throwable -> {
                             throwable.printStackTrace();
-                            loadSate.postValue(new Pair<>(LoadState.ERROR, new Pair<>(throwable.getMessage(), null)));
+                            loadSate.postValue(new Pair<>(LoadState.ERROR, null));
                         }));
     }
 
-    public LiveData<Pair<LoadState, Pair<String, String>>> getLoadState() {
+    public LiveData<Pair<LoadState, UserModel>> getLoadState() {
         return loadSate;
     }
 
@@ -92,7 +93,7 @@ public class LoginFragmentViewModel extends ViewModel {
         if (!cookies.isEmpty()) {
             PreferencesHelper.getInstance().saveCooikes(cookies);
             PreferencesHelper.getInstance().setLogin(true);
-            Pair<String, String> userDataPair = homePageParser.getUserData(response.body());
+            UserModel userDataPair = homePageParser.getUserData(response.body());
             loadSate.postValue(new Pair<>(LoadState.DONE, userDataPair));
         } else {
             loadSate.postValue(new Pair<>(LoadState.ERROR, null));

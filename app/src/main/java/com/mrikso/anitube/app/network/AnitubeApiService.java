@@ -53,23 +53,23 @@ public interface AnitubeApiService {
     @FormUrlEncoded
     Single<ChangeStatusResponse> changeAnimeStatus(@Field("news_id") int newsId, @Field("status_id") int statusId);
 
-    @GET("/mylists/page/{page}")
-    Single<Document> getAllMyLists(@Path("page") int page);
+    @GET("/mylists/{username}/page/{page}")
+    Single<Document> getAllMyLists(@Path("username") String username, @Path("page") int page);
 
-    @GET("/mylists/seen/page/{page}")
-    Single<Document> getSeenList(@Path("page") int page);
+    @GET("/mylists/{username}/seen/page/{page}")
+    Single<Document> getSeenList(@Path("username") String username, @Path("page") int page);
 
-    @GET("/mylists/will/page/{page}")
-    Single<Document> getWllList(@Path("page") int page);
+    @GET("/mylists/{username}/will/page/{page}")
+    Single<Document> getWllList(@Path("username") String username, @Path("page") int page);
 
-    @GET("/mylists/watch/page/{page}")
-    Single<Document> getWatchList(@Path("page") int page);
+    @GET("/mylists/{username}/watch/page/{page}")
+    Single<Document> getWatchList(@Path("username") String username, @Path("page") int page);
 
-    @GET("/mylists/poned/page/{page}")
-    Single<Document> getPonedList(@Path("page") int page);
+    @GET("/mylists/{username}/poned/page/{page}")
+    Single<Document> getPonedList(@Path("username") String username, @Path("page") int page);
 
-    @GET("/mylists/aband/page/{page}")
-    Single<Document> getAbandList(@Path("page") int page);
+    @GET("/mylists/{username}/aband/page/{page}")
+    Single<Document> getAbandList(@Path("username") String username, @Path("page") int page);
 
     @GET("/favorites/page/{page}")
     Single<Document> getFavorites(@Path("page") int page);

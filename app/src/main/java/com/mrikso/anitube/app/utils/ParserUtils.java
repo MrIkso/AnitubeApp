@@ -53,7 +53,12 @@ public class ParserUtils {
     }
 
     public static String getImageUrl(Element element) {
-        return element.getElementsByTag("img").first().attr("src");
+        Element image = element.getElementsByTag("img").first();
+        String imagePath = image.attr("src");
+        if(imagePath.isEmpty()){
+            return image.attr("data-src");
+        }
+        return imagePath;
     }
 
     public static SimpleModel buidlSimpleModel(Element element) {

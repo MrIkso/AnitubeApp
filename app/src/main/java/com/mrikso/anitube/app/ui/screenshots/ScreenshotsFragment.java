@@ -7,15 +7,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.mrikso.anitube.app.adapters.ScreenshotsVpAdapter;
 import com.mrikso.anitube.app.databinding.FragmentScreenshotsBinding;
 import com.mrikso.anitube.app.model.ScreenshotModel;
 
-import dagger.hilt.android.AndroidEntryPoint;
-
 import java.util.ArrayList;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ScreenshotsFragment extends Fragment {
@@ -41,14 +42,14 @@ public class ScreenshotsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
-        super.onViewCreated(view, bundle);
+        super.onViewCreated(requireView(), bundle);
         setStatusBarColor();
         setupScreenshotAdapter();
         setupViewPager();
     }
 
     private void setStatusBarColor() {
-        requireActivity().getWindow().setStatusBarColor(android.R.color.transparent);
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), android.R.color.transparent));
     }
 
     private void setupScreenshotAdapter() {

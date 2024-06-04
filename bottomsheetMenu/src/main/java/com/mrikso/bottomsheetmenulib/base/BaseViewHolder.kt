@@ -1,4 +1,4 @@
-package com.mazenrashed.bottomsheetmenulib.base
+package com.mrikso.bottomsheetmenulib.base
 
 import androidx.viewbinding.ViewBinding
 import androidx.recyclerview.widget.RecyclerView

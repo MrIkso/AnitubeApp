@@ -16,6 +16,7 @@ import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.model.InteresingModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.SimpleModel;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
@@ -52,7 +53,7 @@ public class HomeFragmentViewModel extends ViewModel {
     private MutableLiveData<List<SimpleModel>> yearsList = new MutableLiveData<>(null);
     private MutableLiveData<List<SimpleModel>> genresList = new MutableLiveData<>(null);
     private MutableLiveData<List<ActionModel>> actionList = new MutableLiveData<>(null);
-    private MutableLiveData<Pair<String, String>> userData = new MutableLiveData<>(null);
+    private MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
     private MutableLiveData<String> dleHash = new MutableLiveData<>();
     HomePageParser homePageParser;
     private boolean singleLoad = false;
@@ -77,7 +78,7 @@ public class HomeFragmentViewModel extends ViewModel {
 
     private void loadData() {
         if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
-            loadSate.setValue(LoadState.NO_NETTWORK);
+            loadSate.setValue(LoadState.NO_NETWORK);
             return;
         }
 
@@ -112,15 +113,16 @@ public class HomeFragmentViewModel extends ViewModel {
 
         compositeDisposable.add(disposable);
 
-        compositeDisposable.add(homePageParser
+        /*compositeDisposable.add(homePageParser
                 .getUser()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(results -> {
-                    if (results != null && results.first != null && results.second != null) {
-                        userData.postValue(results);
-                    }
-                }));
+                    if (results != null) {*/
+                        userData.postValue(homePageParser
+                                .getUser());
+                   // }
+              //  }));
     }
 
     private void createActionList() {
@@ -177,7 +179,7 @@ public class HomeFragmentViewModel extends ViewModel {
         return genresList;
     }
 
-    public LiveData<Pair<String, String>> getUserData() {
+    public LiveData<UserModel> getUserData() {
         return userData;
     }
 

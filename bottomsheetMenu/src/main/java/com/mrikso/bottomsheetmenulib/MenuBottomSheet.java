@@ -1,5 +1,6 @@
-package com.mazenrashed.bottomsheetmenulib;
+package com.mrikso.bottomsheetmenulib;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -17,12 +18,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.mazenrashed.bottomsheetmenulib.databinding.BottomSheetMenuBinding;
+import com.mrikso.bottomsheetmenulib.databinding.BottomSheetMenuBinding;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuBottomSheet extends BottomSheetDialogFragment {
     @NotNull
@@ -41,7 +43,6 @@ public class MenuBottomSheet extends BottomSheetDialogFragment {
 
     private BottomSheetMenuBinding binding;
 
-    @Nullable
     @MenuRes
     private int menuRes;
 
@@ -95,19 +96,17 @@ public class MenuBottomSheet extends BottomSheetDialogFragment {
         if (arguments != null) {
             this.menuRes = arguments.getInt(MENU_RES);
             if (arguments.getParcelableArrayList(MENU_ITEMS) != null) {
-                this.menuItemsList = arguments.getParcelableArrayList(MENU_ITEMS);
+                this.menuItemsList = Objects.requireNonNull(arguments.getParcelableArrayList(MENU_ITEMS));
             }
 
             if (arguments.getIntegerArrayList(HIDDEN_MENU_ITEMS) != null) {
-                this.hiddenIds = arguments.getIntegerArrayList(HIDDEN_MENU_ITEMS);
+                this.hiddenIds = Objects.requireNonNull(arguments.getIntegerArrayList(HIDDEN_MENU_ITEMS));
             }
             this.closeAfterSelect = arguments.getBoolean(CLOSE_AFTER_SELECT);
-        } else {
-            return;
         }
     }
 
-    @Nullable
+    @NonNull
     @Override
     public final View onCreateView(
             @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -115,6 +114,7 @@ public class MenuBottomSheet extends BottomSheetDialogFragment {
         return binding.getRoot();
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public final void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -162,7 +162,7 @@ public class MenuBottomSheet extends BottomSheetDialogFragment {
     }
 
     public interface MenuBottomSheetListener {
-        void onSelectMenuItemListener(@NonNull int position, @IdRes int resId);
+        void onSelectMenuItemListener(int position, @IdRes int resId);
     }
 
     public static class Builder {
@@ -217,7 +217,7 @@ public class MenuBottomSheet extends BottomSheetDialogFragment {
         }
     }
 
-    public void setOnSelectMenuItemListener(MenuBottomSheetListener onSelectMenuItemListener) {
+    public void setOnSelectMenuItemListener(@Nullable MenuBottomSheetListener onSelectMenuItemListener) {
         this.onSelectMenuItemListener = onSelectMenuItemListener;
     }
 }

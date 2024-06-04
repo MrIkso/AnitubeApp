@@ -12,6 +12,7 @@ import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 
 import io.lindstrom.m3u8.model.MasterPlaylist;
+import io.lindstrom.m3u8.model.Resolution;
 import io.lindstrom.m3u8.model.Variant;
 import io.lindstrom.m3u8.parser.MasterPlaylistParser;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,16 +49,20 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
             String newUri = variant.uri();
             // String[] parts = newUri.split("/");
 
-            Pattern pattern = Pattern.compile("hls\\/(\\d+)\\/index\\.m3u8");
-            Matcher matcher = pattern.matcher(newUri);
-
-            if (matcher.find()) {
+            // Pattern pattern = Pattern.compile("/hls/(\\d+)/");
+            // Matcher matcher = pattern.matcher(newUri);
+            Optional<Resolution> resolutionOptional =  variant.resolution();
+            if(resolutionOptional.isPresent()){
+                qualitiesMap.put(ParserUtils.standardizeQuality(String.valueOf(resolutionOptional.get().height())), newUri);
+            }
+            /*if (matcher.find()) {
                 String resolution = matcher.group(1);
                 Log.i(TAG, " " + resolution + "=>" + newUri);
                 qualitiesMap.put(ParserUtils.standardizeQuality(resolution), newUri);
-            } else {
+            }*/ else {
                 qualitiesMap.put("AUTO", newUri);
             }
+
         }
         model.setHeaders(Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
         model.setLinksQuality(qualitiesMap);
@@ -94,8 +100,6 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         return downloadManifest()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(v -> {
-                    return new Pair<>(LoadState.DONE, getModel(v.first, v.second));
-                });
+                .map(v -> new Pair<>(LoadState.DONE, getModel(v.first, v.second)));
     }
 }

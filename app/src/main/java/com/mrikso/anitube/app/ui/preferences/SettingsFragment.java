@@ -17,7 +17,7 @@ import com.google.android.material.color.DynamicColors;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
-import com.mrikso.anitube.app.ui.MainActivity;
+import com.mrikso.anitube.app.ui.main.MainActivity;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.AndroidEntryPoint;

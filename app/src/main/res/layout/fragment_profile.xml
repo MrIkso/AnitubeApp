@@ -46,6 +46,7 @@
                     <LinearLayout
                         android:id="@+id/content"
                         android:visibility="gone"
+                        tools:visibility="visible"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:orientation="vertical"
@@ -215,6 +216,7 @@
                     </LinearLayout>
 
                     <include
+                        tools:visibility="gone"
                         android:layout_gravity="center"
                         android:id="@+id/load_state_layout"
                         android:layout_width="match_parent"

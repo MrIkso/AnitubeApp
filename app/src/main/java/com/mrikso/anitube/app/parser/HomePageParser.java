@@ -10,6 +10,7 @@ import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.model.InteresingModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.SimpleModel;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
@@ -25,13 +26,14 @@ import java.util.List;
 
 public class HomePageParser {
     private final String TAG = "HomePageParser";
-    private List<InteresingModel> interestingAnimeList = new ArrayList<>();
-    private List<BaseAnimeModel> bestAnimeList = new ArrayList<>();
-    private List<AnimeReleaseModel> releasesAnimeList = new ArrayList<>();
-    private List<CollectionModel> newCollectionsList = new ArrayList<>();
+    private final List<InteresingModel> interestingAnimeList = new ArrayList<>();
+    private final List<BaseAnimeModel> bestAnimeList = new ArrayList<>();
+    private final List<AnimeReleaseModel> releasesAnimeList = new ArrayList<>();
+    private final List<CollectionModel> newCollectionsList = new ArrayList<>();
     private List<SimpleModel> genresList = new ArrayList<>();
     private List<SimpleModel> calendarList = new ArrayList<>();
-    private Subject<Pair<String, String>> userData = PublishSubject.create();
+    private  UserModel userData = null;
+           // = PublishSubject.create();
 
     private LoadState state;
 
@@ -169,8 +171,8 @@ public class HomePageParser {
 
     public void parseUserData(Document doc) {
         if (PreferencesHelper.getInstance().isLogin()) {
-            Pair<String, String> data = getUserData(doc);
-            if (data != null) userData.onNext(data);
+            UserModel data = getUserData(doc);
+            if (data != null) userData = (data);
         }
     }
 
@@ -203,7 +205,7 @@ public class HomePageParser {
         }
     }
 
-    public Pair<String, String> getUserData(Document doc) {
+    public UserModel getUserData(Document doc) {
         // Log.i(TAG, "getUserData call");
         Element logFormElement = doc.selectFirst("#logform");
         if (logFormElement != null) {
@@ -211,9 +213,10 @@ public class HomePageParser {
             Element avaElement = logFormElement.selectFirst("div.log_ava > img");
             Element profileElement = logFormElement.selectFirst("div.log_links > ul > li > a");
             if (avaElement != null && profileElement != null) {
+                String userName = avaElement.attr("alt");
                 String avaUrl = avaElement.attr("src");
                 String profileUrl = profileElement.attr("href");
-                return new Pair<>(avaUrl, profileUrl);
+                return new UserModel(userName, profileUrl, avaUrl);
             }
         }
         return null;
@@ -239,7 +242,7 @@ public class HomePageParser {
         return this.state;
     }
 
-    public Subject<Pair<String, String>> getUser() {
+    public UserModel getUser() {
         return this.userData;
     }
 
