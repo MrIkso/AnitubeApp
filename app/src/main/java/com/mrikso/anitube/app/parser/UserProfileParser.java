@@ -90,7 +90,7 @@ public class UserProfileParser {
             model.setUserCommentsCount(comments);
         }
 
-        Element commentsRatingElement = userDetails
+        /*Element commentsRatingElement = userDetails
                 .selectFirst("div.user_info_r strong:contains(Рейтинг коментарів)")
                 .nextElementSiblings()
                 .first();
@@ -98,7 +98,7 @@ public class UserProfileParser {
         if (commentsRatingElement != null) {
             String rating = commentsRatingElement.text().trim().replaceAll("\"", "");
             model.setUserCommentsRating(rating);
-        }
+        }*/
 
         //Log.i("userparser", userDetails.html());
 
