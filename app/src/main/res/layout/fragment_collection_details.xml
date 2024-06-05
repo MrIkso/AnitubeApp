@@ -84,7 +84,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_height="match_parent"
         android:layout_width="fill_parent"
@@ -115,5 +115,5 @@
         <include
             android:id="@+id/load_state_layout"
             layout="@layout/load_state_layout" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.mrikso.anitube.app.view.CustomSwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

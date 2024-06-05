@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/swipe_refresh_layout">
@@ -33,7 +33,7 @@
 
         </LinearLayout>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.mrikso.anitube.app.view.CustomSwipeRefreshLayout>
 
     <include
         android:id="@+id/load_state_layout"
