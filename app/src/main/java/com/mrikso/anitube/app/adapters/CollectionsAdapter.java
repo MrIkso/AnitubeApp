@@ -7,21 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.CollectionsDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemCollectionBinding;
 import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 public class CollectionsAdapter extends ListAdapter<CollectionModel, CollectionsAdapter.ViewHolder> {
-
-    private final RequestManager glide;
     private OnItemClickListener listener;
 
-    public CollectionsAdapter(RequestManager glide) {
+    public CollectionsAdapter() {
         super(new CollectionsDiffCallback());
-        this.glide = glide;
     }
 
     @NonNull
@@ -54,8 +51,7 @@ public class CollectionsAdapter extends ListAdapter<CollectionModel, Collections
             binding.countAnime.setText(binding.getRoot()
                     .getContext()
                     .getString(R.string.collection_anine_count, collection.getCountAnime()));
-
-            glide.load(ParserUtils.normaliseImageUrl(collection.getPosterUrl())).into(binding.image);
+            ViewUtils.loadImage(binding.image, ParserUtils.normaliseImageUrl(collection.getPosterUrl()));
 
             if (listener != null) {
                 binding.container.setOnClickListener(v -> listener.onReleaseItemSelected(collection));

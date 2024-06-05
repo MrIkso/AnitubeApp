@@ -7,14 +7,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ItemBestAnimeBinding;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
@@ -61,9 +65,12 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
 
         public void bind(BaseAnimeModel episode) {
             binding.tvTitle.setText(episode.getTitle());
+            DrawableCrossFadeFactory factory =
+                    new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
 
             Glide.with(binding.getRoot().getContext())
                     .load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
+                    .transition(DrawableTransitionOptions.withCrossFade(factory))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(new RequestListener<>() {
                         @Override
@@ -73,6 +80,7 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
                                 @NonNull Target<Drawable> target,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
+                            binding.sivPoster.setImageDrawable(AppCompatResources.getDrawable(binding.getRoot().getContext(), R.drawable.ic_broken_image));
                             return false;
                         }
 

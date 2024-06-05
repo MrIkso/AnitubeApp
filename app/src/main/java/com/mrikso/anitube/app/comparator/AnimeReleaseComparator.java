@@ -13,6 +13,6 @@ public class AnimeReleaseComparator extends DiffUtil.ItemCallback<AnimeReleaseMo
 
     @Override
     public boolean areContentsTheSame(@NonNull AnimeReleaseModel oldItem, @NonNull AnimeReleaseModel newItem) {
-        return oldItem.getAnimeId() == newItem.getAnimeId();
+        return oldItem.equals(newItem);
     }
 }

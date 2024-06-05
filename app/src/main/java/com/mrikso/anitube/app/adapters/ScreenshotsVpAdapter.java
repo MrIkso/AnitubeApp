@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.ScreenshotsDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemScreenshotBigBinding;
 import com.mrikso.anitube.app.model.ScreenshotModel;
@@ -73,7 +75,7 @@ public class ScreenshotsVpAdapter extends ListAdapter<ScreenshotModel, Screensho
         }
 
         public void bind(ScreenshotModel model) {
-            Log.i("dd", model.toString());
+            //Log.i("dd", model.toString());
             Glide.with(binding.getRoot().getContext())
                     .load(model.getFullUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -85,6 +87,7 @@ public class ScreenshotsVpAdapter extends ListAdapter<ScreenshotModel, Screensho
                                 Target<Drawable> target,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
+                            binding.tivScreenshot.setImageDrawable(AppCompatResources.getDrawable(binding.getRoot().getContext(), R.drawable.ic_broken_image));
                             return false;
                         }
 

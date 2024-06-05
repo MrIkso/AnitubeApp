@@ -57,9 +57,13 @@ public class AnimeSearchResultPagingSource extends RxPagingSource<Integer, Anime
     // Method to map AnimeReleaseModel to LoadResult object
     private LoadResult<Integer, AnimeReleaseModel> toLoadResult(List<AnimeReleaseModel> data, int page, int maxPage) {
         //  Log.d("AnimeSearchResultPagingSource", "toLoadResult:data size " + data.size());
-
-        return new LoadResult.Page<>(
-                data, null, !data.isEmpty() && page <= maxPage ? page + 1 : null);
+        Integer nextKey = data != null && !data.isEmpty() && page < maxPage ? page + 1 : null;
+        if (data != null) {
+            return new LoadResult.Page<>(data, null, nextKey);
+        }
+        return null;
+       /* return new LoadResult.Page<>(
+                data, null, !data.isEmpty() && page <= maxPage ? page + 1 : null);*/
     }
 
     @Nullable

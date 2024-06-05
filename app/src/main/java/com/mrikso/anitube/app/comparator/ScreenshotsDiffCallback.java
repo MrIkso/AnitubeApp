@@ -8,11 +8,11 @@ import com.mrikso.anitube.app.model.ScreenshotModel;
 public class ScreenshotsDiffCallback extends DiffUtil.ItemCallback<ScreenshotModel> {
     @Override
     public boolean areItemsTheSame(@NonNull ScreenshotModel oldItem, @NonNull ScreenshotModel newItem) {
-        return oldItem.getFullUrl() == newItem.getFullUrl();
+        return oldItem.getFullUrl().equals(newItem.getFullUrl());
     }
 
     @Override
     public boolean areContentsTheSame(@NonNull ScreenshotModel oldItem, @NonNull ScreenshotModel newItem) {
-        return oldItem.getFullUrl() == newItem.getFullUrl();
+        return oldItem.equals(newItem);
     }
 }

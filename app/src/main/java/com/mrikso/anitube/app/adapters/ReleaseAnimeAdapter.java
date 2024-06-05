@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.common.base.Strings;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ItemAnimeReleaseBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
@@ -98,6 +100,7 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
                                 Target<Drawable> target,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
+                            binding.poster.setImageDrawable(AppCompatResources.getDrawable(binding.getRoot().getContext(), R.drawable.ic_broken_image));
                             return false;
                         }
 

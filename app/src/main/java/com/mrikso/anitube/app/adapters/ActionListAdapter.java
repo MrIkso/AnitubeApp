@@ -7,19 +7,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.mrikso.anitube.app.comparator.ActionDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemHomeActionBinding;
 import com.mrikso.anitube.app.model.ActionModel;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 public class ActionListAdapter extends ListAdapter<ActionModel, ActionListAdapter.ViewHolder> {
 
-    private final RequestManager glide;
     private OnItemClickListener listener;
 
-    public ActionListAdapter(RequestManager glide) {
+    public ActionListAdapter() {
         super(new ActionDiffCallback());
-        this.glide = glide;
     }
 
     @NonNull
@@ -47,7 +45,7 @@ public class ActionListAdapter extends ListAdapter<ActionModel, ActionListAdapte
 
         public void bind(ActionModel model) {
             binding.actionName.setText(model.getName());
-            glide.load(model.getBgUrl()).into(binding.actionBg);
+            ViewUtils.loadImage(binding.actionBg,model.getBgUrl());
 
             if (listener != null) {
                 binding.getRoot().setOnClickListener(v -> listener.onItemSelected(model.getType()));

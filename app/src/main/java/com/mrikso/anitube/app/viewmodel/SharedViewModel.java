@@ -29,10 +29,10 @@ import javax.inject.Named;
 @HiltViewModel
 public class SharedViewModel extends ViewModel {
     private final String TAG = "SharedViewModel";
-    private ListRepository listRepo;
+    private final ListRepository listRepo;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private WatchAnimeRepository watchAnimeRepository;
-    private OkHttpClient client;
+    private final WatchAnimeRepository watchAnimeRepository;
+    private final OkHttpClient client;
 
     @Inject
     public SharedViewModel(@Named("Normal") OkHttpClient client, WatchAnimeRepository watchAnimeRepository) {

@@ -21,8 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    private static final String SELECTED_ITEM_ID = "selected_item_id";
-
     private ActivityMainBinding binding;
     private NavController navController;
     // private MenuItem selectedItem;

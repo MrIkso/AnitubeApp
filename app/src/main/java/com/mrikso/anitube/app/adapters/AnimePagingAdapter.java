@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.google.common.base.Strings;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ItemAnimeReleaseBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
@@ -97,8 +101,11 @@ public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, Ani
             }
             binding.description.setText(episode.getDescription());
 
+            DrawableCrossFadeFactory factory =
+                    new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
             glide.load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
-                    .listener(new RequestListener<Drawable>() {
+                    .transition(DrawableTransitionOptions.withCrossFade(factory))
+                    .listener(new RequestListener<>() {
                         @Override
                         public boolean onLoadFailed(
                                 @Nullable GlideException e,
@@ -106,6 +113,7 @@ public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, Ani
                                 Target<Drawable> target,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
+                            binding.poster.setImageDrawable(AppCompatResources.getDrawable(binding.getRoot().getContext(), R.drawable.ic_broken_image));
                             return false;
                         }
 

@@ -171,6 +171,7 @@ public class HomePageParser {
 
     public void parseUserData(Document doc) {
         if (PreferencesHelper.getInstance().isLogin()) {
+            ParserUtils.parseDleHash(doc.html());
             UserModel data = getUserData(doc);
             if (data != null) userData = (data);
         }

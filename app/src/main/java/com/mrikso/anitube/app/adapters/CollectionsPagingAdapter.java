@@ -8,23 +8,21 @@ import androidx.annotation.NonNull;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.CollectionsDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemCollectionBinding;
 import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 public class CollectionsPagingAdapter extends PagingDataAdapter<CollectionModel, CollectionsPagingAdapter.ViewHolder> {
     public static final int LOADING_ITEM = 0;
     public static final int COLLECTION_ITEM = 1;
-    private final RequestManager glide;
     private OnItemClickListener listener;
 
-    public CollectionsPagingAdapter(RequestManager glide) {
+    public CollectionsPagingAdapter() {
         super(new CollectionsDiffCallback());
-        this.glide = glide;
     }
 
     @NonNull
@@ -68,8 +66,7 @@ public class CollectionsPagingAdapter extends PagingDataAdapter<CollectionModel,
                     .getContext()
                     .getString(R.string.collection_anine_count, collection.getCountAnime()));
 
-            glide.load(ParserUtils.normaliseImageUrl(collection.getPosterUrl())).into(binding.image);
-
+            ViewUtils.loadImage(binding.image, ParserUtils.normaliseImageUrl(collection.getPosterUrl()));
             if (listener != null) {
                 binding.container.setOnClickListener(v -> listener.onReleaseItemSelected(collection));
             }

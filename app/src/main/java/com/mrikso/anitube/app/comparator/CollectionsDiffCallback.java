@@ -8,11 +8,11 @@ import com.mrikso.anitube.app.model.CollectionModel;
 public class CollectionsDiffCallback extends DiffUtil.ItemCallback<CollectionModel> {
     @Override
     public boolean areItemsTheSame(@NonNull CollectionModel oldItem, @NonNull CollectionModel newItem) {
-        return oldItem.getCollectionUrl() == newItem.getCollectionUrl();
+        return oldItem.getCollectionUrl().equals(newItem.getCollectionUrl());
     }
 
     @Override
     public boolean areContentsTheSame(@NonNull CollectionModel oldItem, @NonNull CollectionModel newItem) {
-        return oldItem.getCollectionUrl() == newItem.getCollectionUrl();
+        return oldItem.equals(newItem);
     }
 }

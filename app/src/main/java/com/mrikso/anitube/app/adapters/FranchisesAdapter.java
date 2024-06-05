@@ -8,13 +8,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.FranchiseDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemFranchiseBinding;
 import com.mrikso.anitube.app.model.FranchiseModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAdapter.ViewHolder> {
     private final OnItemClickListener listener;
@@ -50,10 +49,7 @@ public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAda
             binding.tvTitle.setText(release.getTitle());
             binding.tvYear.setText(release.getReleaseYear());
             binding.tvEpisodes.setText(release.getEpisodes());
-            Glide.with(binding.getRoot().getContext())
-                    .load(ParserUtils.normaliseImageUrl(release.getPosterUrl()))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(binding.poster);
+            ViewUtils.loadImage(binding.poster, ParserUtils.normaliseImageUrl(release.getPosterUrl()));
             if (release.isCurrent()) {
                 binding.getRoot().setEnabled(false);
                 binding.getRoot()

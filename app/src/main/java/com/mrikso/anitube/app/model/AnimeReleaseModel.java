@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 public class AnimeReleaseModel extends BaseAnimeModel implements Serializable {
@@ -77,5 +79,18 @@ public class AnimeReleaseModel extends BaseAnimeModel implements Serializable {
 
     public void setWatchStatusModdel(WatchAnimeStatusModel watchStatusModdel) {
         this.watchStatusModdel = watchStatusModdel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnimeReleaseModel that = (AnimeReleaseModel) o;
+        return isFavorites == that.isFavorites && Objects.equal(description, that.description) && Objects.equal(releaseYear, that.releaseYear) && Objects.equal(watchStatusModdel, that.watchStatusModdel) && Objects.equal(episodes, that.episodes) && Objects.equal(rating, that.rating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(description, releaseYear, watchStatusModdel, episodes, rating, isFavorites);
     }
 }

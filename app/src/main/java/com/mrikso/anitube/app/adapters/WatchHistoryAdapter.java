@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.WatchHistoryDiffCallback;
 import com.mrikso.anitube.app.data.history.enity.HistoryEnity;
@@ -74,7 +76,10 @@ public class WatchHistoryAdapter extends ListAdapter<HistoryEnity, WatchHistoryA
             binding.time.setText(ReadableTime.getTimeAgo(
                     model.getWatchDate(), binding.getRoot().getContext()));
 
+            DrawableCrossFadeFactory factory =
+                    new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
             glide.load(ParserUtils.normaliseImageUrl(model.getPosterUrl()))
+                    .transition(DrawableTransitionOptions.withCrossFade(factory))
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(

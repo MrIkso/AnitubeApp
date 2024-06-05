@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.home;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -18,10 +16,6 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.ActionListAdapter;
 import com.mrikso.anitube.app.adapters.AnimeCarouselAdapter;
@@ -35,10 +29,10 @@ import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
 
-import dagger.hilt.android.AndroidEntryPoint;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class HomeFragment extends Fragment
@@ -93,7 +87,7 @@ public class HomeFragment extends Fragment
         bestAnimeAdapter.setOnItemClickListener(this);
         releaseAnimeAdapter = new ReleaseAnimeAdapter();
         releaseAnimeAdapter.setOnItemClickListener(this);
-        collectionsAdapter = new CollectionsAdapter(getGlide(requireContext()));
+        collectionsAdapter = new CollectionsAdapter();
         collectionsAdapter.setOnItemClickListener(collection -> {
             HomeFragmentDirections.ActionNavHomeToNavCollectionDetail action =
                     HomeFragmentDirections.actionNavHomeToNavCollectionDetail(collection);
@@ -151,8 +145,8 @@ public class HomeFragment extends Fragment
     }
 
     private void initAnimeList() {
-        actionListAdapter = new ActionListAdapter(getGlide(requireContext()));
-        actionListAdapter.setOnItemClickListener(v -> onActionItemClicked(v));
+        actionListAdapter = new ActionListAdapter();
+        actionListAdapter.setOnItemClickListener(this::onActionItemClicked);
         binding.layoutHomeAnimeList.animeListRv.setAdapter(actionListAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false);
@@ -199,7 +193,7 @@ public class HomeFragment extends Fragment
                     binding.homeContent.setVisibility(View.GONE);
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                    binding.loadStateLayout.errorMessage.setText("no network");
+                    binding.loadStateLayout.errorMessage.setText(R.string.error_load);
                     break;
             }
         });
@@ -239,10 +233,12 @@ public class HomeFragment extends Fragment
             }
         });
         viewModel.getUserData().observe(getViewLifecycleOwner(), results -> {
-            if (PreferencesHelper.getInstance().isLogin())
-                if (results != null) {
-                    setUserData(results);
-                }
+            {
+                if (PreferencesHelper.getInstance().isLogin())
+                    if (results != null) {
+                        setUserData(results);
+                    }
+            }
         });
     }
 
@@ -327,9 +323,6 @@ public class HomeFragment extends Fragment
     private void setUserData(UserModel data) {
         profileLink = data.getUserUrl();
         ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.getUserAvatar()));
-
-        // ViewUtils.loadImage(
-        //   binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(data.first));
     }
 
     @Override
@@ -341,16 +334,5 @@ public class HomeFragment extends Fragment
         carouselAdapter = null;
         bestAnimeAdapter = null;
         actionListAdapter = null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // viewModel = null;
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 }

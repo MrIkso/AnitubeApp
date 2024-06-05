@@ -100,7 +100,7 @@ public class UserProfileParser {
             model.setUserCommentsRating(rating);
         }
 
-        Log.i("userparser", userDetails.html());
+        //Log.i("userparser", userDetails.html());
 
         return model;
     }

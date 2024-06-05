@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 
+import com.google.common.base.Objects;
+
 public class MenuActionModel {
     @IdRes
     private final int id;
@@ -33,5 +35,18 @@ public class MenuActionModel {
     @DrawableRes
     public int getIcon() {
         return this.icon;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuActionModel that = (MenuActionModel) o;
+        return id == that.id && name == that.name && icon == that.icon;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, icon);
     }
 }

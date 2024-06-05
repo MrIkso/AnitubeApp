@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
@@ -123,8 +124,38 @@ public class LibaryContentFragment extends Fragment {
     }
 
     private void showNoDataState() {
-        // TODO: Implement this method
+        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+
+        int mode = getArguments().getInt(MODE, 0);
+        switch (mode) {
+            case AnimeListType.LIST_ALL:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_all_list)));
+                break;
+            case AnimeListType.LIST_ADAND:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_status_adand)));
+                break;
+            case AnimeListType.LIST_FAVORITES:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_favorites_list)));
+                break;
+            case AnimeListType.LIST_PONED:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_status_poned)));
+                break;
+            case AnimeListType.LIST_SEEN:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_status_seen)));
+                break;
+            case AnimeListType.LIST_WATCH:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_status_watch)));
+                break;
+            case AnimeListType.LIST_WILL:
+                binding.loadStateLayout.errorMessage.setText(getString(R.string.state_no_data_favotie_anime_list_desc, getString(R.string.anime_status_will)));
+                break;
+        }
+
         binding.content.setVisibility(View.GONE);
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
     private void initObservers() {

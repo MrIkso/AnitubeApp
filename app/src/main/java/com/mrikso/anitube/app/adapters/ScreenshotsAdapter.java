@@ -6,10 +6,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mrikso.anitube.app.databinding.ItemScreenshotBinding;
 import com.mrikso.anitube.app.model.ScreenshotModel;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +51,7 @@ public class ScreenshotsAdapter extends RecyclerView.Adapter<ScreenshotsAdapter.
         }
 
         public void bind(ScreenshotModel model, int position) {
-
-            Glide.with(binding.getRoot().getContext())
-                    .load(model.getPreviewUrl())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(binding.sivScreenshot);
+            ViewUtils.loadImage(binding.sivScreenshot, model.getPreviewUrl());
             if (listener != null) {
                 binding.getRoot().setOnClickListener(v -> listener.onScreenshotItemSelected(position));
             }

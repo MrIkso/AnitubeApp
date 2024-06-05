@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 public class TorrentModel implements Serializable {
@@ -65,5 +67,18 @@ public class TorrentModel implements Serializable {
 
     public void setTorrentUrl(String torrentUrl) {
         this.torrentUrl = torrentUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TorrentModel that = (TorrentModel) o;
+        return seeds == that.seeds && leechers == that.leechers && downloadedCount == that.downloadedCount && Objects.equal(name, that.name) && Objects.equal(size, that.size) && Objects.equal(torrentUrl, that.torrentUrl) && Objects.equal(magnetUrl, that.magnetUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, size, seeds, leechers, downloadedCount, torrentUrl, magnetUrl);
     }
 }

@@ -22,6 +22,7 @@ import androidx.core.util.Pair;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.google.android.material.snackbar.Snackbar;
@@ -39,19 +40,23 @@ public class ViewUtils {
     }
 
     public static void loadImage(ImageView view, String url) {
+        DrawableCrossFadeFactory factory =
+                new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         Glide.with(view.getContext())
                 .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade(factory))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(view);
     }
 
-    public static final void loadAvatar(ImageView view, String url) {
+    public static void loadAvatar(ImageView view, String url) {
 
-        DrawableCrossFadeFactory factory$iv =
+        DrawableCrossFadeFactory factory =
                 new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
 
         Glide.with(view.getContext())
                 .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade(factory))
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(view);
     }

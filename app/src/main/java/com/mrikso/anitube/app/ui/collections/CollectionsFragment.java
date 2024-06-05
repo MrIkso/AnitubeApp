@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.collections;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,6 @@ import androidx.navigation.Navigation;
 import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.CollectionsPagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
@@ -55,15 +50,14 @@ public class CollectionsFragment extends Fragment {
     }
 
     private void initViews() {
-        collectionPagingAdapter = new CollectionsPagingAdapter(getGlide(requireContext()));
-        collectionPagingAdapter.setOnItemClickListener(collection -> {
-            openCollectionDetailsFragment(collection);
-        });
+        collectionPagingAdapter = new CollectionsPagingAdapter();
+        collectionPagingAdapter.setOnItemClickListener(this::openCollectionDetailsFragment);
         collectionPagingAdapter.addLoadStateListener(combinedLoadStates -> {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
             if (refreshLoadState instanceof LoadState.Loading) {
                 binding.container.setVisibility(View.GONE);
+                binding.loadStateLayout.getRoot().setVisibility(View.VISIBLE);
                 binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
                 binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
             }
@@ -72,10 +66,12 @@ public class CollectionsFragment extends Fragment {
                     showNoDataState();
                 } else {
                     binding.container.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.getRoot().setVisibility(View.GONE);
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                 }
             } else if (refreshLoadState instanceof LoadState.Error) {
+                binding.loadStateLayout.getRoot().setVisibility(View.VISIBLE);
                 binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                 binding.container.setVisibility(View.GONE);
                 binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
@@ -112,8 +108,14 @@ public class CollectionsFragment extends Fragment {
     }
 
     private void showNoDataState() {
-        // TODO: Implement tApiClient.link
-        binding.container.setVisibility(View.GONE);
+        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_collection_desc);
+
+        binding.content.setVisibility(View.GONE);
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
     private void initObservers() {
@@ -139,11 +141,6 @@ public class CollectionsFragment extends Fragment {
         collectionPagingAdapter = null;
     }
 
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
-    }
-
     private void openSearchFragment() {
         Navigation.findNavController(requireView()).navigate(R.id.nav_search);
     }
@@ -157,10 +154,5 @@ public class CollectionsFragment extends Fragment {
         //        } else {
         //            Navigation.findNavController(requireView()).navigate(R.id.nav_login);
         //        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 public class CollectionModel implements Serializable {
@@ -62,5 +64,18 @@ public class CollectionModel implements Serializable {
                 + ", author="
                 + author
                 + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CollectionModel that = (CollectionModel) o;
+        return countAnime == that.countAnime && Objects.equal(nameCollection, that.nameCollection) && Objects.equal(collectionUrl, that.collectionUrl) && Objects.equal(posterUrl, that.posterUrl) && Objects.equal(author, that.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(countAnime, nameCollection, collectionUrl, posterUrl, author);
     }
 }

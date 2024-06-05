@@ -14,6 +14,7 @@ import com.mrikso.anitube.app.parser.DetailsAnimeParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.FileCache;
 import com.mrikso.anitube.app.utils.InternetConnection;
+import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -36,9 +37,9 @@ import javax.inject.Inject;
 public class DetailsAnimeFragmemtViewModel extends ViewModel {
     private final String TAG = "DetailsAnimeFragmemtViewModel";
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private AnitubeRepository repository;
-    private MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final AnitubeRepository repository;
+    private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
     private MutableLiveData<AnimeDetailsModel> detailsModel;
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
 
@@ -64,12 +65,9 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
         Disposable disposable = repository
                 .getPage(url)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Throwable {
-                        loadSate.postValue(LoadState.LOADING);
-                        Log.d(TAG, "start loading");
-                    }
+                .doOnSubscribe(disposable1 -> {
+                    loadSate.postValue(LoadState.LOADING);
+                    Log.d(TAG, "start loading");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<Document>() {
@@ -78,6 +76,7 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
                         Executors.newSingleThreadExecutor().execute(() -> {
                             try {
                                 FileCache.writePage(response.html());
+                                ParserUtils.parseDleHash(response.html());
                             } catch (IOException err) {
                                 err.printStackTrace();
                             }

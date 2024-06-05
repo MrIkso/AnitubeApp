@@ -7,7 +7,7 @@
     <string name="nav_search">Пошук</string>
     <string name="nav_collections">Колекції</string>
     <string name="oh_something_went_wrong">Щось пішло не так</string>
-    <string name="error_load">Помилка при завантаженні</string>
+    <string name="error_load">Помилка при завантажені</string>
     <string name="help">Допомога</string>
     <string name="repeat">Повторити</string>
     <string name="recommendations">Рекомендуємо</string>
@@ -116,6 +116,12 @@
     <string name="state_no_data">Немає даних</string>
     <string name="state_no_data_history_desc">Почніть переглядати аніме і тут з\'являється історія вашого перегляду</string>
 	<string name="state_no_data_comments_desc">Коментарі відсутні</string>
+    <string name="state_no_data_collection_desc">Колекція порожня</string>
+    <string name="state_no_data_anime_list_desc">Список аніме порожній</string>
+    <string name="state_no_data_years_list_desc">Список років порожній</string>
+    <string name="state_no_data_genres_list_desc">Список жанрів порожній</string>
+    <string name="state_no_data_favotie_anime_list_desc">Список "%s" аніме порожній</string>
+    <string name="state_no_data_search_desc">За вашим пошуковим запитом нічого не знайдено</string>
 
     <string name="just_now">Тільки що</string>
     <string name="yesterday">Вчора</string>

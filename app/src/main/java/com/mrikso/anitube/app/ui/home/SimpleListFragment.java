@@ -54,24 +54,24 @@ public class SimpleListFragment extends Fragment {
         if (isYears) {
 
             viewModel.getYearsList().observe(getViewLifecycleOwner(), results -> {
-                Log.i("ee", "size: " + results.size());
+                //Log.i("ee", "size: " + results.size());
                 if (binding != null) {
                     if (results != null) {
                         showList(results);
                     } else {
-                        showNoDataState();
+                        showNoDataState(isYears);
                     }
                 }
             });
 
         } else {
             viewModel.getGenresList().observe(getViewLifecycleOwner(), results -> {
-                Log.i("ee", "size: " + results.size());
+                //Log.i("ee", "size: " + results.size());
                 if (binding != null) {
                     if (results != null) {
                         showList(results);
                     } else {
-                        showNoDataState();
+                        showNoDataState(isYears);
                     }
                 }
             });
@@ -101,12 +101,15 @@ public class SimpleListFragment extends Fragment {
         Navigation.findNavController(requireView()).navigate(action);
     }
 
-    private void showNoDataState() {
-        // TODO: Implement this method
-        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-        binding.loadStateLayout.repeat.setVisibility(View.GONE);
+    private void showNoDataState(boolean isYears) {
+        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+        binding.loadStateLayout.errorMessage.setText(isYears? R.string.state_no_data_years_list_desc : R.string.state_no_data_genres_list_desc);
+
         binding.content.setVisibility(View.GONE);
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
     private void showList(final List<SimpleModel> results) {

@@ -13,6 +13,6 @@ public class MenuActionDiffCallback extends DiffUtil.ItemCallback<MenuActionMode
 
     @Override
     public boolean areContentsTheSame(@NonNull MenuActionModel oldItem, @NonNull MenuActionModel newItem) {
-        return oldItem.getId() == newItem.getId();
+        return oldItem.equals(newItem);
     }
 }

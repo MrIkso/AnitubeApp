@@ -24,9 +24,7 @@ public class AnimeReleasePagingSource extends RxPagingSource<Integer, AnimeRelea
     private final AnitubeApiService service;
 
     @NonNull
-    private AnimeReleasesMapper mapper;
-
-    private int maxPage = -1;
+    private final AnimeReleasesMapper mapper;
 
     public AnimeReleasePagingSource(@NonNull AnitubeApiService service, @NonNull AnimeReleasesMapper mapper) {
         this.service = service;

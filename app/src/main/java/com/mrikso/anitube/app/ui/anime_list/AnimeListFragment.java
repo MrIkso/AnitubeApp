@@ -123,8 +123,14 @@ public class AnimeListFragment extends Fragment {
     }
 
     private void showNoDataState() {
-        // TODO: Implement this method
+        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_anime_list_desc);
+
         binding.container.setVisibility(View.GONE);
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
     private void initObservers() {

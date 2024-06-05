@@ -26,6 +26,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.internal.TextWatcherAdapter;
+import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.RecentSearchesAdapter;
 import com.mrikso.anitube.app.adapters.SuggestionAdapter;
@@ -42,7 +43,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 @AndroidEntryPoint
 public class SearchFragment extends Fragment
         implements RecentSearchesAdapter.OnItemClickListener, SuggestionAdapter.OnSuggestionClickListener {
-    private RecentSearchesAdapter recentSearchAtapter;
+    private RecentSearchesAdapter recentSearchAdapter;
     private SuggestionAdapter suggestionAdapter;
     private AnimePagingAdapter pagingAdapter;
     private FragmentSearchBinding binding;
@@ -80,7 +81,6 @@ public class SearchFragment extends Fragment
             @Override
             public void afterTextChanged(Editable editable) {
                 if (searchEdit.hasFocus()) {
-                    //  Log.i("beb", "text changed");
                     if (editable != null) {
                         String content = editable.toString();
                         binding.clear.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
@@ -111,14 +111,14 @@ public class SearchFragment extends Fragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        recentSearchAtapter = null;
+        recentSearchAdapter = null;
         suggestionAdapter = null;
         // binding = null;
     }
 
     protected void observeEvents() {
         viewModel.getSearchHistoryData().observe(getViewLifecycleOwner(), results -> {
-            if (results != null && !results.isEmpty()) recentSearchAtapter.setData(results);
+            if (results != null && !results.isEmpty()) recentSearchAdapter.setData(results);
         });
 
         viewModel.getQuickSearchResult().observe(getViewLifecycleOwner(), results -> {
@@ -127,7 +127,7 @@ public class SearchFragment extends Fragment
 
         viewModel.isShowSearchResultAdapter().observe(getViewLifecycleOwner(), result -> {
             // Log.i("tag", "isShowSearchResultAdapter observe called");
-            binding.recyclerView.setAdapter(result ? pagingAdapter : recentSearchAtapter);
+            binding.recyclerView.setAdapter(result ? pagingAdapter : recentSearchAdapter);
         });
 
         viewModel.getAnimePagingData().observe(getViewLifecycleOwner(), results -> {
@@ -139,15 +139,15 @@ public class SearchFragment extends Fragment
     }
 
     protected void initViews() {
-        recentSearchAtapter = new RecentSearchesAdapter();
-        recentSearchAtapter.setOnItemClickListener(this);
+        recentSearchAdapter = new RecentSearchesAdapter();
+        recentSearchAdapter.setOnItemClickListener(this);
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
         binding.loadStateLayout.stateFrame.setVisibility(View.GONE);
 
         pagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
-        pagingAdapter.setOnItemClickListener(item -> openDeatailsFragment(item));
+        pagingAdapter.setOnItemClickListener(this::openDetailsFragment);
         suggestionAdapter = new SuggestionAdapter(requireContext(), 0);
         suggestionAdapter.setOnClickListener(this);
         binding.etSearch.setAdapter(suggestionAdapter);
@@ -233,11 +233,17 @@ public class SearchFragment extends Fragment
     }
 
     private void showNoDataState() {
-        // TODO: Implement this method
+        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_search_desc);
 
+        binding.content.setVisibility(View.GONE);
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
-    private void openDeatailsFragment(String link) {
+    private void openDetailsFragment(String link) {
         SearchFragmentDirections.ActionNavSearchToNavDetails action =
                 SearchFragmentDirections.actionNavSearchToNavDetails(link);
         Navigation.findNavController(requireView()).navigate(action);

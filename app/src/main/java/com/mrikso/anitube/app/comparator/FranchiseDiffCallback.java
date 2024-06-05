@@ -13,6 +13,6 @@ public class FranchiseDiffCallback extends DiffUtil.ItemCallback<FranchiseModel>
 
     @Override
     public boolean areContentsTheSame(@NonNull FranchiseModel oldItem, @NonNull FranchiseModel newItem) {
-        return oldItem.getAnimeUrl().equals(newItem.getAnimeUrl());
+        return oldItem.equals(newItem);
     }
 }

@@ -53,6 +53,9 @@ import java.util.Map;
 
 import static android.content.Context.UI_MODE_SERVICE;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+
 public class Utils {
 
     public static final String FEATURE_FIRE_TV = "amazon.hardware.fire_tv";
@@ -587,6 +590,19 @@ public class Utils {
         m.clear();
         for (Map.Entry<K, V> e : entries) {
             m.put(e.getKey(), e.getValue());
+        }
+    }
+
+    public static void bypassSSL() {
+        try {
+            // Disables ssl check
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new SSLTrustManager[] {new SSLTrustManager()}, new java.security.SecureRandom());
+            sslContext.createSSLEngine();
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+        } catch (Exception ignored) {
+
         }
     }
 }

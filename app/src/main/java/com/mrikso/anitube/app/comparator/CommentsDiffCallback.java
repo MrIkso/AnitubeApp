@@ -13,6 +13,6 @@ public class CommentsDiffCallback extends DiffUtil.ItemCallback<CommentModel> {
 
     @Override
     public boolean areContentsTheSame(@NonNull CommentModel oldItem, @NonNull CommentModel newItem) {
-        return oldItem.getCommentId() == newItem.getCommentId();
+        return oldItem.equals(newItem);
     }
 }

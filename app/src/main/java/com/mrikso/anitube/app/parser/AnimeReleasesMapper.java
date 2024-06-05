@@ -27,7 +27,6 @@ public class AnimeReleasesMapper {
     }
 
     public AnimeListReleases transform(Document document) {
-
         ParserUtils.parseDleHash(document.html());
         if (PreferencesHelper.getInstance().isLogin()) {
             homePage.parseUserData(document);

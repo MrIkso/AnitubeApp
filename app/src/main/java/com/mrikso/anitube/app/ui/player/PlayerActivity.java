@@ -46,7 +46,6 @@ import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 
-import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.common.base.Strings;
@@ -66,23 +65,19 @@ import com.mrikso.player.ExoMediaSourceHelper;
 import com.mrikso.player.dtpv.DoubleTapPlayerView;
 import com.mrikso.player.dtpv.youtube.YouTubeOverlay;
 import com.mrikso.player.utils.BrightnessControl;
-import com.mrikso.player.utils.SSLTrustManager;
 import com.mrikso.player.utils.Utils;
-
-import dagger.hilt.android.AndroidEntryPoint;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
+import dagger.hilt.android.AndroidEntryPoint;
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @AndroidEntryPoint
 @OptIn(markerClass = UnstableApi.class)
@@ -161,7 +156,7 @@ public class PlayerActivity extends AppCompatActivity {
         setView();
         initViewModel();
         setupViews();
-        if (savedInstanceState == null) {
+       // if (savedInstanceState == null) {
             hideNavBar();
             parseExtra();
             preparePlayer();
@@ -169,7 +164,7 @@ public class PlayerActivity extends AppCompatActivity {
             setupTextViewValues();
             setupQuality();
             setupMiddleControllers();
-        }
+     //   }
     }
 
     private void setView() {
@@ -276,21 +271,18 @@ public class PlayerActivity extends AppCompatActivity {
         // exoPlayer.setPlayWhenReady(true);
         exoPlayer.setHandleAudioBecomingNoisy(true);
 
-        playerView.setControllerVisibilityListener(new PlayerView.ControllerVisibilityListener() {
-            @Override
-            public void onVisibilityChanged(int visibility) {
-                controllerVisible = visibility == View.VISIBLE;
-                controllerVisibleFully = playerView.isControllerFullyVisible();
-                if (restoreControllerTimeout) {
-                    restoreControllerTimeout = false;
-                }
+        playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
+            controllerVisible = visibility == View.VISIBLE;
+            controllerVisibleFully = playerView.isControllerFullyVisible();
+            if (restoreControllerTimeout) {
+                restoreControllerTimeout = false;
+            }
 
-                if (visibility != View.VISIBLE) {
-                    exoQuality.dismissDropDown();
-                } else {
+            if (visibility != View.VISIBLE) {
+                exoQuality.dismissDropDown();
+            } else {
 
-                    // controller is not visible
-                }
+                // controller is not visible
             }
         });
         youTubeOverlay.player(exoPlayer);
@@ -638,22 +630,10 @@ public class PlayerActivity extends AppCompatActivity {
         disposables.add(disposable);
     }
 
-    void bypassSSL() {
-        try {
-            // Disables ssl check
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, new SSLTrustManager[] {new SSLTrustManager()}, new java.security.SecureRandom());
-            sslContext.createSSLEngine();
-            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-        } catch (Exception ignored) {
-
-        }
-    }
 
      private void setMediaSourceByModel(VideoLinksModel model) {
         if (model.isIgnoreSSL()) {
-            bypassSSL();
+            Utils.bypassSSL();
         }
 
         MediaSource mediaSource = null;

@@ -16,6 +16,7 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.FragmentProfileBinding;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserProfileModel;
+import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -140,7 +141,7 @@ public class ProfileFragment extends Fragment {
                 isOnline ? R.drawable.ic_circle_status_online : R.drawable.ic_circle_status_offline);
 
         ViewUtils.loadImage(
-                binding.layoutProfileHeader.avatarBg, ProfileBackgroundImages.getImage() /*ApiClient.PROFILE_BG_URL*/);
+                binding.layoutProfileHeader.avatarBg, /*ProfileBackgroundImages.getImage()*/ ApiClient.PROFILE_BG_URL);
         binding.layoutProfileHeader.userNickname.setText(model.getUsername());
 
         binding.layoutProfileHeader.userGroupTv.setText(model.getUserGroup());

@@ -66,7 +66,7 @@ public class CommentsFragment extends Fragment {
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-        commentsAdapter = new CommentsPagingAdapter(getGlide(requireContext()));
+        commentsAdapter = new CommentsPagingAdapter();
         commentsAdapter.setOnItemClickListener(link -> {
             openProfileFragment(link);
         });
@@ -146,11 +146,6 @@ public class CommentsFragment extends Fragment {
         super.onDestroyView();
         commentsAdapter = null;
         binding = null;
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     private void loadData() {

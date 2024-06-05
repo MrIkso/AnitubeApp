@@ -2,6 +2,8 @@ package com.mrikso.anitube.app.model;
 
 import androidx.annotation.StringRes;
 
+import com.google.common.base.Objects;
+
 public class ActionModel {
     private final int type;
 
@@ -27,5 +29,18 @@ public class ActionModel {
 
     public String getBgUrl() {
         return this.bgUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActionModel that = (ActionModel) o;
+        return type == that.type && name == that.name && Objects.equal(bgUrl, that.bgUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(type, name, bgUrl);
     }
 }

@@ -13,16 +13,15 @@ import com.mrikso.anitube.app.databinding.ItemCommentBinding;
 import com.mrikso.anitube.app.model.CommentModel;
 import com.mrikso.anitube.app.utils.HtmlTextSpanner;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 public class CommentsPagingAdapter extends PagingDataAdapter<CommentModel, CommentsPagingAdapter.ViewHolder> {
     public static final int LOADING_ITEM = 0;
     public static final int COMMENT_ITEM = 1;
-    private final RequestManager glide;
     private OnItemClickListener listener;
 
-    public CommentsPagingAdapter(RequestManager glide) {
+    public CommentsPagingAdapter() {
         super(new CommentsDiffCallback());
-        this.glide = glide;
     }
 
     @NonNull
@@ -59,8 +58,7 @@ public class CommentsPagingAdapter extends PagingDataAdapter<CommentModel, Comme
             binding.tvUsergroup.setText(comment.getUserGroup());
             binding.tvTime.setText(comment.getTime());
             binding.tvComment.setText(HtmlTextSpanner.spanText(comment.getContent()));
-
-            glide.load(ParserUtils.normaliseImageUrl(comment.getUserAvarar())).into(binding.ivProfile);
+            ViewUtils.loadImage(binding.ivProfile, ParserUtils.normaliseImageUrl(comment.getUserAvarar()));
 
             if (listener != null) {
                 binding.ivProfile.setOnClickListener(v -> listener.onProfileClicked(comment.getUserLink()));

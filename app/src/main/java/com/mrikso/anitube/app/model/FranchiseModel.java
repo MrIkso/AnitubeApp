@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import com.google.common.base.Objects;
+
 public class FranchiseModel extends BaseAnimeModel {
     private boolean isCurrent;
     private String episodes;
@@ -32,5 +34,18 @@ public class FranchiseModel extends BaseAnimeModel {
 
     public void setReleaseYear(String releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FranchiseModel that = (FranchiseModel) o;
+        return isCurrent == that.isCurrent && Objects.equal(episodes, that.episodes) && Objects.equal(releaseYear, that.releaseYear);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(isCurrent, episodes, releaseYear);
     }
 }

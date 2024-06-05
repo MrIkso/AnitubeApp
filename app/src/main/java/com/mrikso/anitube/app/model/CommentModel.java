@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 public class CommentModel implements Serializable {
@@ -65,5 +67,18 @@ public class CommentModel implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CommentModel that = (CommentModel) o;
+        return commentId == that.commentId && Objects.equal(username, that.username) && Objects.equal(userAvarar, that.userAvarar) && Objects.equal(userLink, that.userLink) && Objects.equal(userGroup, that.userGroup) && Objects.equal(time, that.time) && Objects.equal(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(commentId, username, userAvarar, userLink, userGroup, time, content);
     }
 }

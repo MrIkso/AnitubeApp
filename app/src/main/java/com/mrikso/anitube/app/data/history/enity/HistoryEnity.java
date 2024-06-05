@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.common.base.Objects;
+
 @Entity(tableName = "watch_history")
 public class HistoryEnity {
     @PrimaryKey(autoGenerate = true)
@@ -114,5 +116,18 @@ public class HistoryEnity {
 
     public void setSourcePath(String sourcePath) {
         this.sourcePath = sourcePath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HistoryEnity that = (HistoryEnity) o;
+        return id == that.id && animeId == that.animeId && episodeId == that.episodeId && totalWatchTime == that.totalWatchTime && totalEpisodeTime == that.totalEpisodeTime && watchDate == that.watchDate && Objects.equal(name, that.name) && Objects.equal(animeUrl, that.animeUrl) && Objects.equal(posterUrl, that.posterUrl) && Objects.equal(sourcePath, that.sourcePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, animeId, name, animeUrl, posterUrl, episodeId, totalWatchTime, totalEpisodeTime, watchDate, sourcePath);
     }
 }

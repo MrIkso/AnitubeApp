@@ -13,6 +13,6 @@ public class WatchHistoryDiffCallback extends DiffUtil.ItemCallback<HistoryEnity
 
     @Override
     public boolean areContentsTheSame(@NonNull HistoryEnity oldItem, @NonNull HistoryEnity newItem) {
-        return oldItem.getAnimeId() == newItem.getAnimeId();
+        return oldItem.equals(newItem);
     }
 }
