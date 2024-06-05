@@ -147,7 +147,7 @@ public class ProfileFragment extends Fragment {
         binding.layoutProfileHeader.userGroupTv.setText(model.getUserGroup());
         // binding.layoutProfileHeader.status.setText(String.valueOf(model.getUserOnline()));
         binding.layoutProfileHeader.comments.setText(String.valueOf(model.getUserCommentsCount()));
-        binding.layoutProfileHeader.commentsRating.setText(String.valueOf(model.getUserCommentsRating()));
+        // binding.layoutProfileHeader.commentsRating.setText(String.valueOf(model.getUserCommentsRating()));
 
         if (!Strings.isNullOrEmpty(model.getName())) {
             binding.profileProfileNameTr.setVisibility(View.VISIBLE);

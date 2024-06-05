@@ -85,7 +85,7 @@
                             android:textSize="20sp"
                             android:textColor="@color/white"
                             android:id="@+id/user_nickname"
-                            android:text="Anonymous" />
+                            tools:text="Anonymous" />
 
                         <LinearLayout
                             android:layout_height="wrap_content"
