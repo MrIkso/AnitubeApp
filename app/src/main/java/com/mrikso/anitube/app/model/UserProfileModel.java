@@ -8,7 +8,7 @@ public class UserProfileModel {
     private String userGroup;
     private String userInfo;
     private String userRegisterData;
-    private String userLastActibityData;
+    private String userLastActivityData;
     private String userStatus;
     private String userCity;
     private String userOnline;
@@ -71,12 +71,12 @@ public class UserProfileModel {
         this.userRegisterData = userRegisterData;
     }
 
-    public String getUserLastActibityData() {
-        return this.userLastActibityData;
+    public String getUserLastActivityData() {
+        return this.userLastActivityData;
     }
 
-    public void setUserLastActibityData(String userLastActibityData) {
-        this.userLastActibityData = userLastActibityData;
+    public void setUserLastActivityData(String userLastActivityData) {
+        this.userLastActivityData = userLastActivityData;
     }
 
     public String getUserStatus() {

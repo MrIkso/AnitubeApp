@@ -14,7 +14,7 @@ public class FranchiseParser {
     private final String RELEASE_YEAR_PATTERN = "Рік випуску аніме:\\s*(\\d{4})";
     private final String SERIES_PATTERN = "Серій:\\s*(.*)";
 
-    public List<FranchiseModel> parseFranshises(String currentAnime, Element root) {
+    public List<FranchiseModel> parseFranchises(String currentAnime, Element root) {
         Elements franchisesElements = root.select("a");
         List<FranchiseModel> franchises = new ArrayList<>(franchisesElements.size());
         for (Element franchisesElement : franchisesElements) {

@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.parser;
 
-import androidx.core.util.Pair;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -10,8 +8,6 @@ import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-
-import io.reactivex.rxjava3.subjects.Subject;
 
 import org.jsoup.nodes.Document;
 
@@ -33,7 +29,7 @@ public class AnimeReleasesMapper {
             //  Log.i("mapper", userData.toString());
         }
         ArticleStoryParser storyParser = new ArticleStoryParser();
-        AnimeListReleases releases = storyParser.getReleaeses(document);
+        AnimeListReleases releases = storyParser.getReleases(document);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type responseType = new TypeToken<List<AnimeReleaseModel>>() {}.getType();
 

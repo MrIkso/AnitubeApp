@@ -2,7 +2,6 @@ package com.mrikso.anitube.app.ui.home;
 
 import android.util.Log;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -27,7 +26,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import org.jsoup.nodes.Document;
@@ -127,7 +125,7 @@ public class HomeFragmentViewModel extends ViewModel {
     private void parseHomePage(Document home) {
         homePageParser.parseHome(home);
 
-        interesingAnime.postValue(homePageParser.getInteresingAnime());
+        interesingAnime.postValue(homePageParser.getInterestingAnime());
         bestAnime.postValue(homePageParser.getBestAnime());
         newAnime.postValue(homePageParser.getLatestReleasesAnime());
         newCollections.postValue(homePageParser.getNewCollectionsList());

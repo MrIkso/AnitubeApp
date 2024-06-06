@@ -58,7 +58,7 @@
     <string name="profile_group">Група</string>
     <string name="profile_name">Ім\'я</string>
     <string name="profile_register_date">Реєстрація</string>
-    <string name="profile_last_activity">Останнє відвідування</string>
+    <string name="profile_last_activity">Відвідини</string>
     <string name="profile_info">Про себе</string>
     <string name="profile_city">Місто</string>
     <string name="profile_status">Підпис</string>
@@ -94,7 +94,7 @@
     <string name="home_new_anime">Новинки</string>
     <string name="release_calendar">Календар</string>
     <string name="release_genres">Жанр</string>
-    <string name="home_best_anime">Найкраще аніме</string>
+    <string name="home_best_anime">Найкраще аніме cезону</string>
     <string name="home_new_collections">Нові колекції</string>
     <string name="random_anime">Випадкове аніме</string>
 

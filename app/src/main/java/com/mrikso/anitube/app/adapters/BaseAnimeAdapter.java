@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,21 +20,16 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.comparator.BaseAnimeDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemBestAnimeBinding;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.ViewHolder> {
-    private final List<BaseAnimeModel> results = new ArrayList<>();
-
+public class BaseAnimeAdapter extends ListAdapter<BaseAnimeModel, BaseAnimeAdapter.ViewHolder> {
     private OnItemClickListener listener;
 
-    public void setResults(List<BaseAnimeModel> results) {
-        this.results.addAll(results);
-        notifyDataSetChanged();
+    public BaseAnimeAdapter() {
+        super(new BaseAnimeDiffCallback());
     }
 
     @NonNull
@@ -46,13 +42,7 @@ public class BaseAnimeAdapter extends RecyclerView.Adapter<BaseAnimeAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        BaseAnimeModel episode = results.get(position);
-        holder.bind(episode);
-    }
-
-    @Override
-    public int getItemCount() {
-        return results.size();
+        holder.bind(getItem(position));
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {

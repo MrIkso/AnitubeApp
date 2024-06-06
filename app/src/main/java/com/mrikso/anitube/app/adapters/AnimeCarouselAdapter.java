@@ -4,25 +4,22 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mrikso.anitube.app.comparator.InteresingDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemInteresingAnimeBinding;
 import com.mrikso.anitube.app.model.InteresingModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.ViewUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdapter.ViewHolder> {
-    private List<InteresingModel> results = new ArrayList<>();
+public class AnimeCarouselAdapter extends ListAdapter<InteresingModel, AnimeCarouselAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
 
-    public void setResults(List<InteresingModel> results) {
-        this.results.addAll(results);
-        notifyDataSetChanged();
+    public AnimeCarouselAdapter(){
+        super(new InteresingDiffCallback());
     }
 
     @NonNull
@@ -35,17 +32,11 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        InteresingModel episode = results.get(position);
-        holder.bind(episode);
-    }
-
-    @Override
-    public int getItemCount() {
-        return results.size();
+        holder.bind(getItem(position));
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ItemInteresingAnimeBinding binding;
+        private final ItemInteresingAnimeBinding binding;
 
         public ViewHolder(@NonNull ItemInteresingAnimeBinding binding) {
             super(binding.getRoot());

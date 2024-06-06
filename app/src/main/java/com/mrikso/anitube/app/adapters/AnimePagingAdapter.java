@@ -65,7 +65,7 @@ public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, Ani
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ItemAnimeReleaseBinding binding;
+        private final ItemAnimeReleaseBinding binding;
 
         public ViewHolder(@NonNull ItemAnimeReleaseBinding binding) {
             super(binding.getRoot());
@@ -110,7 +110,7 @@ public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, Ani
                         public boolean onLoadFailed(
                                 @Nullable GlideException e,
                                 Object model,
-                                Target<Drawable> target,
+                                @NonNull Target<Drawable> target,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
                             binding.poster.setImageDrawable(AppCompatResources.getDrawable(binding.getRoot().getContext(), R.drawable.ic_broken_image));
@@ -119,10 +119,10 @@ public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, Ani
 
                         @Override
                         public boolean onResourceReady(
-                                Drawable resource,
-                                Object model,
+                                @NonNull Drawable resource,
+                                @NonNull Object model,
                                 Target<Drawable> target,
-                                DataSource dataSource,
+                                @NonNull DataSource dataSource,
                                 boolean isFirstResource) {
                             binding.progressIndicator.setVisibility(View.GONE);
                             return false;

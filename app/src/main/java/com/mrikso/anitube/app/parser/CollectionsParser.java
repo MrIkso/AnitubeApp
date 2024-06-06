@@ -49,7 +49,7 @@ public class CollectionsParser {
         Element navigationElement = data.selectFirst("div.navigation > span.navi_pages");
         if (navigationElement != null) {
             String maxpage = navigationElement.getElementsByTag("a").last().text();
-            maxPage = Integer.valueOf(maxpage);
+            maxPage = Integer.parseInt(maxpage);
         }
         return new Pair<>(maxPage, collections);
     }

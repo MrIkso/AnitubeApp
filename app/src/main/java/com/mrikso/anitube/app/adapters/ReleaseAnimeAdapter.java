@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,24 +20,18 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.ItemAnimeReleaseBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
 import com.mrikso.anitube.app.network.ApiClient;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapter.ViewHolder> {
-    private List<AnimeReleaseModel> results = new ArrayList<>();
-
+public class ReleaseAnimeAdapter extends ListAdapter<AnimeReleaseModel, ReleaseAnimeAdapter.ViewHolder> {
     private OnItemClickListener listener;
 
-    public void setResults(List<AnimeReleaseModel> results) {
-        this.results.addAll(results);
-        notifyDataSetChanged();
+    public ReleaseAnimeAdapter(){
+        super(new AnimeReleaseComparator());
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,13 +42,7 @@ public class ReleaseAnimeAdapter extends RecyclerView.Adapter<ReleaseAnimeAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        AnimeReleaseModel episode = results.get(position);
-        holder.bind(episode);
-    }
-
-    @Override
-    public int getItemCount() {
-        return results.size();
+        holder.bind(getItem(position));
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {

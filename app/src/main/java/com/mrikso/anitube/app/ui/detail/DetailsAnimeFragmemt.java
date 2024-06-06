@@ -230,17 +230,16 @@ public class DetailsAnimeFragmemt extends Fragment
         List<BaseAnimeModel> similarAnimeList = animeDetails.getSimilarAnimeList();
         if (similarAnimeList != null && !similarAnimeList.isEmpty()) {
             binding.layoutSimilar.llSimilar.setVisibility(View.VISIBLE);
-            requireActivity().runOnUiThread(() -> {
-                similarAnimeAdapter.setResults(similarAnimeList);
-            });
+                similarAnimeAdapter.submitList(similarAnimeList);
+
         }
 
         List<FranchiseModel> franchiseAnimeList = animeDetails.getFranchiseList();
         if (franchiseAnimeList != null && !franchiseAnimeList.isEmpty()) {
             binding.layoutFranchises.llFranchise.setVisibility(View.VISIBLE);
-            requireActivity().runOnUiThread(() -> {
+
                 franchisesAdapter.submitList(franchiseAnimeList);
-            });
+
         }
 
         binding.fabWatch.setOnClickListener(v -> {

@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.parser;
 
-import android.util.Log;
-
 import com.mrikso.anitube.app.model.UserProfileModel;
 
 import org.jsoup.nodes.Document;
@@ -56,11 +54,11 @@ public class UserProfileParser {
             model.setUserRegisterData(register);
         }
 
-        Element lastActivityElement = userDetails.selectFirst("div.user_info_r strong:contains(Останнє відвідування)");
+        Element lastActivityElement = userDetails.selectFirst("div.user_info_r strong:contains(Відвідини)");
         if (lastActivityElement != null) {
             String lastActivity =
                     lastActivityElement.nextSibling().toString().trim().replaceAll("\"", "");
-            model.setUserLastActibityData(lastActivity);
+            model.setUserLastActivityData(lastActivity);
         }
 
         Element signElement = userDetails.selectFirst("div.user_info_r strong:contains(Підпис)");

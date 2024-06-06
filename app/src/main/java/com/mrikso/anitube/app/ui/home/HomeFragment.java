@@ -12,10 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
+import com.google.android.material.color.MaterialColors;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.ActionListAdapter;
 import com.mrikso.anitube.app.adapters.AnimeCarouselAdapter;
@@ -25,12 +24,11 @@ import com.mrikso.anitube.app.adapters.ReleaseAnimeAdapter;
 import com.mrikso.anitube.app.databinding.FragmentHomeBinding;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.AutoScrollHelper;
+import com.mrikso.anitube.app.utils.DotsIndicatorDecoration;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -47,12 +45,9 @@ public class HomeFragment extends Fragment
     private ReleaseAnimeAdapter releaseAnimeAdapter;
     private CollectionsAdapter collectionsAdapter;
     private ActionListAdapter actionListAdapter;
-    private Timer timer;
-    private TimerTask timerTask;
-    private int position;
-    private LinearLayoutManager carouselLayoutManager;
-    private RecyclerView mNowShowingRecyclerView;
     private String profileLink;
+
+    private AutoScrollHelper autoScrollHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,14 +89,25 @@ public class HomeFragment extends Fragment
             Navigation.findNavController(requireView()).navigate(action);
         });
 
-        carouselLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        mNowShowingRecyclerView = binding.interestingLayout.carouselRecyclerView;
+        /*  private Timer timer;
+    private TimerTask timerTask;
+    private int position;*/
+        LinearLayoutManager carouselLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView mNowShowingRecyclerView = binding.interestingLayout.carouselRecyclerView;
         mNowShowingRecyclerView.setLayoutManager(carouselLayoutManager);
         mNowShowingRecyclerView.setAdapter(carouselAdapter);
 
-        SnapHelper snapHelper = new PagerSnapHelper();
+        final int radius = getResources().getDimensionPixelSize(R.dimen.dots_radius);
+        final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.dots_height);
+        final int color = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorPrimary, null);
+        final int colorInactive = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorAccent, null);
+        mNowShowingRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, radius * 2, dotsHeight, colorInactive, color));
+
+
+        /*SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mNowShowingRecyclerView);
         mNowShowingRecyclerView.smoothScrollBy(5, 0);
+*/
 
         binding.bestAnimeLayout.bestAnimeRecyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -115,7 +121,11 @@ public class HomeFragment extends Fragment
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         binding.newAnimeLayout.newAnimeRecyclerView.setAdapter(releaseAnimeAdapter);
 
-        mNowShowingRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        // Initialize AutoScrollHelper with a 3-second interval
+        autoScrollHelper = new AutoScrollHelper(mNowShowingRecyclerView, 3000);
+        autoScrollHelper.startAutoScroll();
+
+        /*mNowShowingRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -127,7 +137,7 @@ public class HomeFragment extends Fragment
                     runAutoScrollingCarousel();
                 }
             }
-        });
+        });*/
 
         binding.swipeRefreshLayout.setOnRefreshListener(() -> {
             viewModel.reloadHome();
@@ -200,24 +210,18 @@ public class HomeFragment extends Fragment
 
         viewModel.getInteresingAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                requireActivity().runOnUiThread(() -> {
-                    carouselAdapter.setResults(results);
-                });
+                    carouselAdapter.submitList(results);
             }
         });
 
         viewModel.getBestAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                requireActivity().runOnUiThread(() -> {
-                    bestAnimeAdapter.setResults(results);
-                });
+                    bestAnimeAdapter.submitList(results);
             }
         });
         viewModel.getNewAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                requireActivity().runOnUiThread(() -> {
-                    releaseAnimeAdapter.setResults(results);
-                });
+                    releaseAnimeAdapter.submitList(results);
             }
         });
         viewModel.getNewACollections().observe(getViewLifecycleOwner(), results -> {
@@ -228,7 +232,6 @@ public class HomeFragment extends Fragment
 
         viewModel.getActionList().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-
                 actionListAdapter.submitList(results);
             }
         });
@@ -242,6 +245,7 @@ public class HomeFragment extends Fragment
         });
     }
 
+/*
     private void stopAutoScrollCarousel() {
         if (timer != null && timerTask != null) {
             timerTask.cancel();
@@ -278,6 +282,7 @@ public class HomeFragment extends Fragment
             }
         }
     }
+*/
 
     @Override
     public void onBaseItemSelected(String link) {
@@ -328,7 +333,10 @@ public class HomeFragment extends Fragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stopAutoScrollCarousel();
+        //stopAutoScrollCarousel();
+        if (autoScrollHelper != null) {
+            autoScrollHelper.stopAutoScroll();
+        }
         binding = null;
         releaseAnimeAdapter = null;
         carouselAdapter = null;

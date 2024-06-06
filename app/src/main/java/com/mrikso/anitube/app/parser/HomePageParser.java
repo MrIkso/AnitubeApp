@@ -2,8 +2,6 @@ package com.mrikso.anitube.app.parser;
 
 import android.util.Log;
 
-import androidx.core.util.Pair;
-
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.CollectionModel;
@@ -13,9 +11,6 @@ import com.mrikso.anitube.app.model.SimpleModel;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-
-import io.reactivex.rxjava3.subjects.PublishSubject;
-import io.reactivex.rxjava3.subjects.Subject;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -223,7 +218,7 @@ public class HomePageParser {
         return null;
     }
 
-    public List<InteresingModel> getInteresingAnime() {
+    public List<InteresingModel> getInterestingAnime() {
         return this.interestingAnimeList;
     }
 

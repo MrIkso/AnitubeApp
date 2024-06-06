@@ -19,13 +19,13 @@ import java.util.List;
 public class ArticleStoryParser {
     private final String TAG = "ArticleStoryParser";
 
-    public AnimeListReleases getReleaeses(Document document) {
+    public AnimeListReleases getReleases(Document document) {
         List<AnimeReleaseModel> list = getAnimeModels(document.select("article.story"));
         AnimeListReleases releases = new AnimeListReleases(list);
         Element navigationElement = document.selectFirst("div.navigation > span.navi_pages");
         if (navigationElement != null) {
             String maxPage = navigationElement.getElementsByTag("a").last().text();
-            releases.setMaxPage(Integer.valueOf(maxPage));
+            releases.setMaxPage(Integer.parseInt(maxPage));
         } else {
             releases.setMaxPage(1);
         }

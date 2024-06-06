@@ -37,7 +37,7 @@ public class QuickSearchResultParser {
             }
             return quickSearchResultList;
         } else {
-            Log.i("QuickSearchResultParser", response.getText());
+            //Log.i("QuickSearchResultParser", response.getText());
         }
         return quickSearchResultList;
     }

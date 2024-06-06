@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.model;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 public class BaseAnimeModel implements Serializable {
@@ -52,5 +54,18 @@ public class BaseAnimeModel implements Serializable {
 
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseAnimeModel that = (BaseAnimeModel) o;
+        return animeId == that.animeId && Objects.equal(title, that.title) && Objects.equal(posterUrl, that.posterUrl) && Objects.equal(animeUrl, that.animeUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(animeId, title, posterUrl, animeUrl);
     }
 }

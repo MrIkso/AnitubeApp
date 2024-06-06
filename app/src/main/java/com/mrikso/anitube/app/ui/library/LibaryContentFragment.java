@@ -26,6 +26,7 @@ import com.mrikso.anitube.app.databinding.FragmentLibaryContentBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import retrofit2.HttpException;
 
 @AndroidEntryPoint
 public class LibaryContentFragment extends Fragment {
@@ -70,9 +71,7 @@ public class LibaryContentFragment extends Fragment {
 
     private void initViews() {
         animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
-        animePpagingAdapter.setOnItemClickListener(link -> {
-            openDetailsFragment(link);
-        });
+        animePpagingAdapter.setOnItemClickListener(this::openDetailsFragment);
         animePpagingAdapter.addLoadStateListener(combinedLoadStates -> {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
@@ -85,20 +84,21 @@ public class LibaryContentFragment extends Fragment {
                 if (refreshLoadState.getEndOfPaginationReached() && animePpagingAdapter.getItemCount() < 1) {
                     showNoDataState();
                 } else {
-                    if (binding != null) {
                         binding.content.setVisibility(View.VISIBLE);
                         binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                         binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
-                    }
                 }
             } else if (refreshLoadState instanceof LoadState.Error) {
-                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                binding.content.setVisibility(View.GONE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.repeat.setOnClickListener(v -> animePpagingAdapter.retry());
                 LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
-                binding.loadStateLayout.errorMessage.setText(
-                        loadStateError.getError().getLocalizedMessage());
+                if(loadStateError.getError() instanceof HttpException) {
+
+                    if (((HttpException) loadStateError.getError()).code() == 404) {
+                        showNoDataState();
+                    }
+                }
+                   else {
+                        handleErrorState(loadStateError.getError().getLocalizedMessage());
+                    }
             }
             if (!(refreshLoadState instanceof LoadState.Loading) && appendLoadState instanceof LoadState.NotLoading) {
                 if (appendLoadState.getEndOfPaginationReached() && animePpagingAdapter.getItemCount() < 1) {
@@ -115,6 +115,14 @@ public class LibaryContentFragment extends Fragment {
             animePpagingAdapter.refresh();
             binding.swipeRefreshLayout.setRefreshing(false);
         });
+    }
+
+    private void handleErrorState(String error) {
+        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+        binding.content.setVisibility(View.GONE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+        binding.loadStateLayout.repeat.setOnClickListener(v -> animePpagingAdapter.retry());
+        binding.loadStateLayout.errorMessage.setText(error);
     }
 
     private void openDetailsFragment(final String link) {

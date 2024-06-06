@@ -20,7 +20,6 @@ import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-import com.mrikso.anitube.app.utils.ProfileBackgroundImages;
 import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -159,7 +158,7 @@ public class ProfileFragment extends Fragment {
         }
 
         binding.profileRegisterDateTv.setText(model.getUserRegisterData());
-        binding.profileLastActivityTv.setText(model.getUserLastActibityData());
+        binding.profileLastActivityTv.setText(model.getUserLastActivityData());
 
         if (!Strings.isNullOrEmpty(model.getUserInfo())) {
             binding.profileInfoTr.setVisibility(View.VISIBLE);

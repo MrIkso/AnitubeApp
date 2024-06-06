@@ -31,7 +31,7 @@ public class AnimeListPagingSource extends RxPagingSource<Integer, AnimeReleaseM
         this.repository = repository;
         this.mapper = mapper;
         this.type = type;
-        Log.d("AnimelistPagingSource", "construcrot called");
+        //Log.d("AnimelistPagingSource", "construcrot called");
     }
 
     @NotNull
@@ -42,7 +42,7 @@ public class AnimeListPagingSource extends RxPagingSource<Integer, AnimeReleaseM
         // fist page
         int page = loadParams.getKey() != null ? loadParams.getKey() : 1;
 
-          Log.d("AnimelistPagingSource", "loadSingle: loading page " + page);
+          //Log.d("AnimelistPagingSource", "loadSingle: loading page " + page);
 
         // Send request to server with page number
         return repository
@@ -61,7 +61,7 @@ public class AnimeListPagingSource extends RxPagingSource<Integer, AnimeReleaseM
 
     // Method to map AnimeReleaseModel to LoadResult object
     private LoadResult<Integer, AnimeReleaseModel> toLoadResult(List<AnimeReleaseModel> data, int page, int maxPage) {
-        Log.d("AnimelistPagingSource", "page: " + page + "maxPage: " + maxPage);
+       // Log.d("AnimelistPagingSource", "page: " + page + "maxPage: " + maxPage);
         Integer nextKey = data != null && !data.isEmpty() && page < maxPage ? page + 1 : null;
         if (data != null) {
             return new LoadResult.Page<>(data, null, nextKey);

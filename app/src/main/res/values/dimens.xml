@@ -17,4 +17,7 @@
 	<dimen name="gradient_height">100dp</dimen>
 	<dimen name="h1_text_size">48sp</dimen>
 	<dimen name="h2_text_size">18sp</dimen>
+
+	<dimen name="dots_radius">3dp</dimen>
+	<dimen name="dots_height">5dp</dimen>
 </resources>

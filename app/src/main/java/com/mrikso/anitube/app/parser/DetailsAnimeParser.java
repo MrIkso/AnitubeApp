@@ -267,7 +267,7 @@ public class DetailsAnimeParser {
         Element relatedElement = element.children().last(); //
         if (relatedElement.html().contains("news fran")) {
             FranchiseParser fran = new FranchiseParser();
-            List<FranchiseModel> franchises = fran.parseFranshises(currentUrl, relatedElement);
+            List<FranchiseModel> franchises = fran.parseFranchises(currentUrl, relatedElement);
             model.setFranchiseList(franchises);
         }
     }
