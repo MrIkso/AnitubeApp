@@ -23,8 +23,9 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 app:title="@string/nav_profile"
-                app:menu="@menu/profile_menu"
-                app:navigationIcon="@drawable/ic_back" />
+                app:navigationIcon="@drawable/ic_back"  />
+            <!--app:menu="@menu/profile_menu"-->
+
 
         </com.google.android.material.appbar.AppBarLayout>
         <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout

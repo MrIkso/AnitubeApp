@@ -2,12 +2,19 @@ package com.mrikso.anitube.app.ui.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -22,14 +29,19 @@ import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
 
-import dagger.hilt.android.AndroidEntryPoint;
-
 import java.util.HashSet;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ProfileFragment extends Fragment {
     private ProfilePragmentViewModel viewModel;
     private FragmentProfileBinding binding;
+    private boolean isMyProfile;
+
+    public ProfileFragment() {
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,21 +94,29 @@ public class ProfileFragment extends Fragment {
         binding.toolbar.setNavigationOnClickListener(
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
-        binding.toolbar.setOnMenuItemClickListener(menuItem -> {
-            int itemId = menuItem.getItemId();
-            if (itemId == R.id.action_logout) {
-                DialogUtils.showConfirmation(
-                        requireContext(),
-                        R.string.dialog_confirm_title,
-                        R.string.dialog_confirm_logout,
-                        this::logout);
-                return true;
-            } else if (itemId == R.id.action_settings) {
-                Navigation.findNavController(requireView()).navigate(R.id.nav_settings);
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                if(isMyProfile) {
+                    menuInflater.inflate(R.menu.profile_menu, menu);
+                }
+            }
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.action_logout) {
+                    DialogUtils.showConfirmation(
+                            requireContext(),
+                            R.string.dialog_confirm_title,
+                            R.string.dialog_confirm_logout, () -> logout());
+                } else if (itemId == R.id.action_settings) {
+                    Navigation.findNavController(requireView()).navigate(R.id.nav_settings);
+                }
                 return true;
             }
-            return true;
-        });
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
     }
 
     private void initViews() {
@@ -105,16 +125,21 @@ public class ProfileFragment extends Fragment {
             binding.swipeRefreshLayout.setRefreshing(false);
         });
         binding.loadStateLayout.repeat.setOnClickListener(v -> reloadPage());
+        AppCompatActivity appCompatActivity = (AppCompatActivity) requireActivity();
+        appCompatActivity.setSupportActionBar(binding.toolbar);
     }
 
     private void reloadPage() {
         ProfileFragmentArgs args = ProfileFragmentArgs.fromBundle(getArguments());
+        isMyProfile = args.getUrl().contains(PreferencesHelper.getInstance().getUserLogin());
+
         viewModel.reloadData(args.getUrl());
     }
 
     private void logout() {
-        PreferencesHelper.getInstance().saveCooikes(new HashSet<>());
+        PreferencesHelper.getInstance().saveCookies(new HashSet<>());
         PreferencesHelper.getInstance().setLogin(false);
+        PreferencesHelper.getInstance().setUserLogin(null);
         Navigation.findNavController(requireView()).navigate(ProfileFragmentDirections.actionNavProfileToNavLogin());
     }
 
@@ -126,6 +151,8 @@ public class ProfileFragment extends Fragment {
 
     private void loadPage() {
         ProfileFragmentArgs args = ProfileFragmentArgs.fromBundle(getArguments());
+        isMyProfile = args.getUrl().contains(PreferencesHelper.getInstance().getUserLogin());
+
         viewModel.loadData(args.getUrl());
     }
 

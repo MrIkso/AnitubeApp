@@ -26,7 +26,7 @@ public class PreferencesHelper {
                 App.getApplication().getApplicationContext());
     }
 
-    public void saveCooikes(Set<String> cookies) {
+    public void saveCookies(Set<String> cookies) {
         preferences
                 .edit()
                 .putStringSet(PreferenceKeys.PREF_KEY_COOKIES, cookies)
@@ -43,6 +43,14 @@ public class PreferencesHelper {
 
     public void setLogin(boolean isLogin) {
         preferences.edit().putBoolean(PreferenceKeys.PREF_KEY_IS_LOGIN, isLogin).apply();
+    }
+
+    public String getUserLogin() {
+        return preferences.getString(PreferenceKeys.PREF_KEY_USER_LOGIN, null);
+    }
+
+    public void setUserLogin(String userLogin) {
+        preferences.edit().putString(PreferenceKeys.PREF_KEY_USER_LOGIN, userLogin).apply();
     }
 
     public boolean isReverseEpisodeList() {

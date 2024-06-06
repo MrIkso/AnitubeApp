@@ -91,9 +91,10 @@ public class LoginFragmentViewModel extends ViewModel {
             }
         }
         if (!cookies.isEmpty()) {
-            PreferencesHelper.getInstance().saveCooikes(cookies);
+            PreferencesHelper.getInstance().saveCookies(cookies);
             PreferencesHelper.getInstance().setLogin(true);
             UserModel userDataPair = homePageParser.getUserData(response.body());
+            PreferencesHelper.getInstance().setUserLogin(userDataPair.getUserName());
             loadSate.postValue(new Pair<>(LoadState.DONE, userDataPair));
         } else {
             loadSate.postValue(new Pair<>(LoadState.ERROR, null));

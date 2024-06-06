@@ -101,7 +101,7 @@ public class SplashActivity extends AppCompatActivity {
             saveCookie();
         } else {
             String[] parts = cookies.split(";");
-            PreferencesHelper.getInstance().saveCooikes(Arrays.stream(parts).collect(Collectors.toSet()));
+            PreferencesHelper.getInstance().saveCookies(Arrays.stream(parts).collect(Collectors.toSet()));
 
             Intent refreshCookieIntent = new Intent(SplashActivity.this, MainActivity.class);
             startActivity(refreshCookieIntent);
