@@ -57,4 +57,16 @@ public class AnitubeRepository {
     public Single<CommentsResponse> getCommentsForAnime(int page, int animeId) {
         return anitubeApi.getCommentsForAnime(page, animeId);
     }
+
+    public Single<Document> checkName(String name, String dleHash) {
+        return anitubeApi.checkName(name, dleHash);
+    }
+
+    public Single<Document> resetPassword(String lostName, String recaptchaResponse) {
+        return anitubeApi.resetPassword(lostName, recaptchaResponse, "", "submit_lost");
+    }
+
+    public Single<Document> register(String name, String password, String email, String recaptchaResponse) {
+        return anitubeApi.register(name, password, password, email, recaptchaResponse, "", "submit_reg", "register");
+    }
 }

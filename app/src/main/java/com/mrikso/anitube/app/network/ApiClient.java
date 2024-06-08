@@ -15,4 +15,6 @@ public class ApiClient {
             "https://mrikso.bitbucket.io/AnitubeApp/images/callendar_anime.jpg";
     public static final String ANIME_GENRES_URL = "https://mrikso.bitbucket.io/AnitubeApp/images/genres_anime.jpg";
     public static final String ANIME_RANDOM_BG_URL = "https://mrikso.bitbucket.io/AnitubeApp/images/random_anime.jpg";
+
+    public static final String CAPTCHA_SITE_KEY = "6LdKH_8SAAAAAAcS6GbDE_qYyhJ1q12ck7TrPLt5";
 }

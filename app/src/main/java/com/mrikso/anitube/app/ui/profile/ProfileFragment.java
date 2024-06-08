@@ -94,8 +94,8 @@ public class ProfileFragment extends Fragment {
         binding.toolbar.setNavigationOnClickListener(
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
+
+        binding.toolbar.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 if(isMyProfile) {
@@ -125,8 +125,6 @@ public class ProfileFragment extends Fragment {
             binding.swipeRefreshLayout.setRefreshing(false);
         });
         binding.loadStateLayout.repeat.setOnClickListener(v -> reloadPage());
-        AppCompatActivity appCompatActivity = (AppCompatActivity) requireActivity();
-        appCompatActivity.setSupportActionBar(binding.toolbar);
     }
 
     private void reloadPage() {

@@ -25,72 +25,123 @@
     <androidx.core.widget.NestedScrollView
         android:layout_below="@id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edit_text_username_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+            <ImageView
+                android:id="@+id/image_view_logo"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
-                android:hint="@string/login_username"
-                app:startIconDrawable="@drawable/baseline_person_outline_24">
+                android:src="@drawable/image_hello" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="username"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_below="@id/edit_text_username_layout"
-                android:id="@+id/edit_text_password_layout"
+            <!--<com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginBottom="24dp"
-                android:hint="@string/login_password"
-                app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/baseline_password_24">
+                android:layout_below="@+id/image_view_logo"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+-->
+                <RelativeLayout
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_password"
+                    android:layout_below="@+id/image_view_logo"
+                    android:id="@+id/cardview"
+                    android:layout_margin="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="password"
-                    android:imeOptions="actionGo"
-                    android:inputType="textPassword" />
+                    android:layout_height="wrap_content">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/edit_text_username_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="true"
+                        android:hint="@string/login_username"
+                        app:startIconDrawable="@drawable/baseline_person_outline_24">
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_height="wrap_content"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_text_username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:autofillHints="username"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/edit_text_password_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/edit_text_username_layout"
+                        android:layout_marginTop="16dp"
+                        android:hint="@string/login_password"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="true"
+                        app:passwordToggleEnabled="true"
+                        app:startIconDrawable="@drawable/baseline_password_24">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_text_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autofillHints="password"
+                            android:imeOptions="actionGo"
+                            android:inputType="textPassword"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/login_btn"
+                        style="?attr/materialButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/edit_text_password_layout"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/login_text" />
+
+                </RelativeLayout>
+           <!-- </com.google.android.material.card.MaterialCardView>
+-->
+            <Button
+                android:visibility="gone"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:id="@+id/text_view_forgot_password"
                 android:layout_width="match_parent"
-                android:layout_below="@id/edit_text_password_layout"
-                android:ellipsize="end"
-                android:layout_margin="20dp"
-                android:layout_centerHorizontal="true"
-                style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-                android:id="@+id/login_btn"
-                android:text="@string/login_text" />
-
-            <TextView
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_below="@id/login_btn"
-                android:layout_margin="20dp"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_below="@+id/cardview"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/forget_pass"
+                android:textColor="?colorOnSurfaceVariant"
                 android:text="@string/login_forget_password" />
+
+            <Button
+                android:visibility="gone"
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/create_new_account_btn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:minWidth="128dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_below="@+id/text_view_forgot_password"
+                android:layout_centerHorizontal="true"
+                android:textColor="?colorPrimary"
+                android:textStyle="bold"
+                android:text="@string/sign_up" />
 
         </RelativeLayout>
 

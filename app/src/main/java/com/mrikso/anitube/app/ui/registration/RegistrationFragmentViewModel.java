@@ -1,4 +1,4 @@
-package com.mrikso.anitube.app.ui.login;
+package com.mrikso.anitube.app.ui.registration;
 
 import android.util.Log;
 
@@ -15,15 +15,8 @@ import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.CookieParser;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 import org.jsoup.nodes.Document;
-
-import retrofit2.Response;
+import org.jsoup.nodes.Element;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,32 +24,40 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.Response;
+
 @HiltViewModel
-public class LoginFragmentViewModel extends ViewModel {
+public class RegistrationFragmentViewModel extends ViewModel {
     private final String TAG = "LoginFragmentViewModel";
     private final AnitubeRepository repository;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final MutableLiveData<Pair<LoadState, UserModel>> loadSate = new MutableLiveData<>(null);
+    private final MutableLiveData<Pair<LoadState, String>> checkNameState = new MutableLiveData<>(null);
     private final HomePageParser homePageParser = HomePageParser.getInstance();
 
     @Inject
-    public LoginFragmentViewModel(AnitubeRepository repository) {
+    public RegistrationFragmentViewModel(AnitubeRepository repository) {
         this.repository = repository;
     }
 
-    public void login(String username, String password) {
+    public void register(String username, String password, String email, String recaptchaResponse) {
         compositeDisposable.add(repository
-                .login(username, password)
+                .register(username, password, email, recaptchaResponse)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(v -> {
-                    loadSate.setValue(new Pair<>(LoadState.LOADING, null));
-                    Log.d(TAG, "start loading");
+                    loadSate.postValue(new Pair<>(LoadState.LOADING, null));
+                    // Log.d(TAG, "start loading");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         response -> {
                             Executors.newSingleThreadExecutor().execute(() -> {
-                                saveCookies(response);
+                                //  saveCookies(response);
+                                Log.d(TAG, response.html());
                             });
                         },
                         throwable -> {
@@ -65,8 +66,44 @@ public class LoginFragmentViewModel extends ViewModel {
                         }));
     }
 
+    public void checkName(String username) {
+        compositeDisposable.add(repository
+                .checkName(username, PreferencesHelper.getInstance().getDleHash())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(v -> {
+                    checkNameState.postValue(new Pair<>(LoadState.LOADING, null));
+                    // Log.d(TAG, "start loading");
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> Executors.newSingleThreadExecutor().execute(() ->
+                                parseCheckUserNameResult(response)),
+                        throwable -> {
+                            throwable.printStackTrace();
+                            checkNameState.postValue(new Pair<>(LoadState.ERROR, throwable.getMessage()));
+                        }));
+    }
+
     public LiveData<Pair<LoadState, UserModel>> getLoadState() {
         return loadSate;
+    }
+
+    public LiveData<Pair<LoadState, String>> getCheckNameState() {
+        return checkNameState;
+    }
+
+    private void parseCheckUserNameResult(Document document) {
+
+        Element span = document.selectFirst("span");
+        String style = span.attr("style");
+        String text = span.text();
+
+        if (style.contains("color:red")) {
+            checkNameState.postValue(new Pair<>(LoadState.ERROR, text));
+        } else if (style.contains("color:green")) {
+            checkNameState.postValue(new Pair<>(LoadState.DONE, text));
+        }
+
     }
 
     private void saveCookies(Response<Document> response) {

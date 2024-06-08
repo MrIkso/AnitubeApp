@@ -135,4 +135,13 @@
     <string name="problem_location_download">Неможливо завантажити по вказаному шляху</string>
     <string name="download_pending">Завантаження розпочалося</string>
 	<string name="comments">Коментарі</string>
+    <string name="don_t_have_an_account">Немає акаунту</string>
+    <string name="sign_up">Реєстрація</string>
+    <string name="register">Зареєсруватися</string>
+    <string name="user_email">Ваш Е-Mail</string>
+    <string name="email_hint">Вам буде надіслано лист з посиланням для активації акаунту</string>
+    <string name="register_error_empty_user_name">Ім\'я користувача не повинно бути пустим</string>
+    <string name="registration_error">Помилка реєстрації</string>
+    <string name="comments_send">Відправити коментар</string>
+    <string name="your_comment">Ваш коментар</string>
 </resources>

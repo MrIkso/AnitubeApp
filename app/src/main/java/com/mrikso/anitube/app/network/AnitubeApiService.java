@@ -3,10 +3,9 @@ package com.mrikso.anitube.app.network;
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
 
-import io.reactivex.rxjava3.core.Single;
-
 import org.jsoup.nodes.Document;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -35,7 +34,7 @@ public interface AnitubeApiService {
     @Headers("X-Requested-With: XMLHttpRequest")
     @FormUrlEncoded
     Single<String> quickSearch(@Field("story") String story, @Field("dle_hash") String dleHash);
-    
+
     // https://anitube.in.ua/engine/ajax/playlists.php?news_id=4597&xfield=playlist&user_hash=f6dbfddfd72df5d81c9731a18abdf53742d37bba
     @GET("/engine/ajax/playlists.php")
     @Headers("X-Requested-With: XMLHttpRequest")
@@ -86,4 +85,30 @@ public interface AnitubeApiService {
 
     @GET("/engine/ajax/controller.php?mod=comments&skin=smartphone&massact=disable")
     Single<CommentsResponse> getCommentsForAnime(@Query("cstart") int cstart, @Query("news_id") int animeId);
+
+    @POST("/engine/ajax/controller.php?mod=registration")
+    @Headers("X-Requested-With: XMLHttpRequest")
+    @FormUrlEncoded
+    Single<Document> checkName(@Field("name") String name, @Field("user_hash") String userHash);
+
+    @POST("/index.php?do=register")
+    @Headers("X-Requested-With: XMLHttpRequest")
+    @FormUrlEncoded
+    Single<Document> register(@Field("name") String name, @Field("password1") String password1,
+                              @Field("password2") String password2,
+                              @Field("email") String email,
+                              @Field("g-recaptcha-response") String recaptchaResponse,
+                              @Field("g-recaptcha-response") String submit,
+                              @Field("submit_reg") String submitReg,
+                              @Field("do") String doAction);
+
+    // lostname=user%40gmail.com&g-recaptcha-response=03c&submit=&submit_lost=submit_lost
+    @POST("/index.php?do=lostpassword")
+    @Headers("X-Requested-With: XMLHttpRequest")
+
+    @FormUrlEncoded
+    Single<Document> resetPassword(@Field("lostname") String lostName,
+                                   @Field("g-recaptcha-response") String recaptchaResponse,
+                                   @Field("submit") String submit,
+                                   @Field("submit_lost") String submitLost);
 }

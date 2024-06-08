@@ -61,6 +61,10 @@ public class LoginFragment extends Fragment {
         binding.loginBtn.setOnClickListener(v -> {
             loginUser();
         });
+        binding.createNewAccountBtn.setOnClickListener(v -> {
+            openRegisterFragment();
+        });
+
 
         binding.toolbar.addMenuProvider(
                 new MenuProvider() {
@@ -78,9 +82,6 @@ public class LoginFragment extends Fragment {
                         }
                         return false;
                     }
-
-                    @Override
-                    public void onPrepareMenu(@NonNull Menu menu) {}
                 },
                 getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
@@ -141,6 +142,10 @@ public class LoginFragment extends Fragment {
         LoginFragmentDirections.ActionNavLoginToNavProfile action =
                 LoginFragmentDirections.actionNavLoginToNavProfile(userData.getUserUrl());
         Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    private void openRegisterFragment() {
+        Navigation.findNavController(requireView()).navigate(LoginFragmentDirections.actionNavLoginToNavRegistration());
     }
 
     @Override

@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name=".ui.home.HomeFragment"
+        android:name="com.mrikso.anitube.app.ui.home.HomeFragment"
         android:label="home"
         tools:layout="@layout/fragment_home">
         <action
@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/nav_anime_list"
-        android:name=".ui.anime_list.AnimeListFragment"
+        android:name="com.mrikso.anitube.app.ui.anime_list.AnimeListFragment"
         android:label="anime_list"
         tools:layout="@layout/fragment_anime_list">
         <action
@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/nav_search"
-        android:name=".ui.search.SearchFragment"
+        android:name="com.mrikso.anitube.app.ui.search.SearchFragment"
         android:label="search"
         tools:layout="@layout/fragment_search">
         <action
@@ -60,7 +60,7 @@
 
     <fragment
         android:id="@+id/nav_library"
-        android:name=".ui.library.LibraryFragment"
+        android:name="com.mrikso.anitube.app.ui.library.LibraryFragment"
         android:label="library"
         tools:layout="@layout/fragment_library">
 
@@ -71,7 +71,7 @@
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name=".ui.profile.ProfileFragment"
+        android:name="com.mrikso.anitube.app.ui.profile.ProfileFragment"
         android:label="profile"
         tools:layout="@layout/fragment_profile">
         <argument
@@ -87,7 +87,7 @@
 
     <fragment
         android:id="@+id/nav_login"
-        android:name=".ui.login.LoginFragment"
+        android:name="com.mrikso.anitube.app.ui.login.LoginFragment"
         android:label="login"
         tools:layout="@layout/fragment_login">
         <action
@@ -95,11 +95,14 @@
             app:destination="@id/nav_profile"
             app:popUpTo="@id/nav_login"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_registration"
+            app:destination="@id/nav_registration" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_details_anime_info"
-        android:name=".ui.detail.DetailsAnimeFragmemt"
+        android:name="com.mrikso.anitube.app.ui.detail.DetailsAnimeFragmemt"
         android:label="anime_info"
         tools:layout="@layout/fragment_details_anime">
         <deepLink
@@ -131,7 +134,7 @@
 
     <fragment
         android:id="@+id/nav_watch"
-        android:name=".ui.watch.WatchAnimeFragment"
+        android:name="com.mrikso.anitube.app.ui.watch.WatchAnimeFragment"
         android:label="watch_anime"
         tools:layout="@layout/fragment_watch">
         <argument
@@ -157,7 +160,7 @@
 
     <fragment
         android:id="@+id/nav_search_result"
-        android:name=".ui.search_result.SearchResultFragment"
+        android:name="com.mrikso.anitube.app.ui.search_result.SearchResultFragment"
         android:label="search_result"
         tools:layout="@layout/fragment_search_result">
 
@@ -175,7 +178,7 @@
 
     <activity
         android:id="@+id/nav_player_activity"
-        android:name=".ui.player.PlayerActivity"
+        android:name="com.mrikso.anitube.app.ui.player.PlayerActivity"
         android:label="Player"
         tools:layout="@layout/activity_player">
 
@@ -201,7 +204,7 @@
 
     <fragment
         android:id="@+id/nav_screenshots"
-        android:name=".ui.screenshots.ScreenshotsFragment"
+        android:name="com.mrikso.anitube.app.ui.screenshots.ScreenshotsFragment"
         android:label="screenshots"
         tools:layout="@layout/fragment_screenshots">
 
@@ -216,7 +219,7 @@
 
     <fragment
         android:id="@+id/nav_collections"
-        android:name=".ui.collections.CollectionsFragment"
+        android:name="com.mrikso.anitube.app.ui.collections.CollectionsFragment"
         android:label="collections"
         tools:layout="@layout/fragment_collections">
         <action
@@ -226,7 +229,7 @@
 
     <fragment
         android:id="@+id/nav_collection_detail"
-        android:name=".ui.collections.CollectionDetailsFragment"
+        android:name="com.mrikso.anitube.app.ui.collections.CollectionDetailsFragment"
         android:label="collection detail"
         tools:layout="@layout/fragment_collection_details">
         <argument
@@ -239,7 +242,7 @@
 
     <fragment
         android:id="@+id/nav_simple_list"
-        android:name=".ui.home.SimpleListFragment"
+        android:name="com.mrikso.anitube.app.ui.home.SimpleListFragment"
         android:label="simple list"
         tools:layout="@layout/fragment_search_result">
         <argument
@@ -252,7 +255,7 @@
 	
     <fragment
         android:id="@+id/nav_comments"
-        android:name=".ui.comments.CommentsFragment"
+        android:name="com.mrikso.anitube.app.ui.comments.CommentsFragment"
         android:label="comments"
         tools:layout="@layout/fragment_comments">
         <argument
@@ -265,8 +268,15 @@
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name=".ui.preferences.SettingsFragment"
+        android:name="com.mrikso.anitube.app.ui.preferences.SettingsFragment"
         tools:layout="@layout/fragment_preferences"
         android:label="@string/settings" />
+
+    <fragment
+        android:id="@+id/nav_registration"
+        android:name="com.mrikso.anitube.app.ui.registration.RegistrationFragment"
+        android:label="@string/register"
+        tools:layout="@layout/fragment_registration">
+    </fragment>
 
 </navigation>
