@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -25,6 +24,7 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.FragmentLoginBinding;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserModel;
+import com.mrikso.anitube.app.network.ApiClient;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -58,13 +58,9 @@ public class LoginFragment extends Fragment {
         binding.toolbar.setNavigationOnClickListener(
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
-        binding.loginBtn.setOnClickListener(v -> {
-            loginUser();
-        });
-        binding.createNewAccountBtn.setOnClickListener(v -> {
-            openRegisterFragment();
-        });
-
+        binding.loginBtn.setOnClickListener(v -> loginUser());
+        binding.forgotPasswordBtn.setOnClickListener(v -> openLostpasswordFragment());
+        binding.createNewAccountBtn.setOnClickListener(v -> openRegisterFragment());
 
         binding.toolbar.addMenuProvider(
                 new MenuProvider() {
@@ -145,7 +141,15 @@ public class LoginFragment extends Fragment {
     }
 
     private void openRegisterFragment() {
-        Navigation.findNavController(requireView()).navigate(LoginFragmentDirections.actionNavLoginToNavRegistration());
+        LoginFragmentDirections.ActionNavLoginToNavWebview actionNavLoginToNavRegistration =
+                LoginFragmentDirections.actionNavLoginToNavWebview(getString(R.string.sign_up), ApiClient.SIGN_UP_URL);
+        Navigation.findNavController(requireView()).navigate(actionNavLoginToNavRegistration);
+    }
+
+    private void openLostpasswordFragment() {
+        LoginFragmentDirections.ActionNavLoginToNavWebview actionNavLoginToNavRegistration =
+                LoginFragmentDirections.actionNavLoginToNavWebview(getString(R.string.login_forget_password), ApiClient.LOSTPASSWORD_URL);
+        Navigation.findNavController(requireView()).navigate(actionNavLoginToNavRegistration);
     }
 
     @Override

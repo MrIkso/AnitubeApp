@@ -8,9 +8,9 @@
     android:layout_alignParentBottom="true"
     android:minHeight="56dp">
 
-    <EditText
+    <!--<EditText
         android:id="@+id/comment_et"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
@@ -19,13 +19,44 @@
         android:layout_toStartOf="@id/send"
         android:background="@null"
         android:hint="@string/your_comment"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:lineSpacingExtra="1dp"
         android:maxLines="4"
         android:minHeight="56dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:textSize="16sp" />
+        android:textSize="16sp" />-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/comment_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toStartOf="@id/send"
+        android:background="@null"
+        android:hint="@string/your_comment"
+        android:minHeight="56dp"
+
+        app:counterEnabled="true"
+        app:counterMaxLength="200"
+        app:boxBackgroundMode="none"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/comment_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="textMultiLine"
+            android:lineSpacingExtra="1dp"
+            android:maxLines="4"
+            android:textSize="16sp"
+            android:maxLength="200"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ProgressBar
         android:id="@+id/sendProgress"

@@ -10,19 +10,27 @@ import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.paging.CommentsListPagingSource;
 import com.mrikso.anitube.app.parser.CommentsParser;
 
+import org.jsoup.nodes.Document;
+
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Inject;
 
 public class CommentsRepository {
 
-    private AnitubeApiService apiService;
-    private CommentsParser mapper;
+    private final AnitubeApiService apiService;
+    private final CommentsParser mapper;
 
     @Inject
     public CommentsRepository(AnitubeApiService apiService, CommentsParser mapper) {
         this.apiService = apiService;
         this.mapper = mapper;
+    }
+
+    public Single<Document> addComment(int animeId, String comments, String name, String dleHash) {
+        return apiService.addComment(animeId, comments, name, "", "wysiwyg", "AniTubenew",
+                "", "", "", 0, dleHash);
     }
 
     public Flowable<PagingData<CommentModel>> loadComments(int animeId) {

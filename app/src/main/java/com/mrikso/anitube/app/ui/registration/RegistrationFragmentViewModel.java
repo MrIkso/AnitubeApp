@@ -44,45 +44,6 @@ public class RegistrationFragmentViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public void register(String username, String password, String email, String recaptchaResponse) {
-        compositeDisposable.add(repository
-                .register(username, password, email, recaptchaResponse)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(v -> {
-                    loadSate.postValue(new Pair<>(LoadState.LOADING, null));
-                    // Log.d(TAG, "start loading");
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        response -> {
-                            Executors.newSingleThreadExecutor().execute(() -> {
-                                //  saveCookies(response);
-                                Log.d(TAG, response.html());
-                            });
-                        },
-                        throwable -> {
-                            throwable.printStackTrace();
-                            loadSate.postValue(new Pair<>(LoadState.ERROR, null));
-                        }));
-    }
-
-    public void checkName(String username) {
-        compositeDisposable.add(repository
-                .checkName(username, PreferencesHelper.getInstance().getDleHash())
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(v -> {
-                    checkNameState.postValue(new Pair<>(LoadState.LOADING, null));
-                    // Log.d(TAG, "start loading");
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        response -> Executors.newSingleThreadExecutor().execute(() ->
-                                parseCheckUserNameResult(response)),
-                        throwable -> {
-                            throwable.printStackTrace();
-                            checkNameState.postValue(new Pair<>(LoadState.ERROR, throwable.getMessage()));
-                        }));
-    }
 
     public LiveData<Pair<LoadState, UserModel>> getLoadState() {
         return loadSate;

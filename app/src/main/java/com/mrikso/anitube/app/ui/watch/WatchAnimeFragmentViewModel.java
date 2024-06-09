@@ -88,21 +88,13 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            new Consumer<String>() {
-                                @Override
-                                public void accept(String response) throws Throwable {
-                                    Executors.newSingleThreadExecutor().execute(() -> {
-                                        loadPlaylistFromAjax(response, animeId);
-                                    });
-                                }
-                            },
-                            new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Throwable {
-                                    Log.d(TAG, throwable.toString());
-                                    loadSate.postValue(LoadState.ERROR);
-                                    errorMessage.postValue(throwable.getMessage());
-                                }
+                            response -> Executors.newSingleThreadExecutor().execute(() -> {
+                                loadPlaylistFromAjax(response, animeId);
+                            }),
+                            throwable -> {
+                                Log.d(TAG, throwable.toString());
+                                loadSate.postValue(LoadState.ERROR);
+                                errorMessage.postValue(throwable.getMessage());
                             });
 
             compositeDisposable.add(disposable);

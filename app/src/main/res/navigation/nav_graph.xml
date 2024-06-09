@@ -96,8 +96,8 @@
             app:popUpTo="@id/nav_login"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_nav_login_to_nav_registration"
-            app:destination="@id/nav_registration" />
+            android:id="@+id/action_nav_login_to_nav_webview"
+            app:destination="@id/nav_webview" />
     </fragment>
 
     <fragment
@@ -272,11 +272,23 @@
         tools:layout="@layout/fragment_preferences"
         android:label="@string/settings" />
 
-    <fragment
+    <!--<fragment
         android:id="@+id/nav_registration"
         android:name="com.mrikso.anitube.app.ui.registration.RegistrationFragment"
         android:label="@string/register"
         tools:layout="@layout/fragment_registration">
+    </fragment>
+-->
+    <fragment
+        android:id="@+id/nav_webview"
+        android:name="com.mrikso.anitube.app.ui.webview.WebviewFragment"
+        tools:layout="@layout/fragment_webview">
+        <argument
+            android:name="toolbarName"
+            app:argType="string" />
+        <argument
+            android:name="urlPage"
+            app:argType="string" />
     </fragment>
 
 </navigation>

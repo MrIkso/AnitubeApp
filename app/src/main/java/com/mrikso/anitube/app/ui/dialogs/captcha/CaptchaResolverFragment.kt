@@ -57,7 +57,7 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
         binding.webView.apply {
             loadDataWithBaseURL(
                 ApiClient.BASE_URL,
-                captchaHTML.replace("#site_key#", ApiClient.CAPTCHA_SITE_KEY),
+                captchaHTML.replace("#site_key#", ApiClient.SIGN_UP_URL),
                 "text/html; charset=utf-8",
                 "UTF-8",
                 null
@@ -142,7 +142,7 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
                 "    </head>\n" +
                 "    <body>\n" +
                 "        <div class=\"g-recaptcha\"\n" +
-                "          data-sitekey=\"" + ApiClient.CAPTCHA_SITE_KEY + "\"\n" +
+                "          data-sitekey=\"" + ApiClient.SIGN_UP_URL + "\"\n" +
                 "          data-callback=\"captchaResponse\">\n" +
                 "        </div>\n" +
                 "    </body>\n" +

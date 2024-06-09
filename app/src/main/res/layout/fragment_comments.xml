@@ -52,6 +52,5 @@
 
     <include
         android:id="@id/sendMsgPanel"
-        layout="@layout/layout_bottom_send_comment"
-        tools:visibility="visible"/>
+        layout="@layout/layout_bottom_send_comment"/>
 </RelativeLayout>

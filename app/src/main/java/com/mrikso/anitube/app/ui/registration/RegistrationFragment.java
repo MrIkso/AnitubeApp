@@ -50,7 +50,7 @@ public class RegistrationFragment extends Fragment {
     public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
         super.onViewCreated(view, bundle);
         initViews();
-        observeEvents();
+        //observeEvents();
     }
 
     @SuppressLint("RestrictedApi")
@@ -67,7 +67,7 @@ public class RegistrationFragment extends Fragment {
             public void afterTextChanged(@NonNull Editable editable) {
                 String name = editable.toString();
                 if(!TextUtils.isEmpty(name) && name.length() >= 3){
-                    viewModel.checkName(name);
+                   // viewModel.checkName(name);
                 }
             }
         });
@@ -85,7 +85,7 @@ public class RegistrationFragment extends Fragment {
         binding.signUpBtn.setIcon(progressIndicatorDrawable);
     }
 
-    private void observeEvents() {
+  /*  private void observeEvents() {
         viewModel.getLoadState().observe(getViewLifecycleOwner(), result -> {
             if (result != null) {
                 LoadState state = result.first;
@@ -121,7 +121,7 @@ public class RegistrationFragment extends Fragment {
                 }
             }
         });
-    }
+    }*/
 
     private void createUser() {
 
@@ -146,7 +146,7 @@ public class RegistrationFragment extends Fragment {
         var fragment = new CaptchaResolverFragment();
         fragment.setCallback(token -> {
             Log.d("REG", token);
-            viewModel.register(name, userEmail, userPassword, token);
+          //  viewModel.register(name, userEmail, userPassword, token);
         });
 
         fragment.show(getChildFragmentManager(), CaptchaResolverFragment.TAG);

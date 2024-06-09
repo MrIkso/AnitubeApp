@@ -1,10 +1,14 @@
 package com.mrikso.anitube.app.ui.comments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,11 +23,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.internal.TextWatcherAdapter;
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.CommentsPagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.databinding.FragmentCommentsBinding;
 import com.mrikso.anitube.app.model.CommentModel;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -62,7 +69,11 @@ public class CommentsFragment extends Fragment {
                 v -> Navigation.findNavController(requireView()).popBackStack());
     }
 
+    @SuppressLint("RestrictedApi")
     private void initViews() {
+        if (!PreferencesHelper.getInstance().isLogin()) {
+            binding.sendMsgPanel.sendMsgPanel.setVisibility(View.GONE);
+        }
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
@@ -106,6 +117,25 @@ public class CommentsFragment extends Fragment {
         binding.recyclerView.setAdapter(commentsAdapter.withLoadStateFooter(new MoviesLoadStateAdapter(v -> {
             commentsAdapter.retry();
         })));
+
+        binding.sendMsgPanel.send.setOnClickListener((v) -> sendComment());
+        binding.sendMsgPanel.send.setEnabled(false);
+        binding.sendMsgPanel.commentEt.addTextChangedListener(new TextWatcherAdapter(){
+            @Override
+            public void afterTextChanged(@NonNull Editable editable) {
+                if (editable.length() >=3){
+                    binding.sendMsgPanel.send.setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private void sendComment(){
+       int animeId =  CommentsFragmentArgs.fromBundle(getArguments()).getAnimeId();
+       String comment = binding.sendMsgPanel.commentEt.getText().toString();
+       if(!Strings.isNullOrEmpty(comment)){
+           viewModel.addComments(animeId, comment);
+       }
     }
 
     private void openProfileFragment(final String link) {
@@ -133,6 +163,28 @@ public class CommentsFragment extends Fragment {
                 } else {
                     showNoDataState();
                 }
+            }
+        });
+        viewModel.getLoadState().observe(getViewLifecycleOwner(), results -> {
+            if (binding != null && results != null) {
+               switch (results.first){
+                   case DONE:
+                       commentsAdapter.refresh();
+                       binding.sendMsgPanel.sendProgress.setVisibility(View.GONE);
+                       binding.sendMsgPanel.send.setVisibility(View.VISIBLE);
+                       binding.sendMsgPanel.commentEt.setText(null);
+                       break;
+                   case ERROR:
+                       binding.sendMsgPanel.sendProgress.setVisibility(View.GONE);
+                       binding.sendMsgPanel.send.setVisibility(View.VISIBLE);
+                       Toast.makeText(requireContext(), results.second, Toast.LENGTH_LONG).show();
+
+                       break;
+                   case LOADING:
+                       binding.sendMsgPanel.sendProgress.setVisibility(View.VISIBLE);
+                       binding.sendMsgPanel.send.setVisibility(View.GONE);
+                       break;
+               }
             }
         });
     }

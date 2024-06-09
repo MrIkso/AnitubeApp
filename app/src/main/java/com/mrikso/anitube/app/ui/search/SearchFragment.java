@@ -1,15 +1,14 @@
 package com.mrikso.anitube.app.ui.search;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,7 +36,6 @@ import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
-
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 @AndroidEntryPoint
@@ -76,36 +74,38 @@ public class SearchFragment extends Fragment
         binding.back.setOnClickListener(
                 v -> Navigation.findNavController(requireView()).popBackStack());
 
-        AppCompatAutoCompleteTextView searchEdit = binding.etSearch;
-        searchEdit.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (searchEdit.hasFocus()) {
-                    if (editable != null) {
-                        String content = editable.toString();
-                        binding.clear.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
-                        if (content != null && content.length() >= 3) {
-                            quickSearch(content);
-                        }
-                    }
-                }
-            }
-        });
+        AppCompatAutoCompleteTextView searchEdit = getAppCompatAutoCompleteTextView();
 
-        searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    performSearch(searchEdit.getText().toString(), true);
-                    return true;
-                }
-                return false;
+        searchEdit.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch(searchEdit.getText().toString(), true);
+                return true;
             }
+            return false;
         });
 
         binding.clear.setOnClickListener(v -> searchEdit.setText(""));
 
         handlePagingState();
+    }
+
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    private AppCompatAutoCompleteTextView getAppCompatAutoCompleteTextView() {
+        AppCompatAutoCompleteTextView searchEdit = binding.etSearch;
+        searchEdit.addTextChangedListener(new TextWatcherAdapter() {
+            @Override
+            public void afterTextChanged(@NonNull Editable editable) {
+                if (searchEdit.hasFocus()) {
+                    String content = editable.toString();
+                    binding.clear.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+                    if (content.length() >= 3) {
+                        quickSearch(content);
+                    }
+                }
+            }
+        });
+        return searchEdit;
     }
 
     @Override

@@ -86,7 +86,22 @@ public interface AnitubeApiService {
     @GET("/engine/ajax/controller.php?mod=comments&skin=smartphone&massact=disable")
     Single<CommentsResponse> getCommentsForAnime(@Query("cstart") int cstart, @Query("news_id") int animeId);
 
-    @POST("/engine/ajax/controller.php?mod=registration")
+    @POST("/engine/ajax/controller.php?mod=addcomments")
+    @Headers({"X-Requested-With: XMLHttpRequest", "Content-Type: application/x-www-form-urlencoded; charset=UTF-8"})
+    @FormUrlEncoded
+    Single<Document> addComment(@Field("post_id") int postId,
+                                @Field(value = "comments", encoded = true) String comments,
+                                @Field(value = "name", encoded = true) String name,
+                                @Field("mail") String mail,
+                                @Field("editor_mode") String editorMode,
+                                @Field("skin") String skin,
+                                @Field("sec_code") String secCode,
+                                @Field("question_answer") String questionAnswer,
+                                @Field("g_recaptcha_response") String g_recaptcha_response,
+                                @Field("allow_subscribe") int allowSubscribe,
+                                @Field("user_hash") String userHash);
+
+    /*@POST("/engine/ajax/controller.php?mod=registration")
     @Headers("X-Requested-With: XMLHttpRequest")
     @FormUrlEncoded
     Single<Document> checkName(@Field("name") String name, @Field("user_hash") String userHash);
@@ -110,5 +125,5 @@ public interface AnitubeApiService {
     Single<Document> resetPassword(@Field("lostname") String lostName,
                                    @Field("g-recaptcha-response") String recaptchaResponse,
                                    @Field("submit") String submit,
-                                   @Field("submit_lost") String submitLost);
+                                   @Field("submit_lost") String submitLost);*/
 }

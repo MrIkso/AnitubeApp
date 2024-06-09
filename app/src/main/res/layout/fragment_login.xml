@@ -113,9 +113,8 @@
            <!-- </com.google.android.material.card.MaterialCardView>
 -->
             <Button
-                android:visibility="gone"
                 style="@style/Widget.Material3.Button.TextButton"
-                android:id="@+id/text_view_forgot_password"
+                android:id="@+id/forgot_password_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -128,7 +127,6 @@
                 android:text="@string/login_forget_password" />
 
             <Button
-                android:visibility="gone"
                 style="?attr/materialButtonOutlinedStyle"
                 android:id="@+id/create_new_account_btn"
                 android:layout_width="match_parent"
@@ -137,7 +135,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_below="@+id/text_view_forgot_password"
+                android:layout_below="@+id/forgot_password_btn"
                 android:layout_centerHorizontal="true"
                 android:textColor="?colorPrimary"
                 android:textStyle="bold"

@@ -4,18 +4,15 @@ import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 
-import io.reactivex.rxjava3.core.Single;
-
 import org.jsoup.nodes.Document;
-
-import retrofit2.Response;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Single;
+import retrofit2.Response;
+
 public class AnitubeRepository {
-    private AnitubeApiService anitubeApi;
+    private final AnitubeApiService anitubeApi;
 
     @Inject
     public AnitubeRepository(AnitubeApiService anitubeApi) {
@@ -50,7 +47,7 @@ public class AnitubeRepository {
         return anitubeApi.changeAnimeStatus(animeId, viewStatus);
     }
 
-    public Single<String> getPlaylist(int animeId,String dleHash ) {
+    public Single<String> getPlaylist(int animeId, String dleHash) {
         return anitubeApi.getPlaylist(animeId, "playlist", dleHash);
     }
 
@@ -58,7 +55,8 @@ public class AnitubeRepository {
         return anitubeApi.getCommentsForAnime(page, animeId);
     }
 
-    public Single<Document> checkName(String name, String dleHash) {
+
+    /*public Single<Document> checkName(String name, String dleHash) {
         return anitubeApi.checkName(name, dleHash);
     }
 
@@ -68,5 +66,5 @@ public class AnitubeRepository {
 
     public Single<Document> register(String name, String password, String email, String recaptchaResponse) {
         return anitubeApi.register(name, password, password, email, recaptchaResponse, "", "submit_reg", "register");
-    }
+    }*/
 }
