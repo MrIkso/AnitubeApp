@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.mrikso.anitube.app.comparator.CommentsDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemCommentBinding;
 import com.mrikso.anitube.app.model.CommentModel;
@@ -46,7 +45,7 @@ public class CommentsPagingAdapter extends PagingDataAdapter<CommentModel, Comme
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ItemCommentBinding binding;
+        private final ItemCommentBinding binding;
 
         public ViewHolder(@NonNull ItemCommentBinding binding) {
             super(binding.getRoot());
@@ -57,7 +56,7 @@ public class CommentsPagingAdapter extends PagingDataAdapter<CommentModel, Comme
             binding.tvUsername.setText(comment.getUsername());
             binding.tvUsergroup.setText(comment.getUserGroup());
             binding.tvTime.setText(comment.getTime());
-            binding.tvComment.setText(HtmlTextSpanner.spanText(comment.getContent()));
+            binding.tvComment.setText(HtmlTextSpanner.formatContent(comment.getContent(), binding.tvComment.getContext()));
             ViewUtils.loadImage(binding.ivProfile, ParserUtils.normaliseImageUrl(comment.getUserAvarar()));
 
             if (listener != null) {

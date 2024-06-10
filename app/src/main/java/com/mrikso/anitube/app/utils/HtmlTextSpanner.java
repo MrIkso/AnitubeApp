@@ -1,78 +1,38 @@
 package com.mrikso.anitube.app.utils;
 
-import android.graphics.Typeface;
-import android.text.Editable;
+import android.content.Context;
+import android.os.Build;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.Spanned;
-import android.text.style.QuoteSpan;
-import android.text.style.StyleSpan;
+import android.text.util.Linkify;
+import android.widget.TextView;
 
-import androidx.core.text.HtmlCompat;
+import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.html.CustomHtmlToSpannedConverter;
+import com.mrikso.anitube.app.utils.html.ImageGetterUtils;
+import com.mrikso.anitube.app.utils.html.ListTagHandler;
 
-import org.xml.sax.XMLReader;
-
-import java.lang.reflect.Method;
+import org.ccil.cowan.tagsoup.HTMLSchema;
+import org.ccil.cowan.tagsoup.Parser;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 public class HtmlTextSpanner {
 
-    public static Spanned spanText(String htmlText) {
-        Spanned formattedText =
-                HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY, null, new Html.TagHandler() {
-                    boolean inQuote = false;
-                    boolean inTitle = false;
-
-                    @Override
-                    public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-                        if (tag.equalsIgnoreCase("div") && output != null) {
-                            if (opening) {
-                                String classAttribute = getAttributeValue(xmlReader, "class");
-                                if ("quote".equalsIgnoreCase(classAttribute)) {
-                                    output.setSpan(
-                                            new QuoteSpan(),
-                                            output.length(),
-                                            output.length(),
-                                            Spannable.SPAN_MARK_MARK);
-                                    inQuote = true;
-                                } else if ("title_quote".equalsIgnoreCase(classAttribute)) {
-                                    inTitle = true;
-                                }
-                            } else {
-                                if (inQuote) {
-                                    int spanStart = output.getSpanStart(Spannable.SPAN_MARK_MARK);
-                                    if (spanStart >= 0) {
-                                        output.setSpan(
-                                                new QuoteSpan(),
-                                                spanStart,
-                                                output.length(),
-                                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                    }
-                                    inQuote = false;
-                                } else if (inTitle) {
-                                    int spanStart = output.getSpanStart(Spannable.SPAN_MARK_MARK);
-                                    if (spanStart >= 0) {
-                                        output.setSpan(
-                                                new StyleSpan(Typeface.BOLD),
-                                                spanStart,
-                                                output.length(),
-                                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                    }
-                                    inTitle = false;
-                                }
-                            }
-                        }
-                    }
-                });
-        return formattedText;
-    }
-
-    private static String getAttributeValue(XMLReader xmlReader, String attributeName) {
+    public static Spanned formatContent(String source, Context context) {
+        Parser parser = new Parser();
         try {
-            Method method = xmlReader.getClass().getMethod("getAttributeValue", String.class);
-            return (String) method.invoke(xmlReader, attributeName);
-        } catch (Exception e) {
-            e.printStackTrace();
+            parser.setProperty(Parser.schemaProperty, new HTMLSchema());
+        } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+            // Should not happen.
+            throw new RuntimeException(e);
         }
-        return null;
+
+        CustomHtmlToSpannedConverter converter = new CustomHtmlToSpannedConverter(
+                source,  ImageGetterUtils.getImageGetter(context), new ListTagHandler(), parser, ApiClient.BASE_URL, context);
+
+        return CustomHtmlToSpannedConverter.linkifySpanned(converter.convert(), Linkify.ALL);
     }
+
+
 }
