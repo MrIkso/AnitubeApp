@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.ui.comments;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,9 +8,13 @@ import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.model.CommentModel;
 import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.parser.CommentsParser;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+
+import org.jsoup.nodes.Document;
 
 import java.util.concurrent.Executors;
 
@@ -69,11 +71,7 @@ public class CommentsFragmentViewModel extends ViewModel {
                     loadSate.setValue(new Pair<>(LoadState.LOADING, null));
                 })
                 .subscribe(
-                        response -> Executors.newSingleThreadExecutor().execute(() -> {
-                            Log.d(TAG, response.html());
-                            //TODO add parse result for handle errors
-                            loadSate.postValue(new Pair<>(LoadState.DONE, response.html()));
-                        }),
+                        this::parseAddCommentResponse,
                         throwable -> {
                             throwable.printStackTrace();
                             loadSate.postValue(new Pair<>(LoadState.ERROR, throwable.getMessage()));
@@ -86,6 +84,18 @@ public class CommentsFragmentViewModel extends ViewModel {
 
     public LiveData<Pair<LoadState, String>> getLoadState() {
         return loadSate;
+    }
+
+    private void parseAddCommentResponse(Document response){
+        Executors.newSingleThreadExecutor().execute(() -> {
+            String message = new CommentsParser().getAddCommentResponse(response);
+            if (Strings.isNullOrEmpty(message)) {
+                loadSate.postValue(new Pair<>(LoadState.DONE, null));
+            } else {
+                loadSate.postValue(new Pair<>(LoadState.ERROR, message));
+            }
+
+        });
     }
 }
 

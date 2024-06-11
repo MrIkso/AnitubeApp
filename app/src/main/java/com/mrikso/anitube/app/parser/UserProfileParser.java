@@ -84,7 +84,7 @@ public class UserProfileParser {
                 .nextElementSiblings()
                 .first();
         if (commentsElement != null) {
-            int comments = Integer.parseInt(commentsElement.text().trim().replaceAll("\"", ""));
+            int comments = Integer.parseInt(commentsElement.text().strip().replaceAll("\"", "").replaceAll("\\s", ""));
             model.setUserCommentsCount(comments);
         }
 

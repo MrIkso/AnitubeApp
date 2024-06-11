@@ -2,6 +2,8 @@ package com.mrikso.anitube.app.parser;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.model.CommentModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
@@ -14,6 +16,8 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommentsParser {
     public CommentsParser() {}
@@ -48,7 +52,7 @@ public class CommentsParser {
             // #comm-id-45753 > div.title_quote
             // #comment-id-45753 > div > div.comm-item.clearfix > div > div
             Element contentElement = commentElement.selectFirst("div.comm-item.clearfix > div.comm-right");
-            Element titleQuoteElement = contentElement.selectFirst("div.title_quote");
+            /*Element titleQuoteElement = contentElement.selectFirst("div.title_quote");
             if (titleQuoteElement != null) {
                 String titleQuote = titleQuoteElement.text().trim();
             }
@@ -56,12 +60,13 @@ public class CommentsParser {
             Element quoteElement = contentElement.selectFirst("div.quote");
             if (quoteElement != null) {
                 String quote = quoteElement.html();
-            }
-            Log.i("commparser", commentId);
+            }*/
+            //Log.i("commparser", commentId);
             String content = contentElement
                     .getElementById("comm-id-" + model.getCommentId())
                     .html();
 
+            //Log.i("commparser", content);
             model.setUsername(username);
             model.setUserAvarar(userAva);
             model.setUserGroup(userGroup);
@@ -72,5 +77,26 @@ public class CommentsParser {
             commentsList.add(model);
         }
         return commentsList;
+    }
+
+    @Nullable
+    public String getAddCommentResponse(Document doc){
+        Element scriptElement = doc.selectFirst("script");
+        if (scriptElement != null) {
+            String scriptContent = scriptElement.html();
+            String message = extractMessageFromScript(scriptContent);
+            return message;
+        }
+        return null;
+    }
+
+    @Nullable
+    private String extractMessageFromScript(String scriptContent) {
+        Pattern pattern = Pattern.compile("DLEalert\\('([^']*)', '([^']*)'\\);");
+        Matcher matcher = pattern.matcher(scriptContent);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 }

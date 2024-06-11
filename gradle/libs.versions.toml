@@ -39,8 +39,10 @@ rxjava3RetrofitAdapter = "3.0.0"
 swiperefreshlayout = "1.1.0"
 navigationFragmentKtx = "2.7.7"
 navigationUiKtx = "2.7.7"
+tagsoup = "1.2.1"
 touchimageview = "3.3"
 utilcodex = "1.31.1"
+annotationJvm = "1.8.0"
 
 [libraries]
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
@@ -90,8 +92,10 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 rxjava3-retrofit-adapter = { module = "com.github.akarnokd:rxjava3-retrofit-adapter", version.ref = "rxjava3RetrofitAdapter" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
+tagsoup = { module = "org.ccil.cowan.tagsoup:tagsoup", version.ref = "tagsoup" }
 touchimageview = { module = "com.github.MikeOrtiz:TouchImageView", version.ref = "touchimageview" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
 
 [plugins]
 

@@ -1,11 +1,8 @@
 package com.mrikso.anitube.app.utils;
 
 import android.content.Context;
-import android.os.Build;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.util.Linkify;
-import android.widget.TextView;
 
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.html.CustomHtmlToSpannedConverter;
