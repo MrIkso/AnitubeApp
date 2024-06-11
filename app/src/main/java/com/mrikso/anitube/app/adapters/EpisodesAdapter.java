@@ -90,6 +90,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
             if (listener != null) {
                 binding.getRoot()
                         .setOnClickListener(v -> listener.onEpisodeItemSelected(position, episode.getEpisodeUrl()));
+                binding.download.setOnClickListener(v -> listener.onEpisodeDownload(position, episode.getEpisodeUrl()));
                 binding.getRoot().setOnLongClickListener(v -> {
                     listener.onEpisodeItemLongClicked(position, episode.getEpisodeUrl());
                     return true;
@@ -104,6 +105,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
 
     public interface OnItemClickListener {
         void onEpisodeItemSelected(int episodeNumber, String url);
+        void onEpisodeDownload(int episodeNumber, String url);
 
         void onEpisodeItemLongClicked(int episodeNumber, String url);
     }

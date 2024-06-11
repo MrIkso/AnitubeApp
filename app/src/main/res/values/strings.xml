@@ -144,4 +144,8 @@
     <string name="registration_error">Помилка реєстрації</string>
     <string name="comments_send">Відправити коментар</string>
     <string name="your_comment">Ваш коментар</string>
+    <string name="idm_not_found">1DM не встановлено</string>
+    <string name="dvget_not_found">ADM не встановлено</string>
+    <string name="quality_choser_title">Якість відео</string>
+    <string name="message_error_video_has_empty_stream_lisnks">Виникла помилка, посилання на файли пусті</string>
 </resources>

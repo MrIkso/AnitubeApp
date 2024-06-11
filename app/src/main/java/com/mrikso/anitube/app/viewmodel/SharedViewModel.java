@@ -61,7 +61,7 @@ public class SharedViewModel extends ViewModel {
             newEpisodeModel.setIsWatched(isWatched);
             newEpisodeModel.setTotalEpisodeTime(totalEpisodeTime);
             newEpisodeModel.setTotalWatchTime(watchEpisodeTime);
-            Log.i("shared", newEpisodeModel.toString());
+            //Log.i("shared", newEpisodeModel.toString());
             listRepo.updateItem(newEpisodeModel, position);
             addOrUpdateWatchedEpisode(animeModel, newEpisodeModel);
         } catch (CloneNotSupportedException c) {

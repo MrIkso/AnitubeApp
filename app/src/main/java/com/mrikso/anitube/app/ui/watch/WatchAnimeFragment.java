@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +19,15 @@ import androidx.navigation.Navigation;
 
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.google.android.material.chip.Chip;
-import com.mrikso.bottomsheetmenulib.MenuBottomSheet;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.EpisodesAdapter;
 import com.mrikso.anitube.app.databinding.FragmentWatchBinding;
 import com.mrikso.anitube.app.databinding.ItemChipBinding;
+import com.mrikso.anitube.app.downloader.DownloadFile;
+import com.mrikso.anitube.app.downloader.DownloaderMode;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
@@ -36,18 +40,19 @@ import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.view.TreeViewGroup;
 import com.mrikso.anitube.app.viewmodel.ListRepository;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
+import com.mrikso.bottomsheetmenulib.MenuBottomSheet;
 import com.mrikso.treeview.TreeItem;
 
-import dagger.hilt.android.AndroidEntryPoint;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @AndroidEntryPoint
 public class WatchAnimeFragment extends Fragment
@@ -63,7 +68,7 @@ public class WatchAnimeFragment extends Fragment
     private String episodePath;
     private AlertDialog progressDialog;
     private BaseAnimeModel animeModel;
-    PreferencesHelper helper;
+    private PreferencesHelper helper;
     private ListRepository listRepo;
 
     @Override
@@ -149,8 +154,9 @@ public class WatchAnimeFragment extends Fragment
                             }
                         }, // OnNext
                         Throwable::printStackTrace, // OnError
-                        () -> {} // OnCompleted
-                        ));
+                        () -> {
+                        } // OnCompleted
+                ));
     }
 
     private void showTreeData(final TreeItem<PlayerModel> root) {
@@ -307,7 +313,8 @@ public class WatchAnimeFragment extends Fragment
         listRepo.setEpisodes(episodes);
     }
 
-    private void showNoDataScreen() {}
+    private void showNoDataScreen() {
+    }
 
     private void reloadPlaylist() {
         WatchAnimeFragmentArgs arg = WatchAnimeFragmentArgs.fromBundle(getArguments());
@@ -320,7 +327,10 @@ public class WatchAnimeFragment extends Fragment
     }
 
     private void startPlay(String url) {
+        loadVideos(url, false);
+    }
 
+    private void loadVideos(String url, boolean isDownload) {
         Disposable disposable = sharedViewModel
                 .loadData(url)
                 .subscribeOn(Schedulers.io())
@@ -333,7 +343,11 @@ public class WatchAnimeFragment extends Fragment
                     public void onSuccess(Pair<LoadState, VideoLinksModel> result) {
                         DialogUtils.cancelDialog(progressDialog);
                         if (result.first == LoadState.DONE) {
-                            openPlayerActivity(result.second);
+                            if (isDownload) {
+                                showQualityChooserDialog(result.second);
+                            } else {
+                                openPlayerActivity(result.second);
+                            }
                         } else {
                             UnsupportedVideoSourceDialog.show(requireContext(), result.second.getIfRameUrl());
                         }
@@ -396,6 +410,16 @@ public class WatchAnimeFragment extends Fragment
     }
 
     @Override
+    public void onEpisodeDownload(int episodeNumber, String url) {
+        if (isReverse) {
+            currentEpisode = episodesAdapter.getOriginalPosition(episodeNumber);
+        } else {
+            currentEpisode = episodeNumber;
+        }
+        loadVideos(url, true);
+    }
+
+    @Override
     public void onEpisodeItemLongClicked(int episodeNumber, String url) {
         if (isReverse) {
             currentEpisode = episodesAdapter.getOriginalPosition(episodeNumber);
@@ -414,4 +438,57 @@ public class WatchAnimeFragment extends Fragment
         bottomSheet.setOnSelectMenuItemListener((i, id) -> handleMenuClick(id, url));
         bottomSheet.show(this);
     }
+
+    private void showQualityChooserDialog(
+            VideoLinksModel model) {
+        Map<String, String> qualitiesMap = model.getLinksQuality();
+        if (qualitiesMap != null && !qualitiesMap.isEmpty()) {
+            String[] qualities = qualitiesMap.keySet().toArray(new String[0]);
+            AlertDialog dialog =
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.quality_choser_title)
+                            .setNegativeButton(
+                                    getString(android.R.string.cancel),
+                                    (d, which) -> {
+                                        d.dismiss();
+                                    })
+                            .setSingleChoiceItems(
+                                    qualities,
+                                    0,
+                                    (d, index) -> {
+                                        String selectedQuality = qualities[index];
+                                        // Log.i(TAG, "selection.q: " + selectedQuality);
+                                        //if (isBatchDowload) {
+
+                                        //   downloadVideosBatch(allVideos, selectedQuality);
+
+                                        //  } else {
+                                        downloadVideo(qualitiesMap.get(selectedQuality), model.getHeaders());
+                                        // }
+                                        d.dismiss();
+                                    })
+                            .create();
+
+            dialog.show();
+        } else if (!Strings.isNullOrEmpty(model.getSingleDirectUrl())) {
+            downloadVideo(model.getSingleDirectUrl(), model.getHeaders());
+        } else {
+            Toast.makeText(requireContext(), R.string.message_error_video_has_empty_stream_lisnks, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void downloadVideo(String url, Map<String, String> headers) {
+        StringBuilder fileName = new StringBuilder(animeModel.getTitle());
+        // todo handle serials or films
+        fileName.append(String.format(" — %s", getString(R.string.episode_number, currentEpisode + 1)));
+        if (url.endsWith(".mp4")) {
+            fileName.append(".mp4");
+        }
+        /*else if (url.endsWith(".m3u8")){
+            fileName.append(".m3u8");
+        }*/
+
+        DownloadFile.download(requireContext(), DownloaderMode.IDM, url, fileName.toString(), headers, false);
+    }
+
 }

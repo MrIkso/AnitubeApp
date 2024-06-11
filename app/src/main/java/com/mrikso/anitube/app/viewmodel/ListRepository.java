@@ -12,7 +12,7 @@ public class ListRepository {
 
     private static ListRepository instance;
     private List<EpisodeModel> currentList = new ArrayList<>();
-    private PublishSubject<List<EpisodeModel>> subject;
+    private final PublishSubject<List<EpisodeModel>> subject;
 
     public static synchronized ListRepository getInstance() {
         if (instance == null) {
@@ -32,13 +32,13 @@ public class ListRepository {
 
     public synchronized void addItem(EpisodeModel item) {
         currentList.add(item);
-        subject.onNext(currentList); // Оповестить подписчиков о изменении списка
+        subject.onNext(currentList);
     }
 
     public synchronized void updateItem(EpisodeModel item, int position) {
         List<EpisodeModel> newList = new ArrayList<>(currentList);
         newList.set(position, item);
-        subject.onNext(newList); // Оповестить подписчиков о изменении списка
+        subject.onNext(newList);
     }
 
     public Observable<List<EpisodeModel>> getData() {
@@ -46,6 +46,6 @@ public class ListRepository {
     }
 
     public synchronized List<EpisodeModel> getList() {
-        return currentList; // Вернуть копию списка для изоляции изменений
+        return currentList;
     }
 }

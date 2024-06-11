@@ -109,6 +109,7 @@ public class EpisodeModel implements Serializable, Cloneable {
                 + "]";
     }
 
+    @NonNull
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

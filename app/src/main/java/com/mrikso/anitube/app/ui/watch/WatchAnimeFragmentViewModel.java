@@ -47,8 +47,8 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
     private final String TAG = "WatchAnimeFragmentViewModel";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private AnitubeRepository repository;
-    private WatchAnimeRepository watchAnimeRepository;
+    private final AnitubeRepository repository;
+    private final WatchAnimeRepository watchAnimeRepository;
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<AnimeDetailsModel> detailsModel = new MutableLiveData<>();
@@ -83,7 +83,7 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                         @Override
                         public void accept(Disposable disposable) throws Throwable {
                             loadSate.postValue(LoadState.LOADING);
-                            Log.d(TAG, "start loading");
+                            //Log.d(TAG, "start loading");
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -92,7 +92,7 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                                 loadPlaylistFromAjax(response, animeId);
                             }),
                             throwable -> {
-                                Log.d(TAG, throwable.toString());
+                               // Log.d(TAG, throwable.toString());
                                 loadSate.postValue(LoadState.ERROR);
                                 errorMessage.postValue(throwable.getMessage());
                             });
@@ -129,11 +129,11 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                 // парсимо всі плейлисти
                 Elements playlists = doc.select(".playlists-lists .playlists-items li");
                 Map<String, String> treeMap = new LinkedHashMap<>();
-                Log.i(TAG, "tree parser");
+                //Log.i(TAG, "tree parser");
                 for (Element playlistElement : playlists) {
                     String id = playlistElement.attr("data-id");
                     String name = playlistElement.text();
-                    Log.i(TAG, "id: " + id + " name:" + name);
+                    //Log.i(TAG, "id: " + id + " name:" + name);
                     treeMap.put(id, name);
 
                     /*
@@ -207,7 +207,7 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                     String audioId = episodeElement.attr("data-id"); // 0_0_0 or 0_0_0_0 if subs
                     String episodeName = episodeElement.text();
                     String url = episodeElement.attr("data-file");
-                    Log.i(TAG, "id: " + audioId + " url: " + url);
+                    //Log.i(TAG, "id: " + audioId + " url: " + url);
                     EpisodeModel episodeModel = new EpisodeModel(audioId, episodeName, url);
                     LastWatchedEpisodeEnity dbEpisode = watchAnimeRepository.getWatchedEpisode(animeId, url);
                     if (dbEpisode != null) {
