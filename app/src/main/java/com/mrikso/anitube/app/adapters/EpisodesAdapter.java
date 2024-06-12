@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.comparator.EpisodesDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemEpisodeBinding;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.utils.ListUtils;
@@ -18,13 +20,11 @@ import com.mrikso.anitube.app.utils.RecyclerAdapterHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHolder> {
+public class EpisodesAdapter extends ListAdapter<EpisodeModel, EpisodesAdapter.ViewHolder> {
     private OnItemClickListener listener;
-    private List<EpisodeModel> currentList;
 
     public EpisodesAdapter() {
-        super();
-        currentList = new ArrayList<>();
+        super(new EpisodesDiffCallback());
     }
 
     @NonNull
@@ -37,7 +37,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EpisodeModel episode = currentList.get(position);
+        EpisodeModel episode = getItem(position);
         if (episode != null) {
             holder.bind(episode, position);
         }
@@ -47,18 +47,14 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
         return getCurrentList().size() - 1 - position;
     }
 
-    public void setData(final List<EpisodeModel> newList) {
+    /*public void setData(final List<EpisodeModel> newList) {
         RecyclerAdapterHelper.notifyChanges(this, currentList, newList);
         this.currentList = newList;
-    }
+    }*/
 
     public void reverseList() {
         List<EpisodeModel> reversedList = ListUtils.reverseList(getCurrentList());
-        setData(reversedList);
-    }
-
-    public final List<EpisodeModel> getCurrentList() {
-        return currentList;
+        submitList(reversedList);
     }
 
     @Override

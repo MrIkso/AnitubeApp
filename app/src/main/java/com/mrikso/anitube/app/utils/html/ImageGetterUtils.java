@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
@@ -45,7 +46,10 @@ public class ImageGetterUtils {
         @Override
         public Drawable getDrawable(final String source) {
             urlDrawable = new URLDrawable();
-            Glide.with(context).asBitmap().load(source).into(new SimpleTarget<Bitmap>() {
+            Glide.with(context).asBitmap()
+                    .load(source)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     urlDrawable.bitmap = changeBitmapSize(resource);

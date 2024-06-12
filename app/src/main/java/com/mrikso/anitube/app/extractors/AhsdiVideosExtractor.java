@@ -43,8 +43,8 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
-        Log.i(TAG, "start parse playlist");
-        Log.i(TAG, masterPlayList.toString());
+        //Log.i(TAG, "start parse playlist");
+        //Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
             String newUri = variant.uri();
             // String[] parts = newUri.split("/");

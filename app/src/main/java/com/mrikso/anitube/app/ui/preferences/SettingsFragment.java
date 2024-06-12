@@ -1,10 +1,15 @@
 package com.mrikso.anitube.app.ui.preferences;
 
+import static com.mrikso.anitube.app.utils.PreferenceKeys.PREF_KEY_DYNAMIC_COLORS;
+import static com.mrikso.anitube.app.utils.PreferenceKeys.PREF_KEY_THEME;
+
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import androidx.preference.ListPreference;
@@ -14,15 +19,17 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.DynamicColorsOptions;
+import com.google.android.material.color.HarmonizedColors;
+import com.google.android.material.color.HarmonizedColorsOptions;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.ui.main.MainActivity;
+import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.AndroidEntryPoint;
-
-import static com.mrikso.anitube.app.utils.PreferenceKeys.*;
 
 @AndroidEntryPoint
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
@@ -44,7 +51,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         SwitchPreferenceCompat dynamicColors = findPreference(PREF_KEY_DYNAMIC_COLORS);
         bindOnPreferenceChangeListener(dynamicColors);
         // Hide theme section in versions that don't support dynamic colors.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+        if (!DynamicColors.isDynamicColorAvailable()) {
             dynamicColors.setVisible(false);
         }
 
@@ -68,9 +75,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                 prefHelper.setDynamicColorsEnabled(enable);
                 if (enable) {
                     DynamicColors.applyToActivitiesIfAvailable(App.getApplication());
+                    requireActivity().recreate();
+                } else {
+                    DialogUtils.showConfirmation(requireContext(), R.string.pref_restart_dialog_title,
+                            R.string.pref_restart_dialog_description, () -> {
+                                restartMainActivity();
+                            }
+                    );
                 }
 
-                requireActivity().recreate();
                 break;
 
             case PREF_KEY_THEME:
@@ -82,9 +95,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     }
 
     private void restartMainActivity() {
-        Intent intent = new Intent(requireActivity().getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = getActivity().getIntent();
+        getActivity().finish();
         startActivity(intent);
+
+        //Runtime.getRuntime().exit(0);
     }
 
     @Override

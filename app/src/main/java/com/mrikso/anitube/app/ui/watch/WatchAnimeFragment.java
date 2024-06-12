@@ -147,7 +147,7 @@ public class WatchAnimeFragment extends Fragment
                 .subscribe(
                         result -> {
                             if (result != null) {
-                                episodesAdapter.setData(result);
+                                episodesAdapter.submitList(result);
                                 if (isReverse) {
                                     episodesAdapter.reverseList();
                                 }
@@ -388,7 +388,6 @@ public class WatchAnimeFragment extends Fragment
 
     @Override
     public void onRestored(TreeItem<PlayerModel> item) {
-        Log.i("WatchAnimeFragment", "onRestore callled");
         if (!item.isExpandable()
                 && item.getValue().getEpisodes() != null
                 && !item.getValue().getEpisodes().isEmpty()) showEpisodes(item);

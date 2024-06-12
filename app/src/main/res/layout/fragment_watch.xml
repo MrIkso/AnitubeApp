@@ -141,7 +141,7 @@
                         android:textColor="?android:attr/textColorPrimary"
                         android:includeFontPadding="false"
                         android:text="@string/episode_list"
-                        android:textSize="16.0sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_height="wrap_content"

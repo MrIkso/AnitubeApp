@@ -29,28 +29,38 @@
                 android:layout_toEndOf="@id/iv_profile"
                 android:layout_width="wrap_content"
                 android:paddingStart="5dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="?attr/textColorSecondary"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:textStyle="bold"
                 tools:text="User"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_usergroup"
-                android:layout_below="@id/tv_username"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/iv_profile"
                 android:layout_width="wrap_content"
+                android:layout_toEndOf="@id/iv_profile"
+                android:layout_below="@id/tv_username"
                 android:paddingStart="5dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:fontFamily="@font/roboto_medium"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 tools:text="Admins"/>
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_time"
+                android:layout_alignParentEnd="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toEndOf="@id/iv_profile"
+                android:layout_below="@id/tv_usergroup"
+                android:paddingStart="5dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                tools:text="20/10/2023 12:00"/>
         </RelativeLayout>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_time"
-            android:layout_alignParentEnd="true"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textAppearance="?attr/textAppearanceBodySmall" />
+
 
     </RelativeLayout>
 

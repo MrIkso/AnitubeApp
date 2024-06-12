@@ -148,4 +148,6 @@
     <string name="dvget_not_found">ADM не встановлено</string>
     <string name="quality_choser_title">Якість відео</string>
     <string name="message_error_video_has_empty_stream_lisnks">Виникла помилка, посилання на файли пусті</string>
+    <string name="pref_restart_dialog_title">Потрібний перезапуск</string>
+    <string name="pref_restart_dialog_description">Щоб отримати ефект від цих змін, потрібен перезапуск застосунку. Перезапусти застосунок зараз?</string>
 </resources>

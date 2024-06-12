@@ -12,9 +12,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.color.DynamicColors;
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ActivityMainBinding;
 import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.PreferenceUtils;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
