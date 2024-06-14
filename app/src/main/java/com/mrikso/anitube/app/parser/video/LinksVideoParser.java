@@ -46,19 +46,19 @@ public class LinksVideoParser {
                 // TreeNode parent = map.get(parentId);
                 TreeItem<PlayerModel> parent = map.get(parentId);
                 if (parent != null) {
-                    Log.i(TAG, "parent add node" + node.toString());
+                    //Log.i(TAG, "parent add node" + node.toString());
                     parent.addChild(node);
 
                 } else {
-                    Log.i(TAG, "root add node" + node.toString());
+                    //Log.i(TAG, "root add node" + node.toString());
                     root.addChild(node);
                 }
             }
         }
         long endTime = System.currentTimeMillis();
 
-        Log.i(TAG, "hat took " + (endTime - startTime) + " milliseconds");
-        Log.i(TAG, root.toString());
+        //Log.i(TAG, "hat took " + (endTime - startTime) + " milliseconds");
+        //Log.i(TAG, root.toString());
         return root;
     }
 

@@ -13,8 +13,11 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.media3.common.C;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.SeekParameters;
 import androidx.media3.ui.PlayerControlView;
@@ -25,6 +28,7 @@ import com.mrikso.player.utils.Utils;
 
 import java.util.Collections;
 
+@UnstableApi
 public class CustomPlayerView extends PlayerView
         implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
 
@@ -69,7 +73,7 @@ public class CustomPlayerView extends PlayerView
     private float mScaleFactor = 1.f;
     private float mScaleFactorFit;
     Rect systemGestureExclusionRect = new Rect();
-    private PlayerControlView playerControlView;
+    private final PlayerControlView playerControlView;
     public final Runnable textClearRunnable = () -> {
         setCustomErrorMessage(null);
         clearIcon();
@@ -168,7 +172,7 @@ public class CustomPlayerView extends PlayerView
     }
 
     @Override
-    public boolean onDown(MotionEvent motionEvent) {
+    public boolean onDown(@NonNull MotionEvent motionEvent) {
         gestureScrollY = 0;
         gestureScrollX = 0;
         gestureOrientation = Orientation.UNKNOWN;
@@ -178,10 +182,10 @@ public class CustomPlayerView extends PlayerView
     }
 
     @Override
-    public void onShowPress(MotionEvent motionEvent) {}
+    public void onShowPress(@NonNull MotionEvent motionEvent) {}
 
     @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
+    public boolean onSingleTapUp(@NonNull MotionEvent motionEvent) {
         return false;
     }
 
@@ -202,8 +206,8 @@ public class CustomPlayerView extends PlayerView
         return false;
     }
 
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
+    @OptIn(markerClass = UnstableApi.class) @Override
+    public boolean onScroll(MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float distanceX, float distanceY) {
         if (mScaleDetector.isInProgress() || getPlayer() == null || locked) return false;
 
         // Exclude edge areas
@@ -308,7 +312,7 @@ public class CustomPlayerView extends PlayerView
     }
 
     @Override
-    public void onLongPress(MotionEvent motionEvent) {
+    public void onLongPress(@NonNull MotionEvent motionEvent) {
         if (locked || (getPlayer() != null && getPlayer().isPlaying())) {
             locked = !locked;
             isHandledLongPress = true;
@@ -322,12 +326,12 @@ public class CustomPlayerView extends PlayerView
     }
 
     @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    public boolean onFling(MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float v, float v1) {
         return false;
     }
 
     @Override
-    public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+    public boolean onScale(@NonNull ScaleGestureDetector scaleGestureDetector) {
         /*
               if (locked) return false;
 
@@ -346,7 +350,7 @@ public class CustomPlayerView extends PlayerView
     }
 
     @Override
-    public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+    public boolean onScaleBegin(@NonNull ScaleGestureDetector scaleGestureDetector) {
         /*
               if (locked) return false;
 
@@ -374,7 +378,7 @@ public class CustomPlayerView extends PlayerView
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+    public void onScaleEnd(@NonNull ScaleGestureDetector scaleGestureDetector) {
         /*
               if (locked) return;
               if (mScaleFactor - mScaleFactorFit < 0.001) {

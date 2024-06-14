@@ -23,7 +23,7 @@
                     android:layout_height="wrap_content">
                     <ImageButton
                         android:id="@+id/ib_back"
-                        android:background="?selectableItemBackgroundBorderless"
+                        android:background="@drawable/transparent_circle_background"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginStart="8dp"
@@ -40,7 +40,8 @@
                         android:maxLines="1"
                         android:includeFontPadding="false"
                         android:layout_weight="1.0"
-                        android:fontFamily="@font/roboto_medium" />
+                        android:fontFamily="@font/roboto_medium"
+                        tools:text="Title"/>
                 </LinearLayout>
             </androidx.appcompat.widget.Toolbar>
 
@@ -118,6 +119,7 @@
             <!-- android:id="@+id/players_chip_group" /> -->
 
             <LinearLayout
+                tools:visibility="visible"
                 android:visibility="gone"
                 android:id="@+id/title_layout"
                 android:orientation="horizontal"
@@ -158,16 +160,18 @@
                 </LinearLayout>
 
                 <RelativeLayout
-                    android:layout_height="fill_parent"
-                    android:layout_width="48dp"
-                    android:background="?selectableItemBackgroundBorderless"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/transparent_circle_background"
                     android:focusable="true"
                     android:clickable="true"
                     android:gravity="center"
+                    android:padding="8dp"
                     android:id="@+id/ib_sort">
 
                     <ImageView
                         android:id="@+id/sort"
+
                         app:srcCompat="@drawable/ic_up"
                         android:layout_width="24dp"
                         android:layout_height="24dp" />

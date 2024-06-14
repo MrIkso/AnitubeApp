@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="true"
     android:gravity="center_horizontal"
-    android:orientation="horizontal"
-    android:baselineAligned="true">
+    android:orientation="horizontal">
     <!-- <androidx.recyclerview.widget.RecyclerView -->
     <!-- android:layout_height="wrap_content" -->
     <!-- android:layout_width="fill_parent" -->
@@ -16,122 +16,126 @@
     <!-- android:id="@+id/rv_actions" -->
     <!-- app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" /> -->
     <LinearLayout
+        android:id="@+id/status_container"
+        android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_width="85dp"
-        android:visibility="gone"
-        android:background="?selectableItemBackgroundBorderless"
-        android:gravity="center_horizontal"
-        android:clickable="true"
         android:layout_margin="8dp"
-        android:orientation="vertical"
+        android:background="@drawable/transparent_circle_background"
+        android:clickable="true"
         android:focusable="true"
-        android:id="@+id/status_container">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
-            android:layout_height="24dp"
-            android:layout_width="24dp"
-            android:layout_marginBottom="8dp"
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:ignore="ContentDescription"
+            android:layout_marginBottom="8dp"
             app:srcCompat="@drawable/ic_add"
-            android:id="@+id/status" />
+            tools:ignore="ContentDescription" />
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
             android:id="@+id/watch_status_text"
-            android:text="@string/release_action_add_to_list" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/release_action_add_to_list"
+            android:textAppearance="?attr/textAppearanceLabelSmall" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/bookmark_container"
+        android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_width="80dp"
-        android:visibility="gone"
-        android:background="?selectableItemBackgroundBorderless"
-        android:gravity="center_horizontal"
-        android:clickable="true"
         android:layout_margin="8dp"
-        android:orientation="vertical"
+        android:background="@drawable/transparent_circle_background"
+        android:clickable="true"
         android:focusable="true"
-        android:id="@+id/bookmark_container">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
-            android:layout_height="24dp"
-            android:layout_width="24dp"
-            android:layout_marginBottom="8dp"
+            android:id="@+id/bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:srcCompat="@drawable/ic_bookmark_border"
-            tools:ignore="ContentDescription"
-            android:id="@+id/bookmark" />
+            tools:ignore="ContentDescription" />
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
             android:id="@+id/bookmark_status_text"
-            android:text="@string/release_action_add_to_bookmarks" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/release_action_add_to_bookmarks"
+            android:textAppearance="?attr/textAppearanceLabelSmall" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/share_container"
+        android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_width="80dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:gravity="center_horizontal"
-        android:clickable="true"
         android:layout_margin="8dp"
-        android:orientation="vertical"
+        android:background="@drawable/transparent_circle_background"
+        android:clickable="true"
         android:focusable="true"
-        android:id="@+id/share_container">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:visibility="visible">
 
         <ImageView
-            android:layout_height="24dp"
-            android:layout_width="24dp"
-            android:layout_marginBottom="8dp"
+            android:id="@+id/share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:ignore="ContentDescription"
+            android:layout_marginBottom="8dp"
             app:srcCompat="@drawable/ic_share"
-            android:id="@+id/share" />
+            tools:ignore="ContentDescription" />
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
-            android:text="@string/action_share" />
+            android:text="@string/action_share"
+            android:textAppearance="?attr/textAppearanceLabelSmall" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/download_torrent_container"
+        android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_width="80dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:gravity="center_horizontal"
-        android:clickable="true"
         android:layout_margin="8dp"
-        android:orientation="vertical"
+        android:background="@drawable/transparent_circle_background"
+        android:clickable="true"
         android:focusable="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:visibility="gone"
-        android:id="@+id/download_torrent_container">
+        tools:visibility="visible">
 
         <ImageView
-            android:layout_height="24dp"
-            android:layout_width="24dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:ignore="ContentDescription"
-            app:srcCompat="@drawable/ic_torrent_file" />
+            android:layout_marginBottom="8dp"
+            app:srcCompat="@drawable/ic_torrent_file"
+            tools:ignore="ContentDescription" />
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
-            android:text="@string/download_torrent" />
+            android:text="@string/download_torrent"
+            android:textAppearance="?attr/textAppearanceLabelSmall" />
 
     </LinearLayout>
 

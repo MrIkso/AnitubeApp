@@ -5,8 +5,10 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.OptIn;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.common.util.Util;
 import androidx.media3.database.StandaloneDatabaseProvider;
 import androidx.media3.datasource.DataSource;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+@OptIn(markerClass = UnstableApi.class)
 public final class ExoMediaSourceHelper {
 
     private static volatile ExoMediaSourceHelper sInstance;
@@ -35,6 +38,7 @@ public final class ExoMediaSourceHelper {
     private final Context mAppContext;
     private HttpDataSource.Factory mHttpDataSourceFactory;
     private Cache mCache;
+
 
     private ExoMediaSourceHelper(Context context) {
         mAppContext = context.getApplicationContext();
@@ -146,7 +150,7 @@ public final class ExoMediaSourceHelper {
     }
 
     private void setHeaders(Map<String, String> headers) {
-        if (headers != null && headers.size() > 0) {
+        if (headers != null && !headers.isEmpty()) {
             // 如果发现用户通过header传递了UA，则强行将HttpDataSourceFactory里面的userAgent字段替换成用户的
             if (headers.containsKey("User-Agent")) {
                 String value = headers.get("User-Agent");
@@ -160,7 +164,7 @@ public final class ExoMediaSourceHelper {
                     }
                 }
             }
-            headers.entrySet().stream().forEach(e -> Log.i("tag", "header: " + e.getKey() + " : " + e.getValue()));
+           // headers.entrySet().stream().forEach(e -> Log.i("tag", "header: " + e.getKey() + " : " + e.getValue()));
             mHttpDataSourceFactory.setDefaultRequestProperties(headers);
         }
     }

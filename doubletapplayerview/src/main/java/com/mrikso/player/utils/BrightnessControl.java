@@ -3,6 +3,9 @@ package com.mrikso.player.utils;
 import android.app.Activity;
 import android.view.WindowManager;
 
+import androidx.annotation.OptIn;
+import androidx.media3.common.util.UnstableApi;
+
 import com.mrikso.player.CustomPlayerView;
 
 public class BrightnessControl {
@@ -25,6 +28,7 @@ public class BrightnessControl {
         activity.getWindow().setAttributes(lp);
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     public void changeBrightness(final CustomPlayerView playerView, final boolean increase, final boolean canSetAuto) {
         int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
 

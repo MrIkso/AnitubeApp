@@ -51,6 +51,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -349,14 +350,15 @@ public class WatchAnimeFragment extends Fragment
                                 openPlayerActivity(result.second);
                             }
                         } else {
-                            UnsupportedVideoSourceDialog.show(requireContext(), result.second.getIfRameUrl());
+                            UnsupportedVideoSourceDialog.show(requireContext(), url);
                         }
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-                        DialogUtils.cancelDialog(progressDialog);
                         throwable.printStackTrace();
+                        DialogUtils.cancelDialog(progressDialog);
+                        UnsupportedVideoSourceDialog.show(requireContext(),url);
                     }
                 });
         disposables.add(disposable);

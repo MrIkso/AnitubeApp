@@ -8,7 +8,7 @@ import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.treeview.TreeItem;
 
 public class SavedState extends View.BaseSavedState {
-    TreeItem<PlayerModel> model;
+    protected TreeItem<PlayerModel> model;
 
     SavedState(Parcelable superState) {
         super(superState);

@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Rational;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -46,6 +48,7 @@ import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.common.base.Strings;
@@ -87,6 +90,9 @@ public class PlayerActivity extends AppCompatActivity {
     private static final String EMPTY_STRING_VALUE = "~";
     private static final int EMPTY_EPISODE_NUMBER_VALUE = 0;
 
+    private static final String KEY_ITEM_INDEX = "item_index";
+    private static final String KEY_POSITION = "position";
+    private static final String KEY_AUTO_PLAY = "auto_play";
     private ActivityPlayerBinding binding;
     private ExoPlayer exoPlayer = null;
     // Top buttons
@@ -100,7 +106,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     // Middle buttons
     private ImageView exoPrevEp;
-    private CardView cvPlay;
+  //  private CardView cvPlay;
     private ImageView exoPlay;
     private ProgressBar exoProgressBar;
     private ImageView exoNextEp;
@@ -124,14 +130,11 @@ public class PlayerActivity extends AppCompatActivity {
 
     // player status
     private boolean isLock = false;
-    private boolean isBuffering = false;
     private boolean isFullScreen = false;
 
     public static boolean controllerVisible;
     public static boolean controllerVisibleFully;
     private boolean restoreControllerTimeout = false;
-    private boolean shortControllerTimeout = false;
-    private long lastScrubbingPosition;
     public static long[] chapterStarts;
 
     private int currentSpeedIndex = 1;
@@ -145,7 +148,7 @@ public class PlayerActivity extends AppCompatActivity {
     private long currentPosition;
     private AlertDialog progressDialog;
     private SharedViewModel sharedViewModel;
-
+    private PlayerViewModel playerViewModel;
     private BaseAnimeModel animeModel;
     private String episodePath;
 
@@ -155,16 +158,17 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setView();
         initViewModel();
+        observeEvents();
         setupViews();
-       // if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             hideNavBar();
             parseExtra();
-            preparePlayer();
+            preparePlayer(false);
             setClickListeners();
             setupTextViewValues();
             setupQuality();
             setupMiddleControllers();
-     //   }
+        }
     }
 
     private void setView() {
@@ -176,6 +180,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void initViewModel() {
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        playerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
         listRepo = ListRepository.getInstance();
     }
 
@@ -195,7 +200,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         // Middle buttons
         exoPrevEp = findViewById(R.id.exo_prev_ep);
-        cvPlay = findViewById(R.id.cv_exo_play_pause);
+        //cvPlay = findViewById(R.id.cv_exo_play_pause);
         exoPlay = findViewById(R.id.ib_exo_play_pause);
         exoProgressBar = findViewById(R.id.exo_progress_bar);
         exoNextEp = findViewById(R.id.exo_next_ep);
@@ -235,7 +240,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void preparePlayer() {
+    private void preparePlayer(boolean restorePlayer) {
         chapterStarts = new long[0];
         mediaSourceHelper = ExoMediaSourceHelper.getInstance(this);
         BrightnessControl mBrightnessControl = new BrightnessControl(this);
@@ -249,6 +254,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         playerView.setControllerHideOnTouch(true);
         playerView.setControllerAutoShow(true);
+        playerView.setUseController(true);
         /// playerView.setControllerShowTimeoutMs(-1);
 
         ((DoubleTapPlayerView) playerView).setDoubleTapEnabled(true);
@@ -287,11 +293,12 @@ public class PlayerActivity extends AppCompatActivity {
         });
         youTubeOverlay.player(exoPlayer);
         playerView.setPlayer(exoPlayer);
-        currentPosition = listRepo.getList().get(episodeNumber - 1).getTotalWatchTime();
-        Log.i("player", "currentPosition: " + currentPosition);
+        if (!restorePlayer) {
+            currentPosition = listRepo.getList().get(episodeNumber - 1).getTotalWatchTime();
+        }
         setMediaSourceByModel(episodeLinks);
 
-        // exoPlayer.seekTo(playbackPosition);
+         exoPlayer.seekTo(currentPosition);
         // exoPlayer.setPlayWhenReady(playWhenReady);
         exoPlayer.prepare();
 
@@ -344,12 +351,12 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void playVideo() {
-        exoPlay.setImageResource(R.drawable.ic_pause);
+        Glide.with(this).load(R.drawable.anim_pause_to_play).into(exoPlay);
         exoPlayer.play();
     }
 
     private void pauseVideo() {
-        exoPlay.setImageResource(R.drawable.ic_play_arrow);
+        Glide.with(this).load(R.drawable.anim_play_to_pause).into(exoPlay);
         exoPlayer.pause();
     }
 
@@ -390,21 +397,8 @@ public class PlayerActivity extends AppCompatActivity {
             exoQuality.setOnItemClickListener((parent, view, position, id) -> {
                 currentQuality = (String) parent.getAdapter().getItem(position);
                 String qualityItem = episodeLinks.getLinksQuality().get(currentQuality);
-                currentPosition = exoPlayer.getCurrentPosition();
-                /*
-                        Log.i("tag", currentQuality + ": " + qualityItem);
-                        episodeLinks.getLinksQuality().entrySet().stream()
-                                .forEach(
-                                        e ->
-                                                Log.i(
-                                                        "tag",
-                                                        "currentQuality: "
-                                                                + currentQuality
-                                                                + " "
-                                                                + e.getKey()
-                                                                + " "
-                                                                + e.getValue()));
-                */
+                playerViewModel.setPlayPosition(exoPlayer.getCurrentPosition());
+
                 MediaSource mediaSource = mediaSourceHelper.getMediaSource(qualityItem, true);
                 exoPlayer.setMediaSource(mediaSource);
 
@@ -415,7 +409,7 @@ public class PlayerActivity extends AppCompatActivity {
                 // Set the new parameters.
                 exoPlayer.setTrackSelectionParameters(newParameters);
 
-                exoPlayer.seekTo(currentPosition);
+                  exoPlayer.seekTo(currentPosition);
             });
         } else {
             exoQualityTil.setVisibility(View.GONE);
@@ -424,11 +418,19 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void releasePlayer() {
         if (exoPlayer != null) {
-            currentPosition = exoPlayer.getCurrentPosition();
-            exoPlayer.stop();
+            savePlayer();
+            //exoPlayer.stop();
             exoPlayer.release();
+            playerView.setPlayer(/* player= */ null);
             exoPlayer = null;
         }
+    }
+
+    private void observeEvents() {
+        playerViewModel.getPlayPosition().observe(this, result -> {
+            currentPosition = result;
+            //Log.i("player", "currentPosition: " + currentPosition);
+        });
     }
 
     private void updateQualityArray() {
@@ -436,13 +438,14 @@ public class PlayerActivity extends AppCompatActivity {
                 new ArrayList<>(episodeLinks.getLinksQuality().keySet());
         ArrayAdapter<String> adapterQuality = new ArrayAdapter<>(this, R.layout.item_quality_speed, qualityList);
         exoQuality.setText(currentQuality);
-        Log.i("tag", "updateQualityArray");
+       // Log.i("tag", "updateQualityArray");
         exoQuality.setAdapter(adapterQuality);
     }
 
     private void savePlayer() {
         if (exoPlayer != null) {
-            currentPosition = exoPlayer.getCurrentPosition();
+            currentPosition = Math.max(0, exoPlayer.getContentPosition());
+            playerViewModel.setPlayPosition(currentPosition);
             sharedViewModel.addOrUpdateWatchedAnime(
                     animeModel, episodePath, episodeNumber, exoPlayer.getContentDuration(), currentPosition);
             sharedViewModel.addOrUpdateWatchedEpisode(
@@ -499,14 +502,14 @@ public class PlayerActivity extends AppCompatActivity {
                 if (episodeNumber != 1) {
                     exoPrevEp.setAlpha(1f);
                 } else {
-                    exoPrevEp.setAlpha(0.7f);
+                    exoPrevEp.setAlpha(0.4f);
                 }
                 exoNextEp.setAlpha(1f);
                 exoNextEp.setEnabled(true);
                 savePlayer();
                 loadEpisode(listRepo.getList().get(episodeNumber - 1));
             } else {
-                exoPrevEp.setAlpha(0.7f);
+                exoPrevEp.setAlpha(0.4f);
             }
         });
 
@@ -516,14 +519,14 @@ public class PlayerActivity extends AppCompatActivity {
                 if (episodeNumber != listRepo.getList().size()) {
                     exoNextEp.setAlpha(1f);
                 } else {
-                    exoNextEp.setAlpha(0.7f);
+                    exoNextEp.setAlpha(0.4f);
                 }
                 exoPrevEp.setAlpha(1f);
                 exoPrevEp.setEnabled(true);
                 savePlayer();
                 loadEpisode(listRepo.getList().get(episodeNumber - 1));
             } else {
-                exoNextEp.setAlpha(0.7f);
+                exoNextEp.setAlpha(0.4f);
             }
         });
 
@@ -551,7 +554,7 @@ public class PlayerActivity extends AppCompatActivity {
         final AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         if (AppOpsManager.MODE_ALLOWED
                 != appOpsManager.checkOpNoThrow(
-                        AppOpsManager.OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), getPackageName())) {
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), getPackageName())) {
             final Intent intent = new Intent(
                     "android.settings.PICTURE_IN_PICTURE_SETTINGS", Uri.fromParts("package", getPackageName(), null));
             if (intent.resolveActivity(getPackageManager()) != null) {
@@ -581,11 +584,13 @@ public class PlayerActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= 33
                     && getPackageManager().hasSystemFeature(PackageManager.FEATURE_EXPANDED_PICTURE_IN_PICTURE)
                     && (rational.floatValue() > rationalLimitWide.floatValue()
-                            || rational.floatValue() < rationalLimitTall.floatValue())) {
+                    || rational.floatValue() < rationalLimitTall.floatValue())) {
                 ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setExpandedAspectRatio(rational);
             }
-            if (rational.floatValue() > rationalLimitWide.floatValue()) rational = rationalLimitWide;
-            else if (rational.floatValue() < rationalLimitTall.floatValue()) rational = rationalLimitTall;
+            if (rational.floatValue() > rationalLimitWide.floatValue())
+                rational = rationalLimitWide;
+            else if (rational.floatValue() < rationalLimitTall.floatValue())
+                rational = rationalLimitTall;
 
             ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setAspectRatio(rational);
         }
@@ -624,6 +629,7 @@ public class PlayerActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable throwable) {
                         DialogUtils.cancelDialog(progressDialog);
+                        UnsupportedVideoSourceDialog.show(PlayerActivity.this, episode.getEpisodeUrl());
                         throwable.printStackTrace();
                     }
                 });
@@ -631,7 +637,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
 
-     private void setMediaSourceByModel(VideoLinksModel model) {
+    private void setMediaSourceByModel(VideoLinksModel model) {
         if (model.isIgnoreSSL()) {
             Utils.bypassSSL();
         }
@@ -646,17 +652,17 @@ public class PlayerActivity extends AppCompatActivity {
                 currentQuality = qualitiesMap.keySet().stream().findFirst().get();
             }
 
-            qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
+           // qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
             String playUrl = qualitiesMap.get(currentQuality);
 
-            Log.i("PlayerActivity", "playUrl: " + playUrl);
+          //  Log.i("PlayerActivity", "playUrl: " + playUrl);
             updateQualityArray();
             mediaSource = mediaSourceHelper.getMediaSource(playUrl, model.getHeaders(), true);
-            exoPlayer.setMediaSource(mediaSource);
-            playerView.setHaveMedia(true);
-            exoPlayer.seekTo(currentPosition);
+
         } else if (!Strings.isNullOrEmpty(model.getSingleDirectUrl())) {
             mediaSource = mediaSourceHelper.getMediaSource(model.getSingleDirectUrl(), model.getHeaders(), true);
+        }
+        if (mediaSource != null) {
             exoPlayer.setMediaSource(mediaSource);
             playerView.setHaveMedia(true);
             exoPlayer.seekTo(currentPosition);
@@ -704,8 +710,28 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        savePlayer();
+        //  outState.putBoolean(KEY_AUTO_PLAY, startAutoPlay);
+        // outState.putInt(KEY_ITEM_INDEX, startItemIndex);
+        // outState.putLong(KEY_POSITION, currentPosition);
+    }
+
+    // Activity input
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        // See whether the player view wants to handle media or DPAD keys events.
+        return playerView.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
+        if (playerView != null) {
+            playerView.onPause();
+        }
         releasePlayer();
     }
 
@@ -720,16 +746,21 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        savePlayer();
+        if (playerView != null) {
+            playerView.onPause();
+        }
+        releasePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         hideNavBar();
-        if (binding != null && exoPlayer != null) {
-            playerView.setUseController(true);
-            exoPlayer.prepare();
+        if (exoPlayer == null) {
+            preparePlayer(true);
+            if (playerView != null) {
+                playerView.onResume();
+            }
         }
     }
 
@@ -766,19 +797,16 @@ public class PlayerActivity extends AppCompatActivity {
 
             switch (playbackState) {
                 case Player.STATE_BUFFERING:
-                    isBuffering = true;
                     exoProgressBar.setVisibility(View.VISIBLE);
-                    cvPlay.setVisibility(View.GONE);
+                    exoPlay.setVisibility(View.GONE);
                     break;
                 case Player.STATE_READY:
-                    isBuffering = false;
                     exoProgressBar.setVisibility(View.GONE);
-                    cvPlay.setVisibility(View.VISIBLE);
+                    exoPlay.setVisibility(View.VISIBLE);
                     break;
                 case Player.STATE_IDLE:
-                    isBuffering = false;
                     exoProgressBar.setVisibility(View.VISIBLE);
-                    cvPlay.setVisibility(View.GONE);
+                    exoPlay.setVisibility(View.GONE);
                     break;
                 case Player.STATE_ENDED:
                     finish();
@@ -791,14 +819,12 @@ public class PlayerActivity extends AppCompatActivity {
         @Override
         public void onIsLoadingChanged(boolean isLoading) {
             if (isLoading) {
-                isBuffering = true;
                 if (exoPlayer.isCurrentMediaItemSeekable()
                         && !exoPlayer.isPlaying()
                         && exoPlayer.getBufferedPosition() == 0L) {
                     exoProgressBar.setVisibility(View.VISIBLE);
                 }
             } else {
-                isBuffering = false;
                 exoProgressBar.setVisibility(View.GONE);
             }
         }

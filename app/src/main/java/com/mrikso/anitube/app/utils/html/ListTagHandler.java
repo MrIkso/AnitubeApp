@@ -64,7 +64,7 @@ public class ListTagHandler implements Html.TagHandler {
                 lists.peek().closeItem(output, lists.size());
             }
         } else {
-            Log.d(LOG_TAG, "Found an unsupported tag " + tag);
+           // Log.d(LOG_TAG, "Found an unsupported tag " + tag);
         }
     }
 

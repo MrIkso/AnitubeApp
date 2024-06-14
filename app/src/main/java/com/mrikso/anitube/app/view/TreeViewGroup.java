@@ -6,7 +6,6 @@ import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import java.util.Map;
 public class TreeViewGroup extends LinearLayout {
     protected TreeItem<PlayerModel> model;
     protected Map<String, Pair<Integer, Integer>> chipGroups = new HashMap<>();
+    protected List<Integer> colors = new ArrayList<>();
     private boolean showRoot = false;
     private LayoutInflater inflater;
     private OnTreeItemClickListener<PlayerModel> clickListener;
@@ -68,6 +68,7 @@ public class TreeViewGroup extends LinearLayout {
 
     private void init() {
         inflater = LayoutInflater.from(getContext());
+
         setOrientation(VERTICAL);
     }
 
@@ -80,7 +81,7 @@ public class TreeViewGroup extends LinearLayout {
         this.model = root;
         chipGroups.clear();
 
-        Log.i("TreeViewGroup", "Set root called");
+        // Log.i("TreeViewGroup", "Set root called");
         // showAllFistNode(root);
         showLevel(root, "root", 0, viewIndex);
         viewIndex++;
@@ -90,7 +91,7 @@ public class TreeViewGroup extends LinearLayout {
 
     private void showLevel(TreeItem<PlayerModel> root, String key, int depth, int viewIndex) {
         if (root == null) return;
-        Log.i("TreeViewGroup", "showLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
+        //Log.i("TreeViewGroup", "showLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
 
         if (chipGroups.containsKey(key)) {
 
@@ -99,7 +100,7 @@ public class TreeViewGroup extends LinearLayout {
 
         } else {
             ChipGroup chipGroup = createChipGroup(root);
-            Log.i("TreeViewGroup", "create new node");
+            //Log.i("TreeViewGroup", "create new node");
             chipGroups.put(key, new Pair<>(depth, chipGroup.getId()));
             addView(chipGroup, viewIndex);
         }
@@ -112,9 +113,9 @@ public class TreeViewGroup extends LinearLayout {
 
         for (TreeItem<PlayerModel> child : root.getChildren()) {
             if (child.isSelected()) {
-                Log.i("TreeViewGroup", "restoreState child: " + child);
+                // Log.i("TreeViewGroup", "restoreState child: " + child);
                 if (restoreListener != null) {
-                    Log.i("TreeViewGroup", "restoreState restoreListener to fragment");
+                    // Log.i("TreeViewGroup", "restoreState restoreListener to fragment");
                     restoreListener.onRestored(child);
                 }
                 showLevel(child, child.getValue().getId(), child.getDepth(), showIndex);
@@ -167,7 +168,7 @@ public class TreeViewGroup extends LinearLayout {
     }
 
     private void removeLevel(String key, int depth) {
-        Log.i("TreeViewGroup", "removeLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
+        //Log.i("TreeViewGroup", "removeLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
         for (Map.Entry<String, Pair<Integer, Integer>> entry : chipGroups.entrySet()) {
             String entryKey = entry.getKey();
             Pair<Integer, Integer> value = entry.getValue();
@@ -178,7 +179,7 @@ public class TreeViewGroup extends LinearLayout {
             }
             if (!key.contains(entryKey) && entryDepth >= depth) {
                 View nextChild = findViewById(entryId);
-                Log.i("TreeViewGroup", "exits node: " + value);
+                //Log.i("TreeViewGroup", "exits node: " + value);
                 nextChild.setVisibility(GONE);
             }
         }
@@ -235,7 +236,14 @@ public class TreeViewGroup extends LinearLayout {
         chipGroup.setSingleSelection(true);
         chipGroup.setSelectionRequired(true);
         chipGroup.setId(View.generateViewId());
+
+        //todo add restore generated colors
         int bgColor = ViewUtils.getRandomMaterialColor(getContext());
+        if (colors.contains(bgColor)) {
+            bgColor = ViewUtils.getRandomMaterialColor(getContext());
+        } else {
+            colors.add(bgColor);
+        }
         for (TreeItem<PlayerModel> model : result.getChildren()) {
 
             Chip chip = createChip(model.getValue().getName(), bgColor, v -> {
@@ -326,7 +334,7 @@ public class TreeViewGroup extends LinearLayout {
         super.onRestoreInstanceState(ss.getSuperState());
         // this.removeAllViews();
         model = ss.model;
-        Log.i("TreeViewGroup", "onRestoreInstanceState: " + model.toString());
+        //Log.i("TreeViewGroup", "onRestoreInstanceState: " + model.toString());
         showAllChildrenRecursive(model);
     }
 

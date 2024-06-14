@@ -66,7 +66,7 @@ public class DirectVideoUrlParser {
 
             String iframeDomain = Objects.requireNonNull(Utils.getDomainFromURL(iframeUrl)).replace("https://", "");
             Log.i(TAG, "iframeurl: " + iframeUrl + " iframeDomain: " + iframeDomain);
-            BaseVideoLinkExtracror extracror = null;
+            BaseVideoLinkExtracror extracror;
 
             if (iframeDomain.contains("tortuga.wtf")) {
                  extracror = new AhsdiVideosExtractor(iframeUrl, client);
@@ -100,7 +100,7 @@ public class DirectVideoUrlParser {
 
             return extracror.parse();
         } catch (Exception err) {
-            err.printStackTrace();
+           // err.printStackTrace();
             return Single.just(new Pair<>(LoadState.ERROR, new VideoLinksModel(iframeUrl)));
         }
     }

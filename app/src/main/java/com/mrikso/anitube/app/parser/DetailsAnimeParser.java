@@ -127,7 +127,7 @@ public class DetailsAnimeParser {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(animeDetailsModel);
-        Log.i(TAG, json);
+        //Log.i(TAG, json);
         return animeDetailsModel;
     }
 

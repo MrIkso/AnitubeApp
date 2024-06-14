@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.core.util.Pair;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.mrikso.anitube.app.extractors.model.PlayerJsResponse;
 import com.mrikso.anitube.app.model.LoadState;
@@ -12,6 +13,7 @@ import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
 
@@ -50,16 +53,15 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
-       // Log.i(TAG, "start parse playlist");
-       // Log.i(TAG, masterPlayList.toString());
+        // Log.i(TAG, "start parse playlist");
+        // Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
-            String newUri = playerJs.getFile().replace("playlist.m3u8",variant.uri().replaceFirst("./", ""));
+            String newUri = playerJs.getFile().replace("playlist.m3u8", variant.uri().replaceFirst("./", ""));
 
-            Optional<Resolution> resolutionOptional =  variant.resolution();
-            if(resolutionOptional.isPresent()){
+            Optional<Resolution> resolutionOptional = variant.resolution();
+            if (resolutionOptional.isPresent()) {
                 qualitiesMap.put(ParserUtils.standardizeQuality(String.valueOf(resolutionOptional.get().height())), newUri);
-            }
-           else {
+            } else {
                 qualitiesMap.put("AUTO", playerJs.getFile());
             }
         }
@@ -82,13 +84,17 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
             }
             PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
             Log.d(TAG, playerJs.getFile());
-            String masterPlaylist = client.newCall(
-                            new Request.Builder().url(playerJs.getFile()).get().build())
-                    .execute()
-                    .body()
-                    .string();
+            Request build = new Request.Builder().url(playerJs.getFile()).get().build();
+            try (Response response = client.newCall(build).execute()) {
+                String masterPlaylist = response.body().string();
+                if (Strings.isNullOrEmpty(masterPlaylist)) {
+                    emitter.onError(new Throwable("masterPlaylist is null of empty"));
+                }
+                emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
 
-            emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+            } catch (UnknownHostException exception) {
+                emitter.onError(exception.fillInStackTrace());
+            }
         });
     }
 }

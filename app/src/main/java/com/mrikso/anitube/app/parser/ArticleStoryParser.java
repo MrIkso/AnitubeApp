@@ -97,7 +97,7 @@ public class ArticleStoryParser {
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(releaseModel);
-        Log.i(TAG, json);
+        //Log.i(TAG, json);
         return releaseModel;
     }
 }

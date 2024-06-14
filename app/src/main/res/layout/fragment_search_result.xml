@@ -25,7 +25,7 @@
                     android:layout_height="wrap_content">
                     <ImageButton
                         android:id="@+id/back"
-                        android:background="?selectableItemBackgroundBorderless"
+                        android:background="@drawable/transparent_circle_background"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginStart="8dp"

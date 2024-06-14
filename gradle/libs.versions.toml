@@ -1,44 +1,31 @@
 [versions]
 appcompat = "1.7.0"
 circleimageview = "3.1.0"
-compiler = "4.16.0"
+glide = "4.16.0"
 coreSplashscreen = "1.0.1"
 expandabletextview = "v1.6.1-x"
 gson = "2.11.0"
 hiltAndroid = "2.51.1"
 jsoup = "1.17.2"
-lifecycleViewmodelKtx = "2.8.1"
-lifecycleLivedataKtx = "2.8.1"
+lifecycleViewmodelKtx = "2.8.2"
+lifecycleLivedataKtx = "2.8.2"
 loggingInterceptor = "4.12.0"
 m3u8Parser = "0.28"
 material = "1.12.0"
 constraintlayout = "2.1.4"
 newpipeextractor = "v0.24.0"
 nextlib = "v0.6.0"
-pagingRuntimeKtx = "3.3.0"
-pagingRxjava3 = "3.3.0"
+paging = "3.3.0"
 media3Exoplayer = "1.3.1"
-media3Session = "1.3.1"
-media3Datasource = "1.3.1"
-media3Decoder = "1.3.1"
-media3Common = "1.3.1"
-media3ExoplayerDash = "1.3.1"
-media3ExoplayerHls = "1.3.1"
-media3ExoplayerSmoothstreaming = "1.3.1"
-media3ExoplayerRtsp = "1.3.1"
-media3Ui = "1.3.1"
 preferenceKtx = "1.2.1"
 recyclerview = "1.3.2"
 retrofit = "2.11.0"
 roomRuntime = "2.6.1"
-roomPaging = "2.6.1"
-roomRxjava3 = "2.6.1"
 rxjava = "3.1.8"
 rxandroid = "3.0.2"
 rxjava3RetrofitAdapter = "3.0.0"
 swiperefreshlayout = "1.1.0"
-navigationFragmentKtx = "2.7.7"
-navigationUiKtx = "2.7.7"
+navigation = "2.7.7"
 tagsoup = "1.2.1"
 touchimageview = "3.3"
 utilcodex = "1.31.1"
@@ -49,34 +36,35 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Ui" }
-androidx-media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "media3ExoplayerRtsp" }
-androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3ExoplayerSmoothstreaming" }
-androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3ExoplayerHls" }
-androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3ExoplayerDash" }
-androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Common" }
-androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "media3Decoder" }
-androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3Datasource" }
-androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3Session" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
+androidx-media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "media3Exoplayer" }
+androidx-media3-exoplayer-smoothstreaming = { module = "androidx.media3:media3-exoplayer-smoothstreaming", version.ref = "media3Exoplayer" }
+androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3Exoplayer" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Exoplayer" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Exoplayer" }
+androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "media3Exoplayer" }
+androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3Exoplayer" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3Exoplayer" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
-androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationFragmentKtx" }
-androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
-androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
-androidx-paging-rxjava3 = { module = "androidx.paging:paging-rxjava3", version.ref = "pagingRxjava3" }
-androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
+androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidx-paging-rxjava3 = { module = "androidx.paging:paging-rxjava3", version.ref = "paging" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
-androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomRxjava3" }
-androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
+androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomRuntime" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 expandabletextview = { module = "com.github.MZCretin:ExpandableTextView", version.ref = "expandabletextview" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "compiler" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }

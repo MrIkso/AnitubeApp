@@ -38,6 +38,7 @@ public class ListRepository {
     public synchronized void updateItem(EpisodeModel item, int position) {
         List<EpisodeModel> newList = new ArrayList<>(currentList);
         newList.set(position, item);
+        currentList = newList;
         subject.onNext(newList);
     }
 

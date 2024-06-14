@@ -104,7 +104,7 @@ public class ParserUtils {
     }
 
     public static String normaliseImageUrl(String rawUrl) {
-        Log.i("ParserUtils", "rawUrl:" + rawUrl);
+        //Log.i("ParserUtils", "rawUrl:" + rawUrl);
         if (rawUrl.startsWith(ApiClient.BASE_URL)) {
             return rawUrl;
         } else if (rawUrl.startsWith("//")) {

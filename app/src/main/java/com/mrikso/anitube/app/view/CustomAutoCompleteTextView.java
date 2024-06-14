@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.AutoCompleteTextView;
 
-public class CustomAutoCompleteTextView extends AutoCompleteTextView {
+public class CustomAutoCompleteTextView extends androidx.appcompat.widget.AppCompatAutoCompleteTextView {
     public CustomAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setEnabled(false);

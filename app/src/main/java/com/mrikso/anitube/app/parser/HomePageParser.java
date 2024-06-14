@@ -91,7 +91,7 @@ public class HomePageParser {
                     .selectFirst("div.text_content")
                     .getElementsByTag("a")
                     .text();
-            Log.d(TAG, urlPoster + " " + animeUrl + " " + animeTitle);
+            //Log.d(TAG, urlPoster + " " + animeUrl + " " + animeTitle);
             bestAnimeList.add(new BaseAnimeModel(ParserUtils.getAnimeId(animeUrl), animeTitle, urlPoster, animeUrl));
         }
 
@@ -152,7 +152,7 @@ public class HomePageParser {
                 animeRelease.setDescription(description);
 
                 releasesAnimeList.add(animeRelease);
-                Log.d(TAG, animeRelease.toString());
+                //Log.d(TAG, animeRelease.toString());
             }
         }
 
@@ -197,7 +197,7 @@ public class HomePageParser {
             collectionModel.setCountAnime(count);
 
             newCollectionsList.add(collectionModel);
-            Log.d(TAG, collectionModel.toString());
+            //Log.d(TAG, collectionModel.toString());
         }
     }
 

@@ -108,7 +108,7 @@ dependencies {
 
 	// Glide
 	implementation libs.glide
-	ksp libs.compiler
+	ksp libs.glide.compiler
 
 	implementation libs.androidx.paging.runtime.ktx
 	// RxJava3 support for paging library

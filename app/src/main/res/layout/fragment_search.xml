@@ -32,7 +32,7 @@
                     <RelativeLayout
                         android:gravity="center"
                         android:id="@+id/back"
-                        android:background="?selectableItemBackgroundBorderless"
+                        android:background="@drawable/transparent_circle_background"
                         android:focusable="true"
                         android:clickable="true"
                         android:layout_width="56dp"
@@ -59,7 +59,7 @@
 
                     <ImageView
                         android:id="@+id/clear"
-                        android:background="?selectableItemBackgroundBorderless"
+                        android:background="@drawable/transparent_circle_background"
                         android:visibility="gone"
                         android:clickable="true"
                         android:layout_width="48dp"
@@ -70,7 +70,7 @@
                     <RelativeLayout
                         android:gravity="center"
                         android:id="@+id/filter"
-                        android:background="?selectableItemBackgroundBorderless"
+                        android:background="@drawable/transparent_circle_background"
                         android:focusable="true"
                         android:visibility="gone"
                         android:clickable="true"
