@@ -91,6 +91,26 @@ public class PreferencesHelper {
         preferences.edit().putString(PreferenceKeys.PREF_KEY_DLE_HASH, hash).apply();
     }
 
+    public int getPlayerDoubleTapSeek() {
+        String sec = preferences.getString(PreferenceKeys.PREF_PLAYER_DOUBLE_TAP_SEEK, "10");
+        if(sec.equals("off")){
+            return -1;
+        }
+        return Integer.parseInt(sec);
+    }
+
+    public boolean isPlayerEnabledSwipeControls() {
+        return preferences.getBoolean(PreferenceKeys.PREF_PLAYER_SWIPE_CONTROLS, true);
+    }
+
+    public boolean isPlayerEnabledPlayNextEpisode() {
+        return preferences.getBoolean(PreferenceKeys.PREF_PLAYER_AUTOPLAY_NEXT_EPISODE, false);
+    }
+
+    public boolean isPlayerAutoContinuePlay() {
+        return preferences.getBoolean(PreferenceKeys.PREF_PLAYER_AUTO_CONTINUE_PLAY, false);
+    }
+
     public void applyThemeMode(String mode) {
         switch (mode) {
             case "dark":

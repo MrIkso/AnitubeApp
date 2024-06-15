@@ -9,4 +9,53 @@
     
 	<!--player colors-->
 	<color name="grey900">#212121</color>
+
+	<color name="md_theme_primary">#FFB3B4</color>
+	<color name="md_theme_onPrimary">#561D22</color>
+	<color name="md_theme_primaryContainer">#733337</color>
+	<color name="md_theme_onPrimaryContainer">#FFDADA</color>
+	<color name="md_theme_secondary">#E6BDBD</color>
+	<color name="md_theme_onSecondary">#44292A</color>
+	<color name="md_theme_secondaryContainer">#5D3F40</color>
+	<color name="md_theme_onSecondaryContainer">#FFDADA</color>
+	<color name="md_theme_tertiary">#E6C18D</color>
+	<color name="md_theme_onTertiary">#422C05</color>
+	<color name="md_theme_tertiaryContainer">#5B421A</color>
+	<color name="md_theme_onTertiaryContainer">#FFDDB0</color>
+	<color name="md_theme_error">#FFB4AB</color>
+	<color name="md_theme_onError">#690005</color>
+	<color name="md_theme_errorContainer">#93000A</color>
+	<color name="md_theme_onErrorContainer">#FFDAD6</color>
+	<color name="md_theme_background">#1A1111</color>
+	<color name="md_theme_onBackground">#F0DEDE</color>
+	<color name="md_theme_surface">#1A1111</color>
+	<color name="md_theme_onSurface">#F0DEDE</color>
+	<color name="md_theme_surfaceVariant">#524343</color>
+	<color name="md_theme_onSurfaceVariant">#D7C1C1</color>
+	<color name="md_theme_outline">#9F8C8C</color>
+	<color name="md_theme_outlineVariant">#524343</color>
+	<color name="md_theme_scrim">#000000</color>
+	<color name="md_theme_inverseSurface">#F0DEDE</color>
+	<color name="md_theme_inverseOnSurface">#382E2E</color>
+	<color name="md_theme_inversePrimary">#8F4A4D</color>
+	<color name="md_theme_primaryFixed">#FFDADA</color>
+	<color name="md_theme_onPrimaryFixed">#3B080E</color>
+	<color name="md_theme_primaryFixedDim">#FFB3B4</color>
+	<color name="md_theme_onPrimaryFixedVariant">#733337</color>
+	<color name="md_theme_secondaryFixed">#FFDADA</color>
+	<color name="md_theme_onSecondaryFixed">#2C1516</color>
+	<color name="md_theme_secondaryFixedDim">#E6BDBD</color>
+	<color name="md_theme_onSecondaryFixedVariant">#5D3F40</color>
+	<color name="md_theme_tertiaryFixed">#FFDDB0</color>
+	<color name="md_theme_onTertiaryFixed">#281800</color>
+	<color name="md_theme_tertiaryFixedDim">#E6C18D</color>
+	<color name="md_theme_onTertiaryFixedVariant">#5B421A</color>
+	<color name="md_theme_surfaceDim">#1A1111</color>
+	<color name="md_theme_surfaceBright">#413737</color>
+	<color name="md_theme_surfaceContainerLowest">#140C0C</color>
+	<color name="md_theme_surfaceContainerLow">#221919</color>
+	<color name="md_theme_surfaceContainer">#271D1D</color>
+	<color name="md_theme_surfaceContainerHigh">#322828</color>
+	<color name="md_theme_surfaceContainerHighest">#3D3232</color>
+
 </resources>

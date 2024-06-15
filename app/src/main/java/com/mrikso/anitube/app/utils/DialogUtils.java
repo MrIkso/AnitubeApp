@@ -59,7 +59,10 @@ public class DialogUtils {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> onYes.run())
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    onYes.run();
+                    //dialog.dismiss();
+                })
                 .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
                     if (onNo != null) {
                         onNo.run();

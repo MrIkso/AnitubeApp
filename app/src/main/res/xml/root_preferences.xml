@@ -1,68 +1,100 @@
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<PreferenceCategory
-		app:title="@string/theme_cat_title">
+    <PreferenceCategory app:title="@string/theme_cat_title">
 
-		<SwitchPreferenceCompat
-			app:defaultValue="false"
-			app:key="dynamic_colors"
-			app:icon="@drawable/baseline_color_lens_24"
-			app:summaryOff="@string/dynamic_colors_disabled_summary"
-			app:summaryOn="@string/dynamic_colors_enabled_summary"
-			app:title="@string/dynamic_colors_title" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/baseline_color_lens_24"
+            app:key="dynamic_colors"
+            app:summaryOff="@string/dynamic_colors_disabled_summary"
+            app:summaryOn="@string/dynamic_colors_enabled_summary"
+            app:title="@string/dynamic_colors_title" />
 
-		<ListPreference
-			app:defaultValue="follow_system"
-			app:entries="@array/theme_mode_entries"
-			app:entryValues="@array/theme_mode_values"
-			app:key="theme_mode"
-			app:icon="@drawable/baseline_format_paint_24"
-			app:title="@string/theme_mode_pref_title"
-			app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="follow_system"
+            app:entries="@array/theme_mode_entries"
+            app:entryValues="@array/theme_mode_values"
+            app:icon="@drawable/baseline_format_paint_24"
+            app:key="theme_mode"
+            app:title="@string/theme_mode_pref_title"
+            app:useSimpleSummaryProvider="true" />
 
-	</PreferenceCategory>
+    </PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/about">
+    <PreferenceCategory app:title="@string/player_setting_title">
 
-		<Preference
-			app:icon="@drawable/baseline_save_alt_24"
-			app:key="pref_key_export_preferences"
-			app:title="@string/backup" />
+        <ListPreference
+            app:defaultValue="10"
+            app:entries="@array/double_tap_seek_entries"
+            app:entryValues="@array/double_tap_seek_values"
+            app:icon="@drawable/ic_round_touch"
+            app:key="player_double_tap_seek"
+            app:title="@string/double_tap_seek"
+            app:useSimpleSummaryProvider="true" />
 
-		<Preference
-			app:icon="@drawable/baseline_restore_page_24"
-			app:key="pref_key_import_preferences"
-			app:title="@string/restore" />
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:icon="@drawable/ic_swipe_gesture"
+            app:key="player_swipe_controls"
+            app:summary="@string/swipe_controls_summary"
+            app:title="@string/swipe_controls" />
 
-		<Preference
-			app:icon="@drawable/ic_telegram"
-			app:key="pref_key_telegram"
-			app:summary="@string/telegram_link"
-			app:title="Telegram">
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:data="@string/telegram_link" />
-		</Preference>
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_next"
+            app:key="player_autoplay_next_episode"
+            app:summaryOff="@string/autoplay_next_episode_disabled_summary"
+            app:summaryOn="@string/autoplay_next_episode_enabled_summary"
+            app:title="@string/autoplay_next_episode_title" />
 
-		<Preference
-			app:icon="@drawable/ic_code"
-			app:key="pref_key_code"
-			app:summary="@string/github_link"
-			app:allowDividerBelow="true"
-			app:title="@string/source_code">
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:data="@string/github_link" />
-		</Preference>
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_play_circle"
+            app:key="player_auto_continue_play"
+            app:summary="@string/player_auto_continue_play_summary"
+            app:title="@string/player_auto_continue_play" />
 
-		<Preference
-			app:icon="@drawable/ic_info"
-			app:key="pref_key_version"
-			app:title="@string/version" />
+    </PreferenceCategory>
 
-	</PreferenceCategory>
+    <PreferenceCategory android:title="@string/about">
 
+        <!--<Preference
+            app:icon="@drawable/baseline_save_alt_24"
+            app:key="pref_key_export_preferences"
+            app:title="@string/backup" />
+
+        <Preference
+            app:icon="@drawable/baseline_restore_page_24"
+            app:key="pref_key_import_preferences"
+            app:title="@string/restore" />-->
+
+        <Preference
+            app:icon="@drawable/ic_telegram"
+            app:key="pref_key_telegram"
+            app:summary="@string/telegram_link"
+            app:title="Telegram">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/telegram_link" />
+        </Preference>
+
+        <Preference
+            app:allowDividerBelow="true"
+            app:icon="@drawable/ic_code"
+            app:key="pref_key_code"
+            app:summary="@string/github_link"
+            app:title="@string/source_code">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/github_link" />
+        </Preference>
+
+        <Preference
+            app:icon="@drawable/ic_info"
+            app:key="pref_key_version"
+            app:title="@string/version" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

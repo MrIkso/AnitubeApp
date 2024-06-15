@@ -34,7 +34,7 @@
     <string name="search_for_anime">Пошук аніме</string>
     <string name="search_history">Історія пошуку</string>
     <string name="clear_history">Осчитити історію</string>
-    <string name="player_setting_title">Налаштування плеєра</string>
+    <string name="player_setting_title">Плеєр</string>
     <string name="open_external_browser">Відкрити в браузері</string>
     <string name="play_with_external_player">Відкрити в іншому плеєрі</string>
     <string name="player_other_title">Інші налаштування</string>
@@ -150,4 +150,15 @@
     <string name="message_error_video_has_empty_stream_lisnks">Виникла помилка, посилання на файли пусті</string>
     <string name="pref_restart_dialog_title">Потрібний перезапуск</string>
     <string name="pref_restart_dialog_description">Щоб отримати ефект від цих змін, потрібен перезапуск застосунку. Перезапусти застосунок зараз?</string>
+    <string name="autoplay_next_episode_disabled_summary">Автоматичне відтворення наступного відео вимкнено</string>
+    <string name="autoplay_next_episode_enabled_summary">Автоматичне відтворення наступного відео увімкнено</string>
+    <string name="autoplay_next_episode_title">Відтворення наступного відео</string>
+    <string name="double_tap_seek">Подвійний тап для перемотки</string>
+    <string name="swipe_controls">Керування свайпами</string>
+    <string name="swipe_controls_summary">Проведіть по екрану, щоб відрегулювати яскравість і гучість</string>
+    <string name="disabled">Вимкнено</string>
+    <string name="player_auto_continue_play">Автостарт з попередньої позиції</string>
+    <string name="player_auto_continue_play_summary">Відтворення буде розпочинатися з останньої збереженої позиції</string>
+    <string name="dialog_continue_title">Продовжити?</string>
+    <string name="dialog_continue_playning_summary">Продовжити відтворення з %s?</string>
 </resources>

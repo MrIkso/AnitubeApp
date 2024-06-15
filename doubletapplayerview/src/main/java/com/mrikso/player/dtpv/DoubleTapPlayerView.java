@@ -10,11 +10,14 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.core.view.GestureDetectorCompat;
+import androidx.media3.common.util.UnstableApi;
 
+import com.mrikso.player.BuildConfig;
 import com.mrikso.player.CustomPlayerView;
 import com.mrikso.player.R;
 
 /** Custom player class for Double-Tapping listening */
+@UnstableApi
 public class DoubleTapPlayerView extends CustomPlayerView {
 
     private final GestureDetectorCompat gestureDetector;
@@ -199,7 +202,7 @@ public class DoubleTapPlayerView extends CustomPlayerView {
         }
 
         private static final String TAG = ".DTGListener";
-        private static boolean DEBUG = false;
+        private static boolean DEBUG = BuildConfig.DEBUG;
 
         /**
          * Resets the timeout to keep in double tap mode.

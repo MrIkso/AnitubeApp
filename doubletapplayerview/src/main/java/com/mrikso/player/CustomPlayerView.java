@@ -85,6 +85,7 @@ public class CustomPlayerView extends PlayerView
 
     private final TextView exoErrorMessage;
     private final View exoProgress;
+    private boolean gesturesEnabled = true;
 
     public CustomPlayerView(Context context) {
         this(context, null);
@@ -210,6 +211,9 @@ public class CustomPlayerView extends PlayerView
     public boolean onScroll(MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float distanceX, float distanceY) {
         if (mScaleDetector.isInProgress() || getPlayer() == null || locked) return false;
 
+        if(!gesturesEnabled){
+            return false;
+        }
         // Exclude edge areas
         if (motionEvent.getY() < IGNORE_BORDER
                 || motionEvent.getX() < IGNORE_BORDER
@@ -478,6 +482,10 @@ public class CustomPlayerView extends PlayerView
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public void setGesturesEnabled(boolean gesturesEnabled) {
+        this.gesturesEnabled = gesturesEnabled;
     }
 
     public void setChapterStarts(long[] chapterStarts) {

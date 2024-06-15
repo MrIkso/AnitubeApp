@@ -28,7 +28,6 @@ import androidx.annotation.OptIn;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.WindowCompat;
@@ -60,6 +59,8 @@ import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.ui.dialogs.UnsupportedVideoSourceDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ReadableTime;
 import com.mrikso.anitube.app.view.CustomAutoCompleteTextView;
 import com.mrikso.anitube.app.viewmodel.ListRepository;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
@@ -106,7 +107,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     // Middle buttons
     private ImageView exoPrevEp;
-  //  private CardView cvPlay;
+    //  private CardView cvPlay;
     private ImageView exoPlay;
     private ProgressBar exoProgressBar;
     private ImageView exoNextEp;
@@ -151,6 +152,10 @@ public class PlayerActivity extends AppCompatActivity {
     private PlayerViewModel playerViewModel;
     private BaseAnimeModel animeModel;
     private String episodePath;
+    private int doubleTapSeek;
+    private boolean autoPlayNextEpisode;
+    private boolean gesturesEnabled;
+    private boolean autoContinue;
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
@@ -158,16 +163,20 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setView();
         initViewModel();
-        observeEvents();
+
         setupViews();
-        if (savedInstanceState == null) {
-            hideNavBar();
-            parseExtra();
-            preparePlayer(false);
-            setClickListeners();
-            setupTextViewValues();
-            setupQuality();
-            setupMiddleControllers();
+        loadSettings();
+        // if (savedInstanceState == null) {
+        hideNavBar();
+        parseExtra();
+        preparePlayer(false);
+        setClickListeners();
+        setupTextViewValues();
+        setupQuality();
+        setupMiddleControllers();
+        //  }
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getLong(KEY_POSITION, 0);
         }
     }
 
@@ -257,7 +266,15 @@ public class PlayerActivity extends AppCompatActivity {
         playerView.setUseController(true);
         /// playerView.setControllerShowTimeoutMs(-1);
 
-        ((DoubleTapPlayerView) playerView).setDoubleTapEnabled(true);
+        var doubleTapView = ((DoubleTapPlayerView) playerView);
+        if (doubleTapSeek == -1) {
+            doubleTapView.setDoubleTapEnabled(false);
+        } else {
+            doubleTapView.setDoubleTapEnabled(true);
+            youTubeOverlay.seekSeconds(doubleTapSeek);
+        }
+
+        playerView.setGesturesEnabled(gesturesEnabled);
 
         playerView.setLocked(isLock);
         var renderersFactory = new NextRenderersFactory(this)
@@ -265,10 +282,11 @@ public class PlayerActivity extends AppCompatActivity {
                 .setExtensionRendererMode(NextRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
         // new DefaultRenderersFactory(this).setEnableDecoderFallback(true);
 
-        long INCREMENT_MILLIS = 5000L;
+        //long INCREMENT_MILLIS = doubleTapSeek * 1000L + 1;
+
         exoPlayer = new ExoPlayer.Builder(this, renderersFactory)
-                .setSeekBackIncrementMs(INCREMENT_MILLIS)
-                .setSeekForwardIncrementMs(INCREMENT_MILLIS)
+                //.setSeekBackIncrementMs(INCREMENT_MILLIS)
+                // .setSeekForwardIncrementMs(INCREMENT_MILLIS)
                 .build();
         //  exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
         exoPlayer.addListener(new PlayerEventListener());
@@ -293,12 +311,16 @@ public class PlayerActivity extends AppCompatActivity {
         });
         youTubeOverlay.player(exoPlayer);
         playerView.setPlayer(exoPlayer);
-        if (!restorePlayer) {
-            currentPosition = listRepo.getList().get(episodeNumber - 1).getTotalWatchTime();
+        if(!restorePlayer) {
+            //currentPosition =  listRepo.getList().get(episodeNumber - 1).getTotalWatchTime();
+            if (autoContinue) {
+                exoPlayer.setPlayWhenReady(false);
+                showContinuePlayDialog(listRepo.getList().get(episodeNumber - 1));
+            }
         }
         setMediaSourceByModel(episodeLinks);
 
-         exoPlayer.seekTo(currentPosition);
+        //exoPlayer.seekTo(currentPosition);
         // exoPlayer.setPlayWhenReady(playWhenReady);
         exoPlayer.prepare();
 
@@ -314,17 +336,17 @@ public class PlayerActivity extends AppCompatActivity {
         Log.i("TAG", "epnum:" + episodeNumber + "size:" + listRepo.getList().size());
 
         if (episodeNumber == 1) {
-            exoPrevEp.setAlpha(0.7f);
+            exoPrevEp.setAlpha(0.4f);
             exoPrevEp.setEnabled(false);
             if (listRepo.getList().size() == 1) {
-                exoNextEp.setAlpha(0.7f);
+                exoNextEp.setAlpha(0.4f);
                 exoNextEp.setEnabled(false);
             } else {
                 exoNextEp.setAlpha(1f);
                 exoNextEp.setEnabled(true);
             }
         } else if (episodeNumber == listRepo.getList().size()) {
-            exoNextEp.setAlpha(0.7f);
+            exoNextEp.setAlpha(0.4f);
             exoPrevEp.setEnabled(true);
             exoNextEp.setEnabled(false);
         } else {
@@ -397,7 +419,7 @@ public class PlayerActivity extends AppCompatActivity {
             exoQuality.setOnItemClickListener((parent, view, position, id) -> {
                 currentQuality = (String) parent.getAdapter().getItem(position);
                 String qualityItem = episodeLinks.getLinksQuality().get(currentQuality);
-                playerViewModel.setPlayPosition(exoPlayer.getCurrentPosition());
+                currentPosition = Math.max(0, exoPlayer.getContentPosition());
 
                 MediaSource mediaSource = mediaSourceHelper.getMediaSource(qualityItem, true);
                 exoPlayer.setMediaSource(mediaSource);
@@ -409,7 +431,7 @@ public class PlayerActivity extends AppCompatActivity {
                 // Set the new parameters.
                 exoPlayer.setTrackSelectionParameters(newParameters);
 
-                  exoPlayer.seekTo(currentPosition);
+                exoPlayer.seekTo(currentPosition);
             });
         } else {
             exoQualityTil.setVisibility(View.GONE);
@@ -426,26 +448,18 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void observeEvents() {
-        playerViewModel.getPlayPosition().observe(this, result -> {
-            currentPosition = result;
-            //Log.i("player", "currentPosition: " + currentPosition);
-        });
-    }
-
     private void updateQualityArray() {
         List<String> qualityList =
                 new ArrayList<>(episodeLinks.getLinksQuality().keySet());
         ArrayAdapter<String> adapterQuality = new ArrayAdapter<>(this, R.layout.item_quality_speed, qualityList);
         exoQuality.setText(currentQuality);
-       // Log.i("tag", "updateQualityArray");
+        // Log.i("tag", "updateQualityArray");
         exoQuality.setAdapter(adapterQuality);
     }
 
     private void savePlayer() {
         if (exoPlayer != null) {
             currentPosition = Math.max(0, exoPlayer.getContentPosition());
-            playerViewModel.setPlayPosition(currentPosition);
             sharedViewModel.addOrUpdateWatchedAnime(
                     animeModel, episodePath, episodeNumber, exoPlayer.getContentDuration(), currentPosition);
             sharedViewModel.addOrUpdateWatchedEpisode(
@@ -496,39 +510,9 @@ public class PlayerActivity extends AppCompatActivity {
             isLock = !isLock;
             lockScreen(isLock);
         });
-        exoPrevEp.setOnClickListener(v -> {
-            if (episodeNumber != 1) {
-                episodeNumber -= 1;
-                if (episodeNumber != 1) {
-                    exoPrevEp.setAlpha(1f);
-                } else {
-                    exoPrevEp.setAlpha(0.4f);
-                }
-                exoNextEp.setAlpha(1f);
-                exoNextEp.setEnabled(true);
-                savePlayer();
-                loadEpisode(listRepo.getList().get(episodeNumber - 1));
-            } else {
-                exoPrevEp.setAlpha(0.4f);
-            }
-        });
+        exoPrevEp.setOnClickListener(v -> playPrevEpisode());
 
-        exoNextEp.setOnClickListener(v -> {
-            if (episodeNumber != listRepo.getList().size()) {
-                episodeNumber += 1;
-                if (episodeNumber != listRepo.getList().size()) {
-                    exoNextEp.setAlpha(1f);
-                } else {
-                    exoNextEp.setAlpha(0.4f);
-                }
-                exoPrevEp.setAlpha(1f);
-                exoPrevEp.setEnabled(true);
-                savePlayer();
-                loadEpisode(listRepo.getList().get(episodeNumber - 1));
-            } else {
-                exoNextEp.setAlpha(0.4f);
-            }
-        });
+        exoNextEp.setOnClickListener(v -> playNextEpisode());
 
         exoPlay.setOnClickListener(v -> {
             if (exoPlayer.isPlaying()) {
@@ -548,6 +532,44 @@ public class PlayerActivity extends AppCompatActivity {
         exoPip.setOnClickListener(v -> {
             enterPiP();
         });
+    }
+
+    private void playPrevEpisode() {
+        if (episodeNumber != 1) {
+            savePlayer();
+            episodeNumber -= 1;
+            if (episodeNumber != 1) {
+                exoPrevEp.setAlpha(1f);
+            } else {
+                exoPrevEp.setAlpha(0.4f);
+            }
+            exoNextEp.setAlpha(1f);
+            exoNextEp.setEnabled(true);
+            loadEpisode(listRepo.getList().get(episodeNumber - 1));
+        } else {
+            exoPrevEp.setAlpha(0.4f);
+        }
+    }
+
+    private void playNextEpisode() {
+        if (episodeNumber == listRepo.getList().size()) {
+            return;
+        }
+        if (episodeNumber < listRepo.getList().size()) {
+            savePlayer();
+            episodeNumber += 1;
+            if (episodeNumber != listRepo.getList().size()) {
+                exoNextEp.setAlpha(1f);
+            } else {
+                exoNextEp.setAlpha(0.4f);
+            }
+            exoPrevEp.setAlpha(1f);
+            exoPrevEp.setEnabled(true);
+
+            loadEpisode(listRepo.getList().get(episodeNumber - 1));
+        } else {
+            exoNextEp.setAlpha(0.4f);
+        }
     }
 
     private void enterPiP() {
@@ -604,8 +626,6 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void loadEpisode(final EpisodeModel episode) {
-        currentPosition = episode.getTotalWatchTime();
-
         Disposable disposable = sharedViewModel
                 .loadData(episode.getEpisodeUrl())
                 .subscribeOn(Schedulers.io())
@@ -620,7 +640,12 @@ public class PlayerActivity extends AppCompatActivity {
                         if (result.first == LoadState.DONE) {
                             episodeLinks = result.second;
                             exoEpisodeNumber.setText(episode.getName());
-                            setMediaSourceByModel(result.second);
+                            if (autoContinue) {
+                                showContinuePlayDialog(episode);
+                            } else {
+                                currentPosition = 0;
+                                setMediaSourceByModel(result.second);
+                            }
                         } else {
                             UnsupportedVideoSourceDialog.show(PlayerActivity.this, result.second.getIfRameUrl());
                         }
@@ -652,10 +677,10 @@ public class PlayerActivity extends AppCompatActivity {
                 currentQuality = qualitiesMap.keySet().stream().findFirst().get();
             }
 
-           // qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
+            // qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
             String playUrl = qualitiesMap.get(currentQuality);
 
-          //  Log.i("PlayerActivity", "playUrl: " + playUrl);
+            //  Log.i("PlayerActivity", "playUrl: " + playUrl);
             updateQualityArray();
             mediaSource = mediaSourceHelper.getMediaSource(playUrl, model.getHeaders(), true);
 
@@ -667,7 +692,7 @@ public class PlayerActivity extends AppCompatActivity {
             playerView.setHaveMedia(true);
             exoPlayer.seekTo(currentPosition);
         } else {
-            Toast.makeText(this, "Виникла помилка, посилання на файли пусті", Toast.LENGTH_LONG)
+            Toast.makeText(this, R.string.message_error_video_has_empty_stream_lisnks, Toast.LENGTH_LONG)
                     .show();
             finish();
         }
@@ -679,6 +704,26 @@ public class PlayerActivity extends AppCompatActivity {
             WindowInsetsControllerCompat controller = new WindowInsetsControllerCompat(getWindow(), binding.getRoot());
             controller.hide(WindowInsetsCompat.Type.systemBars());
             controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        }
+    }
+
+    private void showContinuePlayDialog(EpisodeModel episode) {
+        var pos = episode.getTotalWatchTime();
+        if (pos == 0) {
+            this.currentPosition = 0;
+            setMediaSourceByModel(episodeLinks);
+        }else {
+            DialogUtils.showConfirmation(this, getString(R.string.dialog_continue_title),
+                    getString(R.string.dialog_continue_playning_summary, ReadableTime.generateTime(pos)),
+                    () -> {
+                        this.currentPosition = pos;
+                        setMediaSourceByModel(episodeLinks);
+                    },
+                    () -> {
+                        this.currentPosition = 0;
+                        setMediaSourceByModel(episodeLinks);
+                    });
+
         }
     }
 
@@ -695,6 +740,15 @@ public class PlayerActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+    private void loadSettings() {
+        var prefs = PreferencesHelper.getInstance();
+
+        doubleTapSeek = prefs.getPlayerDoubleTapSeek();
+        autoPlayNextEpisode = prefs.isPlayerEnabledPlayNextEpisode();
+        gesturesEnabled = prefs.isPlayerEnabledSwipeControls();
+        autoContinue = prefs.isPlayerAutoContinuePlay();
     }
 
     @Override
@@ -715,7 +769,7 @@ public class PlayerActivity extends AppCompatActivity {
         savePlayer();
         //  outState.putBoolean(KEY_AUTO_PLAY, startAutoPlay);
         // outState.putInt(KEY_ITEM_INDEX, startItemIndex);
-        // outState.putLong(KEY_POSITION, currentPosition);
+        outState.putLong(KEY_POSITION, currentPosition);
     }
 
     // Activity input
@@ -809,7 +863,11 @@ public class PlayerActivity extends AppCompatActivity {
                     exoPlay.setVisibility(View.GONE);
                     break;
                 case Player.STATE_ENDED:
-                    finish();
+                    if (autoPlayNextEpisode) {
+                        playNextEpisode();
+                    } else {
+                        finish();
+                    }
                     break;
                 default:
                     break;

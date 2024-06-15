@@ -25,14 +25,17 @@ import com.google.android.material.color.HarmonizedColorsOptions;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.ui.base.BasePreferenceFragment;
 import com.mrikso.anitube.app.ui.main.MainActivity;
 import com.mrikso.anitube.app.utils.DialogUtils;
+import com.mrikso.anitube.app.utils.PreferenceKeys;
+import com.mrikso.anitube.app.utils.PreferenceUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
+public class SettingsFragment extends BasePreferenceFragment implements Preference.OnPreferenceChangeListener {
     private PreferencesHelper prefHelper;
 
     @Override
@@ -48,6 +51,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     }
 
     private void initPreferences() {
+        // ui prefs
         SwitchPreferenceCompat dynamicColors = findPreference(PREF_KEY_DYNAMIC_COLORS);
         bindOnPreferenceChangeListener(dynamicColors);
         // Hide theme section in versions that don't support dynamic colors.
@@ -58,8 +62,29 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         ListPreference themeMode = findPreference(PREF_KEY_THEME);
         bindOnPreferenceChangeListener(themeMode);
 
+
+        //player prefs
+        ListPreference playerDoubleTapSeek = findPreference(PreferenceKeys.PREF_PLAYER_DOUBLE_TAP_SEEK);
+        /*int sec = prefHelper.getPlayerDoubleTapSeek();
+        if(sec == -1){
+            playerDoubleTapSeek.setSummary(R.string.disabled);
+        }
+        else {
+            playerDoubleTapSeek.setSummary(getResources().getQuantityString(com.mrikso.player.R.plurals.quick_seek_x_second, sec, sec));
+        }*/
+        bindOnPreferenceChangeListener(playerDoubleTapSeek);
+
+        bindOnPreferenceChangeListener(PreferenceKeys.PREF_PLAYER_SWIPE_CONTROLS);
+        bindOnPreferenceChangeListener(PreferenceKeys.PREF_PLAYER_AUTOPLAY_NEXT_EPISODE);
+
+        // about prefs
         Preference about = findPreference("pref_key_version");
         about.setSummary(getString(R.string.version_summary, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
+    }
+
+    private void bindOnPreferenceChangeListener(String key) {
+        Preference preference = findPreference(key);
+        preference.setOnPreferenceChangeListener(this);
     }
 
     private void bindOnPreferenceChangeListener(Preference preference) {
@@ -86,8 +111,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
                 break;
 
+            /*case PreferenceKeys.PREF_PLAYER_DOUBLE_TAP_SEEK:
+                String sec = (String) newValue;
+                if(sec.equals("off")){
+                    preference.setSummary(R.string.disabled);
+                }
+                else {
+                    preference.setSummary(getResources().getQuantityString(com.mrikso.player.R.plurals.quick_seek_x_second, Integer.parseInt(sec), sec));
+                }
+                PreferenceUtils.setPrefString(requireContext(), key, "10");
+                break;*/
             case PREF_KEY_THEME:
-                prefHelper.setThemeMode(newValue.toString());
+                PreferenceUtils.setPrefString(requireContext(), key, newValue.toString());
                 prefHelper.applyThemeMode(newValue.toString());
                 break;
         }
