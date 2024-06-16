@@ -32,10 +32,10 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
         errorMessage.append(stackTrace.toString());
 
-        softwareInfo.append("SDK: ");
+        softwareInfo.append("SDK Version: ");
         softwareInfo.append(Build.VERSION.SDK_INT);
         softwareInfo.append(newLine);
-        softwareInfo.append("Release: ");
+        softwareInfo.append("Android Version: ");
         softwareInfo.append(Build.VERSION.RELEASE);
         softwareInfo.append(newLine);
         softwareInfo.append("Incremental: ");
