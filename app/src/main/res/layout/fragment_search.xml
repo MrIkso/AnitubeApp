@@ -91,6 +91,7 @@
             android:id="@+id/content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            tools:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -98,7 +99,7 @@
                 android:layout_height="fill_parent" />
         </RelativeLayout>
         <include
-            tools:visibility="gone"
+            tools:visibility="visible"
             android:id="@+id/load_state_layout"
             layout="@layout/load_state_layout" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

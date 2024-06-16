@@ -4,25 +4,27 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mrikso.anitube.app.comparator.RecentSearchDiffCallback;
+import com.mrikso.anitube.app.data.history.enity.HistoryEnity;
 import com.mrikso.anitube.app.data.search.RecentSearch;
 import com.mrikso.anitube.app.databinding.ItemSearchBinding;
 import com.mrikso.anitube.app.databinding.ItemSearchHeaderBinding;
+import com.mrikso.anitube.app.utils.ListAdapterWithHeader;
+import com.mrikso.anitube.app.utils.RecyclerAdapterHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecentSearchesAdapter extends ListAdapterWithHeader<RecentSearch,RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-
-    private List<RecentSearch> searchesList = new ArrayList<>();
     private OnItemClickListener listener;
 
-    public void setData(List<RecentSearch> searchesList) {
-        this.searchesList = searchesList;
-        notifyDataSetChanged();
+    public RecentSearchesAdapter(){
+        super(new RecentSearchDiffCallback(), 1);
     }
 
     @NonNull
@@ -45,14 +47,9 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             itemHolder.bind();
         } else if (holder instanceof ItemViewHolder) {
             ItemViewHolder itemHolder = (ItemViewHolder) holder;
-            RecentSearch recentSearch = searchesList.get(position);
+            RecentSearch recentSearch = getItem(position);
             itemHolder.bind(recentSearch);
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return searchesList.size();
     }
 
     @Override
@@ -64,7 +61,7 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     protected class ItemViewHolder extends RecyclerView.ViewHolder {
-        private ItemSearchBinding binding;
+        private final ItemSearchBinding binding;
 
         public ItemViewHolder(@NonNull ItemSearchBinding binding) {
             super(binding.getRoot());
@@ -80,7 +77,7 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     protected class HeaderViewHolder extends RecyclerView.ViewHolder {
-        private ItemSearchHeaderBinding binding;
+        private final ItemSearchHeaderBinding binding;
 
         public HeaderViewHolder(@NonNull ItemSearchHeaderBinding binding) {
             super(binding.getRoot());
@@ -91,8 +88,7 @@ public class RecentSearchesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (listener != null) {
                 binding.clearHistory.setOnClickListener(v -> {
                     listener.onDeleteAllSearchHistory();
-                    searchesList.clear();
-                    notifyDataSetChanged();
+                    submitList(null);
                 });
             }
         }

@@ -113,27 +113,42 @@ public class SearchFragment extends Fragment
         super.onDestroyView();
         recentSearchAdapter = null;
         suggestionAdapter = null;
-        // binding = null;
+        binding = null;
     }
 
     protected void observeEvents() {
         viewModel.getSearchHistoryData().observe(getViewLifecycleOwner(), results -> {
-            if (results != null && !results.isEmpty()) recentSearchAdapter.setData(results);
+            if (results != null && !results.isEmpty()) {
+                recentSearchAdapter.submitList(results);
+                showContentSate();
+            } else {
+                showNoDataState(true);
+            }
         });
 
         viewModel.getQuickSearchResult().observe(getViewLifecycleOwner(), results -> {
-            if (results != null && !results.isEmpty()) suggestionAdapter.setData(results);
+            if (results != null && !results.isEmpty()) {
+                suggestionAdapter.setData(results);
+            }
         });
 
         viewModel.isShowSearchResultAdapter().observe(getViewLifecycleOwner(), result -> {
             // Log.i("tag", "isShowSearchResultAdapter observe called");
-            binding.recyclerView.setAdapter(result ? pagingAdapter : recentSearchAdapter);
+            if (binding != null) {
+                binding.recyclerView.setAdapter(result ? pagingAdapter : recentSearchAdapter);
+            }
         });
 
         viewModel.getAnimePagingData().observe(getViewLifecycleOwner(), results -> {
             // Log.i("tag", "getSearchResult subscribe called");
             if (results != null) {
                 showResults(results);
+            }
+        });
+
+        viewModel.isShowRecentSearchResultScreen().observe(getViewLifecycleOwner(), show -> {
+            if (show) {
+                showNoDataState(true);
             }
         });
     }
@@ -143,8 +158,6 @@ public class SearchFragment extends Fragment
         recentSearchAdapter.setOnItemClickListener(this);
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
-
-        binding.loadStateLayout.stateFrame.setVisibility(View.GONE);
 
         pagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
         pagingAdapter.setOnItemClickListener(this::openDetailsFragment);
@@ -167,6 +180,7 @@ public class SearchFragment extends Fragment
     @Override
     public void onDeleteAllSearchHistory() {
         viewModel.clearAllRecentSearch();
+        viewModel.showRecentSearchResultEmptyScreen();
     }
 
     private void performSearch(String query, boolean addToHistory) {
@@ -174,7 +188,7 @@ public class SearchFragment extends Fragment
             if (addToHistory) {
                 viewModel.addRecentSearch(query);
             }
-            preSearch();
+            //preSearch();
             viewModel.getSearchResult(query);
         }
     }
@@ -192,8 +206,10 @@ public class SearchFragment extends Fragment
     }
 
     private void preSearch() {
-        binding.content.setVisibility(View.GONE);
-        binding.loadStateLayout.stateFrame.setVisibility(View.VISIBLE);
+        if (binding != null) {
+            binding.content.setVisibility(View.GONE);
+            binding.loadStateLayout.stateFrame.setVisibility(View.VISIBLE);
+        }
     }
 
     private void handlePagingState() {
@@ -201,46 +217,63 @@ public class SearchFragment extends Fragment
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
             if (refreshLoadState instanceof LoadState.Loading) {
-                binding.content.setVisibility(View.GONE);
-                binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                showLoadingState();
             }
             if (refreshLoadState instanceof LoadState.NotLoading) {
                 if (refreshLoadState.getEndOfPaginationReached() && pagingAdapter.getItemCount() < 1) {
-                    showNoDataState();
+                    showNoDataState(false);
                 } else {
-                    binding.content.setVisibility(View.VISIBLE);
+                    showContentSate();
                 }
-                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
 
             } else if (refreshLoadState instanceof LoadState.Error) {
-                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                binding.content.setVisibility(View.GONE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.repeat.setOnClickListener(v -> pagingAdapter.retry());
-                LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
-                binding.loadStateLayout.errorMessage.setText(
-                        loadStateError.getError().getLocalizedMessage());
+                showErrorSate((LoadState.Error) refreshLoadState);
             }
             if (!(refreshLoadState instanceof LoadState.Loading) && appendLoadState instanceof LoadState.NotLoading) {
                 if (appendLoadState.getEndOfPaginationReached() && pagingAdapter.getItemCount() < 1) {
-                    showNoDataState();
+                    showNoDataState(false);
                 }
             }
             return null;
         });
     }
 
-    private void showNoDataState() {
-        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
-        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
-        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_search_desc);
+    private void showContentSate() {
+        if (binding != null) {
+            binding.content.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+        }
+    }
 
+    private void showLoadingState() {
         binding.content.setVisibility(View.GONE);
-        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
-        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+        binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
+        binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+    }
+
+    private void showErrorSate(LoadState.Error refreshLoadState) {
+        if (binding != null) {
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.content.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.repeat.setOnClickListener(v -> pagingAdapter.retry());
+            binding.loadStateLayout.errorMessage.setText(
+                    refreshLoadState.getError().getLocalizedMessage());
+        }
+    }
+
+    private void showNoDataState(boolean isNoRecentResult) {
+        if (binding != null) {
+            binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+            binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+            binding.loadStateLayout.errorMessage.setText(isNoRecentResult ? R.string.state_no_recent_search_desc : R.string.state_no_data_search_desc);
+
+            binding.content.setVisibility(View.GONE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void openDetailsFragment(String link) {
@@ -250,7 +283,6 @@ public class SearchFragment extends Fragment
     }
 
     private void showResults(final PagingData<AnimeReleaseModel> results) {
-        // binding.loadStateLayout.stateFrame.setVisibility(View.GONE);
         pagingAdapter.submitData(getLifecycle(), results);
         viewModel.showSearchResultAdapter();
     }

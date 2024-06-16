@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuickSearchResultParser {
-    public void QuickSearchResultParser() {}
+
+    public  QuickSearchResultParser() {}
 
     public List<SimpleModel> getQuickSearchResults(String json) {
         List<SimpleModel> quickSearchResultList = new ArrayList<>();

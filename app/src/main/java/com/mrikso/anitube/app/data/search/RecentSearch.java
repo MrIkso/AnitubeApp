@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.common.base.Objects;
+
 @Entity(tableName = "recent_searches")
 public class RecentSearch {
     @PrimaryKey(autoGenerate = true)
@@ -37,5 +39,18 @@ public class RecentSearch {
 
     public void setSearch_name(String search_name) {
         this.search_name = search_name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecentSearch that = (RecentSearch) o;
+        return search_id == that.search_id && Objects.equal(search_name, that.search_name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(search_id, search_name);
     }
 }

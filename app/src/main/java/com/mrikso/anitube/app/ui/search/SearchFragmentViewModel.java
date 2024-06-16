@@ -32,11 +32,11 @@ public class SearchFragmentViewModel extends ViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private LiveData<List<RecentSearch>> searchData = new MutableLiveData<>();
-    private MutableLiveData<List<SimpleModel>> quickSearchResult = new MutableLiveData<>();
-    private MutableLiveData<Boolean> _showSearchResultAdapter = new MutableLiveData<>(false);
-    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
-    private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
-    private SearchRepository searchRepository;
+    private final MutableLiveData<List<SimpleModel>> quickSearchResult = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> _showSearchResultAdapter = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> _showRecentSearchResultScreen = new MutableLiveData<>(false);
+    private final MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
+    private final SearchRepository searchRepository;
 
     @Inject
     public SearchFragmentViewModel(SearchRepository searchRepository) {
@@ -84,12 +84,12 @@ public class SearchFragmentViewModel extends ViewModel {
 
     public void getSearchResult(String query) {
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        animePagingDataFlowable = PagingRx.cachedIn(searchRepository.getSearchResult(query), viewModelScope);
+        Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable = PagingRx.cachedIn(searchRepository.getSearchResult(query), viewModelScope);
 
         compositeDisposable.add(animePagingDataFlowable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(animePagingData::setValue));
+                .subscribe(animePagingData::postValue));
     }
 
     public LiveData<List<RecentSearch>> getSearchHistoryData() {
@@ -104,11 +104,25 @@ public class SearchFragmentViewModel extends ViewModel {
         return _showSearchResultAdapter;
     }
 
+    public LiveData<Boolean> isShowRecentSearchResultScreen() {
+        return _showRecentSearchResultScreen;
+    }
+
     public LiveData<PagingData<AnimeReleaseModel>> getAnimePagingData() {
         return animePagingData;
     }
 
     public void showSearchResultAdapter() {
         _showSearchResultAdapter.setValue(true);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
+    }
+
+    public void showRecentSearchResultEmptyScreen() {
+        _showRecentSearchResultScreen.postValue(true);
     }
 }
