@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Anitube App</string>
+    <string name="app_name_title" translatable="false">Anitube App</string>
     <string name="nav_home">Головна</string>
     <string name="nav_anime_list">Список аніме</string>
     <string name="nav_library">Бібліотека</string>

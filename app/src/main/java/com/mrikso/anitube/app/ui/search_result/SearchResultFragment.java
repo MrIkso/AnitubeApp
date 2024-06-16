@@ -73,29 +73,37 @@ public class SearchResultFragment extends Fragment {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
             if (refreshLoadState instanceof LoadState.Loading) {
-                binding.content.setVisibility(View.GONE);
-                binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                if(binding!=null) {
+                    binding.content.setVisibility(View.GONE);
+                    binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                }
             }
             if (refreshLoadState instanceof LoadState.NotLoading) {
-                if (refreshLoadState.getEndOfPaginationReached() && animePagingAdapter.getItemCount() < 1) {
+                if (refreshLoadState.getEndOfPaginationReached() && animePagingAdapter!=null && animePagingAdapter.getItemCount() < 1) {
                     showNoDataState();
                 } else {
-                    binding.content.setVisibility(View.VISIBLE);
+                    if(binding!=null) {
+                        binding.content.setVisibility(View.VISIBLE);
+                    }
                 }
-                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                if(binding!=null) {
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                }
             } else if (refreshLoadState instanceof LoadState.Error) {
-                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                binding.content.setVisibility(View.GONE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.repeat.setOnClickListener(v -> animePagingAdapter.retry());
-                LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
-                binding.loadStateLayout.errorMessage.setText(
-                        loadStateError.getError().getLocalizedMessage());
+                if(binding!=null) {
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.content.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.repeat.setOnClickListener(v -> animePagingAdapter.retry());
+                    LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
+                    binding.loadStateLayout.errorMessage.setText(
+                            loadStateError.getError().getLocalizedMessage());
+                }
             }
             if (!(refreshLoadState instanceof LoadState.Loading) && appendLoadState instanceof LoadState.NotLoading) {
-                if (appendLoadState.getEndOfPaginationReached() && animePagingAdapter.getItemCount() < 1) {
+                if (appendLoadState.getEndOfPaginationReached() && animePagingAdapter!=null && animePagingAdapter.getItemCount() < 1) {
                     showNoDataState();
                 }
             }
@@ -114,14 +122,16 @@ public class SearchResultFragment extends Fragment {
     }
 
     private void showNoDataState() {
-        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
-        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
-        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_search_desc);
+        if(binding!=null) {
+            binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+            binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+            binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_search_desc);
 
-        binding.content.setVisibility(View.GONE);
-        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
-        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.content.setVisibility(View.GONE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+        }
     }
     private void initObservers() {
         viewModel.getAnimePagingData().observe(getViewLifecycleOwner(), results -> {

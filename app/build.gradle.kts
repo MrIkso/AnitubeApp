@@ -43,7 +43,6 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -86,9 +85,7 @@ android {
         buildConfig = true
         viewBinding = true
     }
-    lint {
-        abortOnError = false
-    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -101,6 +98,7 @@ android {
     }*/
     lint {
         disable += "ContentDescription"
+        abortOnError = false
     }
     packaging {
         resources {

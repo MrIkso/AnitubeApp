@@ -21,5 +21,11 @@
 #-renamesourcefileattribute SourceFile
 -dontobfuscate
 -keep class com.mrikso.** { *; }
+# For TagSoup
+-keep class org.ccil.cowan.tagsoup.** { *; }
+
+# For Jsoup
+-keep class org.jsoup.**  { *; }
 -dontwarn org.immutables.value.Value$Default
 -dontwarn org.immutables.value.Value$Immutable
+-dontwarn org.jspecify.annotations.NullMarked
