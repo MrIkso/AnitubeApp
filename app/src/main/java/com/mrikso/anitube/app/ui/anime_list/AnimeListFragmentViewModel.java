@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.anime_list;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,6 +9,7 @@ import androidx.paging.rxjava3.PagingRx;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.UserModel;
+import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -27,31 +27,31 @@ public class AnimeListFragmentViewModel extends ViewModel {
     private final String TAG = "AnimeListFragmentViewModel";
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private AnimeListRepository repository;
-    private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
-    private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
-    private MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
+    private final AnimeListRepository repository;
+    private final UserProfileRepository userProfileRepository;
+
+    private final MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
+    private final MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
 
     @Inject
-    public AnimeListFragmentViewModel(AnimeListRepository repository) {
+    public AnimeListFragmentViewModel(AnimeListRepository repository, UserProfileRepository  userProfileRepository) {
         this.repository = repository;
+        this.userProfileRepository = userProfileRepository;
         init();
     }
 
     private void init() {
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
+        Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
 
-        /*compositeDisposable.add(repository
-                .getUserData()
+        compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(results -> {
-                    if (results != null) {*/
-                        userData.postValue(repository
-                                .getUserData());
-                   // }
-               // }));
+                    if (results != null) {
+                        userData.postValue(results);
+                    }
+                }));
 
         compositeDisposable.add(animePagingDataFlowable
                 .subscribeOn(Schedulers.io())

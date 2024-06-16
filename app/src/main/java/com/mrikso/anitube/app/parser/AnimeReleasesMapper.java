@@ -8,24 +8,30 @@ import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
 
 import org.jsoup.nodes.Document;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class AnimeReleasesMapper {
 
     private HomePageParser homePage;
-
-    public AnimeReleasesMapper() {
-        homePage = HomePageParser.getInstance();
+    private UserProfileRepository userProfileRepository;
+    @Inject
+    public AnimeReleasesMapper(HomePageParser homePage,  UserProfileRepository userProfileRepository) {
+        this.homePage = homePage;
+        this.userProfileRepository = userProfileRepository;
     }
 
     public AnimeListReleases transform(Document document) {
         ParserUtils.parseDleHash(document.html());
         if (PreferencesHelper.getInstance().isLogin()) {
             homePage.parseUserData(document);
+            userProfileRepository.setUserModel(getUserData());
             //  Log.i("mapper", userData.toString());
         }
         ArticleStoryParser storyParser = new ArticleStoryParser();

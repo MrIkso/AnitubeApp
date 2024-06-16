@@ -93,6 +93,7 @@ public class LoginFragment extends Fragment {
         IndeterminateDrawable<CircularProgressIndicatorSpec> progressIndicatorDrawable =
                 IndeterminateDrawable.createCircularDrawable(getContext(), spec);
         binding.loginBtn.setIcon(progressIndicatorDrawable);
+        binding.loginBtn.setEnabled(false);
     }
 
     private void observeEvents() {

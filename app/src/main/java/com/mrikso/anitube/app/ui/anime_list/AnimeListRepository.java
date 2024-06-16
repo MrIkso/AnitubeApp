@@ -1,34 +1,27 @@
 package com.mrikso.anitube.app.ui.anime_list;
 
-import androidx.core.util.Pair;
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
-import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.paging.AnimeReleasePagingSource;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.subjects.Subject;
 
 import javax.inject.Inject;
 
 public class AnimeListRepository {
-    private AnitubeApiService apiService;
-    private AnimeReleasesMapper mapper;
+    private final AnitubeApiService apiService;
+    private final AnimeReleasesMapper mapper;
 
     @Inject
     public AnimeListRepository(AnitubeApiService apiService, AnimeReleasesMapper mapper) {
         this.apiService = apiService;
         this.mapper = mapper;
-    }
-
-    public UserModel getUserData() {
-        return mapper.getUserData();
     }
 
     public Flowable<PagingData<AnimeReleaseModel>> getAnimeListByPage() {

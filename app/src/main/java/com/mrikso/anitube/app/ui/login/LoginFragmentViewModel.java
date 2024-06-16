@@ -14,6 +14,7 @@ import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.CookieParser;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -50,7 +51,7 @@ public class LoginFragmentViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(v -> {
                     loadSate.setValue(new Pair<>(LoadState.LOADING, null));
-                    Log.d(TAG, "start loading");
+                    //Log.d(TAG, "start loading");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -82,7 +83,7 @@ public class LoginFragmentViewModel extends ViewModel {
         }
 
         for (String header : cookielist) {
-            Log.i(TAG, header);
+            //Log.i(TAG, header);
             if (header.contains("dle_user_id")
                     || header.contains("dle_password")
                     || header.contains("dle_newpm")
@@ -95,6 +96,7 @@ public class LoginFragmentViewModel extends ViewModel {
             PreferencesHelper.getInstance().setLogin(true);
             UserModel userDataPair = homePageParser.getUserData(response.body());
             PreferencesHelper.getInstance().setUserLogin(userDataPair.getUserName());
+            UserProfileRepository.getInstance().setUserModel(userDataPair);
             loadSate.postValue(new Pair<>(LoadState.DONE, userDataPair));
         } else {
             loadSate.postValue(new Pair<>(LoadState.ERROR, null));

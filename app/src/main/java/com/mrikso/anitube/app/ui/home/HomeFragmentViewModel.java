@@ -20,13 +20,8 @@ import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.InternetConnection;
-
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
 
 import org.jsoup.nodes.Document;
 
@@ -36,11 +31,18 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 @HiltViewModel
 public class HomeFragmentViewModel extends ViewModel {
     private final String TAG = "HomeFragmentViewModel";
 
     private final AnitubeRepository repository;
+    private final UserProfileRepository userProfileRepository;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
@@ -52,14 +54,15 @@ public class HomeFragmentViewModel extends ViewModel {
     private final MutableLiveData<List<SimpleModel>> genresList = new MutableLiveData<>(null);
     private final MutableLiveData<List<ActionModel>> actionList = new MutableLiveData<>(null);
     private final MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
-    private final MutableLiveData<String> dleHash = new MutableLiveData<>();
-    HomePageParser homePageParser;
+
+    private final HomePageParser homePageParser;
     private boolean singleLoad = false;
 
     @Inject
-    public HomeFragmentViewModel(AnitubeRepository repository) {
+    public HomeFragmentViewModel(AnitubeRepository repository, UserProfileRepository userProfileRepository, HomePageParser homePageParser) {
         this.repository = repository;
-        homePageParser = HomePageParser.getInstance();
+        this.userProfileRepository = userProfileRepository;
+        this.homePageParser = homePageParser;
     }
 
     public void loadHome() {
@@ -85,7 +88,7 @@ public class HomeFragmentViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable1 -> {
                     loadSate.setValue(LoadState.LOADING);
-                    Log.d(TAG, "start loading");
+                    // Log.d(TAG, "start loading");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -100,14 +103,14 @@ public class HomeFragmentViewModel extends ViewModel {
 
         compositeDisposable.add(disposable);
 
-        /*compositeDisposable.add(homePageParser
-                .getUser()
+        compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(results -> {
-                    if (results != null) {*/
-                   // }
-              //  }));
+                    if (results != null) {
+                        userData.postValue(results);
+                    }
+                }));
     }
 
     private void createActionList() {
@@ -135,10 +138,11 @@ public class HomeFragmentViewModel extends ViewModel {
         // userData.postValue(homePageParser.getUser());
         loadSate.postValue(homePageParser.getLoadState());
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            userData.postValue(homePageParser
-                    .getUser());
-        });
+        if (PreferencesHelper.getInstance().isLogin()) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                userProfileRepository.setUserModel(homePageParser.getUser());
+            });
+        }
     }
 
     public LiveData<LoadState> getLoadState() {

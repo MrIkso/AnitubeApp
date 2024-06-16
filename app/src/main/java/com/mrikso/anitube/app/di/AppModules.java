@@ -16,6 +16,7 @@ import com.mrikso.anitube.app.network.UserAgentInterceptor;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
 import com.mrikso.anitube.app.parser.CollectionsParser;
 import com.mrikso.anitube.app.parser.CommentsParser;
+import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.ui.anime_list.AnimeListRepository;
 import com.mrikso.anitube.app.ui.collections.CollectionsRepository;
@@ -24,6 +25,7 @@ import com.mrikso.anitube.app.ui.library.LibaryRepository;
 import com.mrikso.anitube.app.ui.search.SearchRepository;
 import com.mrikso.anitube.app.ui.search_result.SearchResultRepository;
 import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
+import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -149,6 +151,12 @@ public class AppModules {
 
     @Singleton
     @Provides
+    public static UserProfileRepository provideUserProfileRepository() {
+        return UserProfileRepository.getInstance();
+    }
+
+    @Singleton
+    @Provides
     public static AnimeListRepository provideAnimeListRepository(
             AnitubeApiService apiService, AnimeReleasesMapper mapper) {
         return new AnimeListRepository(apiService, mapper);
@@ -194,7 +202,13 @@ public class AppModules {
 
     @Singleton
     @Provides
-    public static AnimeReleasesMapper provideAnimeMapper() {
-        return new AnimeReleasesMapper();
+    public static AnimeReleasesMapper provideAnimeMapper(HomePageParser homePageParser, UserProfileRepository userProfileRepository) {
+        return new AnimeReleasesMapper(homePageParser, userProfileRepository);
+    }
+
+    @Singleton
+    @Provides
+    public static HomePageParser provideHomePageParser() {
+        return HomePageParser.getInstance();
     }
 }

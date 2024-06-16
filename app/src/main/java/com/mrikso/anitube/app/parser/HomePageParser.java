@@ -27,8 +27,7 @@ public class HomePageParser {
     private final List<CollectionModel> newCollectionsList = new ArrayList<>();
     private List<SimpleModel> genresList = new ArrayList<>();
     private List<SimpleModel> calendarList = new ArrayList<>();
-    private  UserModel userData = null;
-           // = PublishSubject.create();
+    private UserModel userData = null;
 
     private LoadState state;
 

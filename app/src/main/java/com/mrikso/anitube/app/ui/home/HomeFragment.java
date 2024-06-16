@@ -35,8 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class HomeFragment extends Fragment
         implements AnimeCarouselAdapter.OnItemClickListener,
-                BaseAnimeAdapter.OnItemClickListener,
-                ReleaseAnimeAdapter.OnItemClickListener {
+        BaseAnimeAdapter.OnItemClickListener,
+        ReleaseAnimeAdapter.OnItemClickListener {
     private final String TAG = "HomeFragment";
     private HomeFragmentViewModel viewModel;
     private FragmentHomeBinding binding;
@@ -210,18 +210,18 @@ public class HomeFragment extends Fragment
 
         viewModel.getInteresingAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                    carouselAdapter.submitList(results);
+                carouselAdapter.submitList(results);
             }
         });
 
         viewModel.getBestAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                    bestAnimeAdapter.submitList(results);
+                bestAnimeAdapter.submitList(results);
             }
         });
         viewModel.getNewAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                    releaseAnimeAdapter.submitList(results);
+                releaseAnimeAdapter.submitList(results);
             }
         });
         viewModel.getNewACollections().observe(getViewLifecycleOwner(), results -> {
@@ -237,10 +237,9 @@ public class HomeFragment extends Fragment
         });
         viewModel.getUserData().observe(getViewLifecycleOwner(), results -> {
             {
-                if (PreferencesHelper.getInstance().isLogin())
-                    if (results != null) {
-                        setUserData(results);
-                    }
+                if (results != null) {
+                    setUserData(results);
+                }
             }
         });
     }
