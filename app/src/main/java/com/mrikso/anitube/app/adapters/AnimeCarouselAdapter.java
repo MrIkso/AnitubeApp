@@ -32,7 +32,10 @@ public class AnimeCarouselAdapter extends ListAdapter<InteresingModel, AnimeCaro
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        InteresingModel item = getItem(position);
+        if(item!=null) {
+            holder.bind(item);
+        }
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {

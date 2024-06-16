@@ -8,7 +8,7 @@ android {
 	namespace = "com.mrikso.treeview"
 
 	defaultConfig {
-		minSdk 28
+		minSdk 21
 		targetSdk 34
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
