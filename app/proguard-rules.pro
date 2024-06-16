@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
+# proguardFiles setting in build.gradle.kts.
 #
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
@@ -21,3 +21,5 @@
 #-renamesourcefileattribute SourceFile
 -dontobfuscate
 -keep class com.mrikso.** { *; }
+-dontwarn org.immutables.value.Value$Default
+-dontwarn org.immutables.value.Value$Immutable

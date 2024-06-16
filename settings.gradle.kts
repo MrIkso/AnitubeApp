@@ -3,7 +3,6 @@ pluginManagement {
 		gradlePluginPortal()
 		google()
 		mavenCentral()
-		maven { url 'https://jitpack.io' }
 		mavenLocal()
 	}
 }
@@ -12,13 +11,13 @@ dependencyResolutionManagement {
 	repositories {
 		google()
 		mavenCentral()
-		maven { url 'https://jitpack.io' }
+		maven ("https://jitpack.io")
 		mavenLocal()
 	}
 }
 
 rootProject.name = "AnitubeApp"
-include ':app'
-include ':treeview'
-include ':bottomsheetMenu'
-include ':doubletapplayerview'
+include (":app")
+include (":treeview")
+include (":bottomsheetMenu")
+include (":doubletapplayerview")
