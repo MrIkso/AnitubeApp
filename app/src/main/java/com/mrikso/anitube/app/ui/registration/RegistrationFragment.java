@@ -23,7 +23,6 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.FragmentRegistrationBinding;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserModel;
-import com.mrikso.anitube.app.ui.dialogs.captcha.CaptchaResolverFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -142,14 +141,6 @@ public class RegistrationFragment extends Fragment {
             binding.passwordTil.requestFocus();
             return;
         }
-
-        var fragment = new CaptchaResolverFragment();
-        fragment.setCallback(token -> {
-            Log.d("REG", token);
-          //  viewModel.register(name, userEmail, userPassword, token);
-        });
-
-        fragment.show(getChildFragmentManager(), CaptchaResolverFragment.TAG);
     }
 
     private void openLoginFragment(UserModel userData) {
