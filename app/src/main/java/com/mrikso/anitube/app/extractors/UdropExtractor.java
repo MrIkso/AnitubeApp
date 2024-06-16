@@ -35,7 +35,7 @@ public class UdropExtractor extends BaseVideoLinkExtracror {
                         .body()
                         .string();
                 videoUrl = ParserUtils.getMatcherResult(MP4_PATTERN, page, 1);
-                Log.i(TAG, "url: " + videoUrl);
+                //Log.i(TAG, "url: " + videoUrl);
             }
             VideoLinksModel model = new VideoLinksModel(url);
             model.setSingleDirectUrl(videoUrl);

@@ -46,7 +46,14 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         //Log.i(TAG, "start parse playlist");
         //Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
-            String newUri = variant.uri();
+            String uri = variant.uri();
+            String newUri;
+            if(uri.startsWith("./")) {
+                 newUri = playerJs.getFile().replace("playlist.m3u8", variant.uri().replaceFirst("./", ""));
+            }
+            else {
+                newUri = uri;
+            }
             // String[] parts = newUri.split("/");
 
             // Pattern pattern = Pattern.compile("/hls/(\\d+)/");
