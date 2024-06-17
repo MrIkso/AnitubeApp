@@ -184,7 +184,7 @@ dependencies {
     implementation(libs.newpipeextractor)
 
     // TouchImageView
-    implementation(libs.touchimageview)
+    implementation(libs.subsampling.scale.image.view)
 
     implementation(libs.circleimageview)
 

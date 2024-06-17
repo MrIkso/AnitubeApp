@@ -30,7 +30,7 @@ rxjava3RetrofitAdapter = "3.0.0"
 swiperefreshlayout = "1.1.0"
 navigation = "2.7.7"
 tagsoup = "1.2.1"
-touchimageview = "3.3"
+subsamplingScaleImageViewAndroidx = "3.10.0"
 utilcodex = "1.31.1"
 annotationJvm = "1.8.0"
 
@@ -67,7 +67,7 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 expandabletextview = { module = "com.github.MZCretin:ExpandableTextView", version.ref = "expandabletextview" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
@@ -83,7 +83,7 @@ rxjava3-retrofit-adapter = { module = "com.github.akarnokd:rxjava3-retrofit-adap
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 tagsoup = { module = "org.ccil.cowan.tagsoup:tagsoup", version.ref = "tagsoup" }
-touchimageview = { module = "com.github.MikeOrtiz:TouchImageView", version.ref = "touchimageview" }
+subsampling-scale-image-view = { module = "com.davemorrissey.labs:subsampling-scale-image-view-androidx", version.ref = "subsamplingScaleImageViewAndroidx" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
 
