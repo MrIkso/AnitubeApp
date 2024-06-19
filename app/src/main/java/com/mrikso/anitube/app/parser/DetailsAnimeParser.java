@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.parser;
 
-import android.util.Log;
-
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -108,7 +106,7 @@ public class DetailsAnimeParser {
 
         Element screenshotElement = storyElement.selectFirst("#story_screen_list1");
         if (screenshotElement != null) {
-            parseSreenshotsBlock(screenshotElement, animeDetailsModel);
+            parseScreenshotsBlock(screenshotElement, animeDetailsModel);
         }
 
         parseRelatedBlock(storyElement.selectFirst("div.box"), animeDetailsModel, animeUrl);
@@ -232,7 +230,7 @@ public class DetailsAnimeParser {
         // Log.i(TAG, "print voicedElements");
         //  Log.i(TAG, voicedElements.html());
         Elements teamLists = voicedElements.select("span.team_list");
-        if (teamLists != null && !teamLists.isEmpty()) {
+        if (!teamLists.isEmpty()) {
             List<DubbersTeam> dubbersTeamList = new ArrayList<>(teamLists.size());
 
             // Log.i(TAG, "print teamLists");
@@ -253,13 +251,13 @@ public class DetailsAnimeParser {
             model.setDubbersTeamList(dubbersTeamList);
         } else {
             List<SimpleModel> voiced = ParserUtils.getDataFromAttr(voicedElements.select("a[href*=/voiced/]"));
-            if (voiced != null) {
+            if (!voiced.isEmpty()) {
                 model.setVoicers(voiced);
             }
         }
     }
 
-    private void parseSreenshotsBlock(Element screenshotModel, AnimeDetailsModel model) {
+    private void parseScreenshotsBlock(Element screenshotModel, AnimeDetailsModel model) {
         Elements elements = screenshotModel.getElementsByTag("a");
         List<ScreenshotModel> screenshotsList = new ArrayList<>(elements.size());
         for (Element element : elements) {

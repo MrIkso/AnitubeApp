@@ -241,6 +241,7 @@ public class TreeViewGroup extends LinearLayout {
         int bgColor = ViewUtils.getRandomMaterialColor(getContext());
         if (colors.contains(bgColor)) {
             bgColor = ViewUtils.getRandomMaterialColor(getContext());
+            colors.add(bgColor);
         } else {
             colors.add(bgColor);
         }

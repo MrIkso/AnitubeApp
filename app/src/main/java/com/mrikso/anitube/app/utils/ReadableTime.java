@@ -100,10 +100,9 @@ public final class ReadableTime {
         int hours = totalSeconds / 3600;
 
         if (hours > 0) {
-            return String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
-                    .toString();
+            return String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds);
         } else {
-            return String.format(Locale.ROOT, "%02d:%02d", minutes, seconds).toString();
+            return String.format(Locale.ROOT, "%02d:%02d", minutes, seconds);
         }
     }
 }

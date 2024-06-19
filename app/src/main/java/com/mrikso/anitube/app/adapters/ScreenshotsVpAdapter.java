@@ -60,14 +60,14 @@ public class ScreenshotsVpAdapter extends ListAdapter<ScreenshotModel, Screensho
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             binding.progressIndicator.setVisibility(View.GONE);
                             binding.tivScreenshot.setImage(ImageSource.bitmap(resource));
-                            binding.tivScreenshot.setZoomEnabled(false);
-                            binding.tivScreenshot.setQuickScaleEnabled(false);
                         }
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
                             super.onLoadFailed(errorDrawable);
                             binding.progressIndicator.setVisibility(View.GONE);
+                            binding.tivScreenshot.setZoomEnabled(false);
+                            binding.tivScreenshot.setQuickScaleEnabled(false);
                             binding.tivScreenshot.setImage(ImageSource.bitmap(BitmapFactory.decodeResource(binding.getRoot().getContext().getResources(),
                                     R.drawable.ic_broken_image)));
                         }
