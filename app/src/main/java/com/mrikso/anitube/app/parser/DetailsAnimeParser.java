@@ -52,8 +52,8 @@ public class DetailsAnimeParser {
         // Log.d(TAG, jsonDetails);
 
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(String.class, new EscapeStringSerializer());
-        builder.disableHtmlEscaping();
+        //builder.registerTypeAdapter(String.class, new EscapeStringSerializer());
+        //builder.disableHtmlEscaping();
         Gson gson = builder.create();
 
         SimpleDetailAnimeModel simpleDetailAnimeModel = gson.fromJson(jsonDetails, SimpleDetailAnimeModel.class);
@@ -342,7 +342,7 @@ public class DetailsAnimeParser {
 
         if (matcher.matches()) {
             String videoId = matcher.group(1);
-            return String.format("http://img.youtube.com/vi/%s/hqdefault.jpg", videoId);
+            return String.format("https://img.youtube.com/vi/%s/hqdefault.jpg", videoId);
         } else {
             return null;
         }
