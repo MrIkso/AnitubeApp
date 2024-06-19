@@ -235,10 +235,9 @@ public class DetailsAnimeFragmemt extends Fragment
         }
 
         List<FranchiseModel> franchiseAnimeList = animeDetails.getFranchiseList();
-        if (franchiseAnimeList != null && !franchiseAnimeList.isEmpty()) {
+        if (franchiseAnimeList != null && !franchiseAnimeList.isEmpty() && franchiseAnimeList.size() > 1 ) {
             binding.layoutFranchises.llFranchise.setVisibility(View.VISIBLE);
-
-                franchisesAdapter.submitList(franchiseAnimeList);
+            franchisesAdapter.submitList(franchiseAnimeList);
 
         }
 
