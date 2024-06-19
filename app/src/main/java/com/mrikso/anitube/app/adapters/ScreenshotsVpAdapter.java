@@ -21,6 +21,7 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.comparator.ScreenshotsDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemScreenshotBigBinding;
 import com.mrikso.anitube.app.model.ScreenshotModel;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 public class ScreenshotsVpAdapter extends ListAdapter<ScreenshotModel, ScreenshotsVpAdapter.ViewHolder> {
 
@@ -54,6 +55,7 @@ public class ScreenshotsVpAdapter extends ListAdapter<ScreenshotModel, Screensho
             Glide.with(binding.getRoot().getContext())
                     .asBitmap()
                     .load(model.getFullUrl())
+                    .error(R.drawable.ic_broken_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(new CustomTarget<Bitmap>() {
                         @Override
@@ -68,8 +70,7 @@ public class ScreenshotsVpAdapter extends ListAdapter<ScreenshotModel, Screensho
                             binding.progressIndicator.setVisibility(View.GONE);
                             binding.tivScreenshot.setZoomEnabled(false);
                             binding.tivScreenshot.setQuickScaleEnabled(false);
-                            binding.tivScreenshot.setImage(ImageSource.bitmap(BitmapFactory.decodeResource(binding.getRoot().getContext().getResources(),
-                                    R.drawable.ic_broken_image)));
+                            binding.tivScreenshot.setImage(ImageSource.bitmap(ViewUtils.drawableToBitmap(errorDrawable)));
                         }
 
                         @Override
