@@ -2,6 +2,9 @@ package com.mrikso.anitube.app.utils;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.model.SimpleModel;
@@ -86,7 +89,8 @@ public class ParserUtils {
         return count;
     }
 
-    public static String getMatcherResult(String regex, String content, int group) {
+    @Nullable
+    public static String getMatcherResult(@NonNull String regex, @NonNull String content, int group) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(content);
         boolean found = matcher.find();

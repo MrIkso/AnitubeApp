@@ -10,15 +10,16 @@ import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.DubbersTeam;
 import com.mrikso.anitube.app.model.FranchiseModel;
 import com.mrikso.anitube.app.model.ScreenshotModel;
+import com.mrikso.anitube.app.model.SimpleDetailAnimeModel;
 import com.mrikso.anitube.app.model.SimpleModel;
 import com.mrikso.anitube.app.model.TorrentModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.EscapeStringSerializer;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.StringUtils;
 
-import io.reactivex.rxjava3.core.Single;
-
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,9 +30,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.reactivex.rxjava3.core.Single;
+
 public class DetailsAnimeParser {
     private static final String TAG = "DetailsAnimeParser";
     private final String LIST_PATTERN = "new(\\s)MyLists\\(\\'(.*)\\',(.*)\\)";
+    private final String DESCRIPTION_PATTERN = "\"description\":\\s*\"(.*)\"";
 
     public Single<AnimeDetailsModel> getDetailsModel(Document doc) {
         return Single.fromCallable(() -> parseAnimePage(doc));
@@ -41,16 +45,45 @@ public class DetailsAnimeParser {
         Element rootContentElement = doc.selectFirst("div.content");
         Element storyElement = rootContentElement.selectFirst("#dle-content > article.story");
 
+        String jsonDetails = rootContentElement.selectFirst("script[type=application/ld+json]").html();
+
+        String description = ParserUtils.getMatcherResult(DESCRIPTION_PATTERN, jsonDetails, 1);
+        if (description != null) {
+            jsonDetails = jsonDetails.replace(description, StringEscapeUtils.escapeJson(description));
+        }
+        // Log.d(TAG, jsonDetails);
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(String.class, new EscapeStringSerializer());
+        builder.disableHtmlEscaping();
+        Gson gson = builder.create();
+
+        SimpleDetailAnimeModel simpleDetailAnimeModel = gson.fromJson(jsonDetails, SimpleDetailAnimeModel.class);
+
         // #dle-content > article > div:nth-child(1) > div.story_c
         Element storyPostElement = storyElement.selectFirst("div.story_c_left");
-        String animeUrl = doc.head().selectFirst("link[rel=canonical]").attr("href");
-        String urlPoster = ParserUtils.getImageUrl(storyPostElement);
+        String animeUrl = simpleDetailAnimeModel.getUrl();
         Element titleElement = storyElement.selectFirst("div.story_c h2");
 
-        String title = titleElement.text();
-        int animeId = ParserUtils.getAnimeId(animeUrl);
+        int animeId = ParserUtils.getAnimeId(simpleDetailAnimeModel.getId());
 
-        AnimeDetailsModel animeDetailsModel = new AnimeDetailsModel(animeId, title, urlPoster, animeUrl);
+        AnimeDetailsModel animeDetailsModel = new AnimeDetailsModel(animeId, simpleDetailAnimeModel.getName(), simpleDetailAnimeModel.getThumbnail(), simpleDetailAnimeModel.getUrl());
+        animeDetailsModel.setDescription(simpleDetailAnimeModel.getDescription());
+
+        String trailerUrl = simpleDetailAnimeModel.getEmbedUrl();
+        if (!Strings.isNullOrEmpty(trailerUrl)) {
+            trailerUrl = StringEscapeUtils.unescapeHtml4(trailerUrl);
+            String trailerPreviewUrl = buildPreviewUrl(trailerUrl);
+
+            // трейлер може бути завантажено не на ютуб, тому беремо превь'ю з сайту
+            if (Strings.isNullOrEmpty(trailerPreviewUrl)) {
+                Element trailerPrewiewElement = storyElement.selectFirst("div.trailer_preview");
+                trailerPreviewUrl = ParserUtils.getImageUrl(trailerPrewiewElement);
+            }
+            ScreenshotModel trailerModel = new ScreenshotModel(trailerPreviewUrl, trailerUrl);
+            animeDetailsModel.setTrailerModel(trailerModel);
+            // Log.d(TAG, trailerModel.toString());
+        }
 
         Element playlistsAjaxElement = storyElement.selectFirst("div.playlists-ajax");
         if (playlistsAjaxElement != null) {
@@ -67,14 +100,6 @@ public class DetailsAnimeParser {
         if (favElementHeader != null) {
             boolean isFav = favElementHeader.attr("href").contains("doaction=del");
             animeDetailsModel.setFavorites(isFav);
-        }
-        Element trailerPrewiewElement = storyElement.selectFirst("div.trailer_preview");
-        ScreenshotModel trailerModel = null;
-
-        if (trailerPrewiewElement != null) {
-            String trailerPreviewUrl = ParserUtils.getImageUrl(trailerPrewiewElement);
-            String trailerUrl = buildTrailerUrl(trailerPreviewUrl);
-            trailerModel = new ScreenshotModel(trailerPreviewUrl, trailerUrl);
         }
 
         Element storyElementDetail = storyElement.selectFirst("div.story_c");
@@ -123,10 +148,10 @@ public class DetailsAnimeParser {
             }
         }
 
-        animeDetailsModel.setTrailerModel(trailerModel);
+        //animeDetailsModel.setTrailerModel(trailerModel);
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(animeDetailsModel);
+        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //String json = gson.toJson(animeDetailsModel);
         //Log.i(TAG, json);
         return animeDetailsModel;
     }
@@ -195,11 +220,11 @@ public class DetailsAnimeParser {
         }
 
         // витягування опису
-        Element descriptionElement = storyElements.selectFirst("div.my-text");
+        /*Element descriptionElement = storyElements.selectFirst("div.my-text");
         if (descriptionElement != null) {
             String description = descriptionElement.text().trim();
             model.setDescription(description);
-        }
+        }*/
     }
 
     private void parseDubbersBlock(Element voicedElement, AnimeDetailsModel model) {
@@ -312,14 +337,14 @@ public class DetailsAnimeParser {
         // #torrent_1522_info > div.right_torrent_info_block > div:nth-child(1) > span
     }
 
-    private String buildTrailerUrl(String previewUrl) {
+    private String buildPreviewUrl(String previewUrl) {
         // Використовуємо регулярний вираз, щоб отримати ID відео
         Pattern pattern = Pattern.compile(".*\\/([a-zA-Z0-9_-]{11}).*");
         Matcher matcher = pattern.matcher(previewUrl);
 
         if (matcher.matches()) {
             String videoId = matcher.group(1);
-            return String.format("https://www.youtube.com/watch?v=%s", videoId);
+            return String.format("http://img.youtube.com/vi/%s/hqdefault.jpg", videoId);
         } else {
             return null;
         }

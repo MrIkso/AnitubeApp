@@ -187,6 +187,7 @@ dependencies {
     implementation(libs.subsampling.scale.image.view)
 
     implementation(libs.circleimageview)
+    implementation(libs.commons.text)
 
     implementation(project(":treeview"))
     implementation(project(":bottomsheetMenu"))
