@@ -62,6 +62,6 @@
 THE CONTENT ON THIS APP IS NOT MINE NOR IS IT HOSTED BY ME OR THE APP. THESE BELONG TO THEIR RESPECTIVE OWNERS. This app just demostrates on how it is possible to build a app that can scrape websites and use their content.
 
 ### License
-AnitubeApp is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+AnitubeApp is licensed under the [GNU Affero General Public License v3.0](LICENSE.md).
 
-Have any suggestions? found a bug? Feel free to create an [issue](https://github.com/MrIKso/AnitubeApp/issues/new) with detailed description.
+Have any suggestions? Found a bug? Feel free to create an [issue](https://github.com/MrIKso/AnitubeApp/issues/new) with detailed description.
