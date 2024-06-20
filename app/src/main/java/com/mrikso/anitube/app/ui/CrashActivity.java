@@ -33,7 +33,7 @@ public class CrashActivity extends AppCompatActivity {
         error.append("Manufacturer: ").append(DeviceUtils.getManufacturer()).append("\n");
         error.append("Device: ").append(DeviceUtils.getModel()).append("\n");
         error.append(getIntent().getStringExtra("Software"));
-        error.append(String.format("App version: %s ($s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
+        error.append(String.format("App version: %s (%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
         error.append("\n\n");
         error.append(getIntent().getStringExtra("Error"));
         error.append("\n\n");
