@@ -162,4 +162,6 @@
     <string name="dialog_continue_title">Продовжити?</string>
     <string name="dialog_continue_playning_summary">Продовжити відтворення з %s?</string>
     <string name="state_no_recent_search_desc">Почніть шукати аніме і тут з\'явиться історія вашого пошуку</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Відновити</string>
 </resources>

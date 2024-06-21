@@ -4,10 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
+import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
+import android.app.RemoteAction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,7 +68,6 @@ import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ReadableTime;
 import com.mrikso.anitube.app.view.CustomAutoCompleteTextView;
-import com.mrikso.anitube.app.viewmodel.ListRepository;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 import com.mrikso.player.CustomPlayerView;
 import com.mrikso.player.ExoMediaSourceHelper;
@@ -87,6 +92,14 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 @OptIn(markerClass = UnstableApi.class)
 public class PlayerActivity extends AppCompatActivity {
     private final CompositeDisposable disposables = new CompositeDisposable();
+
+    // constants for broadcast receiver
+    public static final String ACTION_BROADCAST_CONTROL = "ACTION_BROADCAST_CONTROL";
+
+    // Intent extra for broadcast controls from Picture-in-Picture mode.
+    public static final String PLAYBACK_ACTION = "PLAYER_PLAYBACK";
+    public static final int PLAYBACK_ACTION_RESUME = 1;
+    public static final int PLAYBACK_ACTION_PAUSE = 2;
 
     private static final String EMPTY_STRING_VALUE = "~";
     private static final int EMPTY_EPISODE_NUMBER_VALUE = 0;
@@ -125,7 +138,6 @@ public class PlayerActivity extends AppCompatActivity {
     private ExoMediaSourceHelper mediaSourceHelper;
     public CustomPlayerView playerView;
     private YouTubeOverlay youTubeOverlay;
-    private Object mPictureInPictureParamsBuilder;
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
 
@@ -133,8 +145,6 @@ public class PlayerActivity extends AppCompatActivity {
     private boolean isLock = false;
     private boolean isFullScreen = false;
 
-    public static boolean controllerVisible;
-    public static boolean controllerVisibleFully;
     private boolean restoreControllerTimeout = false;
     public static long[] chapterStarts;
 
@@ -156,6 +166,7 @@ public class PlayerActivity extends AppCompatActivity {
     private boolean autoPlayNextEpisode;
     private boolean gesturesEnabled;
     private boolean autoContinue;
+    private BroadcastReceiver broadcastReceiver;
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
@@ -174,6 +185,7 @@ public class PlayerActivity extends AppCompatActivity {
         setupTextViewValues();
         setupQuality();
         setupMiddleControllers();
+        broadcastReceiver(exoPlayer);
         //  }
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getLong(KEY_POSITION, 0);
@@ -240,10 +252,10 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 
-        if (Utils.isPiPSupported(this)) {
+        if (!Utils.isPiPSupported(this)) {
+            exoPip.setVisibility(View.GONE);
             // TODO: Android 12 improvements:
             // https://developer.android.com/about/versions/12/features/pip-improvements
-            mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
             //  boolean success = updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp,
             // R.string.exo_controls_play_description, CONTROL_TYPE_PLAY, REQUEST_PLAY);
         }
@@ -296,8 +308,8 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayer.setHandleAudioBecomingNoisy(true);
 
         playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
-            controllerVisible = visibility == View.VISIBLE;
-            controllerVisibleFully = playerView.isControllerFullyVisible();
+            //controllerVisible = visibility == View.VISIBLE;
+            // controllerVisibleFully = playerView.isControllerFullyVisible();
             if (restoreControllerTimeout) {
                 restoreControllerTimeout = false;
             }
@@ -311,7 +323,7 @@ public class PlayerActivity extends AppCompatActivity {
         });
         youTubeOverlay.player(exoPlayer);
         playerView.setPlayer(exoPlayer);
-        if(!restorePlayer) {
+        if (!restorePlayer) {
             //currentPosition =  listRepo.getList().get(episodeNumber - 1).getTotalWatchTime();
             if (autoContinue) {
                 exoPlayer.setPlayWhenReady(false);
@@ -441,7 +453,7 @@ public class PlayerActivity extends AppCompatActivity {
     private void releasePlayer() {
         if (exoPlayer != null) {
             savePlayer();
-            //exoPlayer.stop();
+//            exoPlayer.stop();
             exoPlayer.release();
             playerView.setPlayer(/* player= */ null);
             exoPlayer = null;
@@ -588,12 +600,18 @@ public class PlayerActivity extends AppCompatActivity {
         if (exoPlayer == null) {
             return;
         }
-
+        playerView.setUseController(false);
         playerView.setControllerAutoShow(false);
         playerView.hideController();
 
+        enterPictureInPictureMode(getPipParams(exoPlayer.isPlaying()));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected PictureInPictureParams getPipParams(boolean isPlaying) {
+        var pipParams = new PictureInPictureParams.Builder();
         final Format format = exoPlayer.getVideoFormat();
-        playerView.setUseController(false);
+
         if (format != null) {
             // https://github.com/google/ExoPlayer/issues/8611
             // TODO: Test/disable on Android 11+
@@ -607,16 +625,70 @@ public class PlayerActivity extends AppCompatActivity {
                     && getPackageManager().hasSystemFeature(PackageManager.FEATURE_EXPANDED_PICTURE_IN_PICTURE)
                     && (rational.floatValue() > rationalLimitWide.floatValue()
                     || rational.floatValue() < rationalLimitTall.floatValue())) {
-                ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setExpandedAspectRatio(rational);
+                pipParams.setExpandedAspectRatio(rational);
             }
             if (rational.floatValue() > rationalLimitWide.floatValue())
                 rational = rationalLimitWide;
             else if (rational.floatValue() < rationalLimitTall.floatValue())
                 rational = rationalLimitTall;
 
-            ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setAspectRatio(rational);
+            pipParams.setAspectRatio(rational);
         }
-        enterPictureInPictureMode(((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).build());
+
+
+        var pauseAction = isPlaying ? PLAYBACK_ACTION_PAUSE : PLAYBACK_ACTION_RESUME;
+        var pauseIcon = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play_arrow;
+        var pauseTitle = isPlaying ? getString(R.string.pause) : getString(R.string.resume);
+
+        pipParams.setActions(List.of(new RemoteAction(
+                Icon.createWithResource(this, pauseIcon),
+                pauseTitle, pauseTitle,
+                PendingIntent.getBroadcast(
+                        this,
+                        isPlaying ? 0: 1,
+                        new Intent(ACTION_BROADCAST_CONTROL)
+                                .setPackage(this.getPackageName())
+                                .putExtra(PLAYBACK_ACTION, pauseAction),
+                        PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE))))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pipParams.setTitle(animeTitle);
+        }
+
+        return pipParams.build();
+    }
+
+    private void broadcastReceiver(Player player) {
+        if (!isInPip() && player != null) {
+            broadcastReceiver = new BroadcastReceiver() {
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent == null|| (intent.getAction() != ACTION_BROADCAST_CONTROL)) {
+                        return;
+                    }
+
+                    switch (intent.getIntExtra(PLAYBACK_ACTION, 0)) {
+                        case PLAYBACK_ACTION_RESUME:
+                            player.play();
+                            break;
+                        case PLAYBACK_ACTION_PAUSE:
+                            player.pause();
+                            break;
+
+                        default:
+                            throw new IllegalArgumentException("Unknown playback action has been permitted!");
+                    }
+
+                }
+            };
+
+            ContextCompat.registerReceiver(
+                    this,
+                    broadcastReceiver,
+                    new IntentFilter(ACTION_BROADCAST_CONTROL),
+                    ContextCompat.RECEIVER_NOT_EXPORTED);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -712,7 +784,7 @@ public class PlayerActivity extends AppCompatActivity {
         if (pos == 0) {
             this.currentPosition = 0;
             setMediaSourceByModel(episodeLinks);
-        }else {
+        } else {
             DialogUtils.showConfirmation(this, getString(R.string.dialog_continue_title),
                     getString(R.string.dialog_continue_playning_summary, ReadableTime.generateTime(pos)),
                     () -> {
@@ -755,7 +827,6 @@ public class PlayerActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if (isLock) {
-            return;
         } else {
             // super.onBackPressed();
             finish();
@@ -767,9 +838,20 @@ public class PlayerActivity extends AppCompatActivity {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         savePlayer();
-        //  outState.putBoolean(KEY_AUTO_PLAY, startAutoPlay);
-        // outState.putInt(KEY_ITEM_INDEX, startItemIndex);
         outState.putLong(KEY_POSITION, currentPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentPosition = savedInstanceState.getLong(KEY_POSITION);
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        savePlayer();
+        playerView.setUseController(!isInPictureInPictureMode);
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
     }
 
     // Activity input
@@ -795,6 +877,9 @@ public class PlayerActivity extends AppCompatActivity {
         releasePlayer();
         binding = null;
         disposables.dispose();
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+        }
     }
 
     @Override
@@ -803,7 +888,7 @@ public class PlayerActivity extends AppCompatActivity {
         if (playerView != null) {
             playerView.onPause();
         }
-        releasePlayer();
+        //releasePlayer();
     }
 
     @Override
@@ -823,6 +908,7 @@ public class PlayerActivity extends AppCompatActivity {
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
 
+            setPictureInPictureParams(getPipParams(isPlaying));
             if (!isPlaying) {
                 isLock = false;
             }
