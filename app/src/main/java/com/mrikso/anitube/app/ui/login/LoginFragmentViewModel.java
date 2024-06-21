@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.ui.login;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,7 +12,7 @@ import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.CookieParser;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 

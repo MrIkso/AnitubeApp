@@ -1,10 +1,6 @@
-package com.mrikso.anitube.app.viewmodel;
+package com.mrikso.anitube.app.repository;
 
 import com.mrikso.anitube.app.model.UserModel;
-import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -32,6 +28,8 @@ public class UserProfileRepository {
     }
 
     public void setUserModel(@Nullable UserModel userModel){
-        userModelPublishSubject.onNext(userModel);
+        if (userModel != null) {
+            userModelPublishSubject.onNext(userModel);
+        }
     }
 }

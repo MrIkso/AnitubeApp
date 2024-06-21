@@ -63,6 +63,7 @@ import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
+import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.ui.dialogs.UnsupportedVideoSourceDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;

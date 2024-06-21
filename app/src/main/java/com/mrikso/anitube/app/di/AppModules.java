@@ -25,7 +25,7 @@ import com.mrikso.anitube.app.ui.library.LibaryRepository;
 import com.mrikso.anitube.app.ui.search.SearchRepository;
 import com.mrikso.anitube.app.ui.search_result.SearchResultRepository;
 import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
-import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 
 import dagger.Module;
 import dagger.Provides;

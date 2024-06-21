@@ -2,7 +2,6 @@ package com.mrikso.anitube.app.ui.watch;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.view.TreeViewGroup;
-import com.mrikso.anitube.app.viewmodel.ListRepository;
+import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 import com.mrikso.bottomsheetmenulib.MenuBottomSheet;
 import com.mrikso.treeview.TreeItem;
@@ -51,7 +50,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 

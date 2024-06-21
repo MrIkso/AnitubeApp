@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.ui.watch;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -18,7 +16,7 @@ import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.FileCache;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-import com.mrikso.anitube.app.viewmodel.ListRepository;
+import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.treeview.TreeItem;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;

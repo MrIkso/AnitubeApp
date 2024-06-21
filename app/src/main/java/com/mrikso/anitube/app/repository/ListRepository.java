@@ -1,4 +1,4 @@
-package com.mrikso.anitube.app.viewmodel;
+package com.mrikso.anitube.app.repository;
 
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 

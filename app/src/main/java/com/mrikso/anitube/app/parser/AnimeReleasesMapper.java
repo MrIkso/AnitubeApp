@@ -8,7 +8,7 @@ import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 
 import org.jsoup.nodes.Document;
 

@@ -9,7 +9,7 @@ import androidx.paging.rxjava3.PagingRx;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.UserModel;
-import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 

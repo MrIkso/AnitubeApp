@@ -21,7 +21,7 @@ import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-import com.mrikso.anitube.app.viewmodel.UserProfileRepository;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 
 import org.jsoup.nodes.Document;
 

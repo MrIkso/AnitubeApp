@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.viewmodel;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModel;
 
@@ -12,6 +10,7 @@ import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.parser.DirectVideoUrlParser;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
+import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
