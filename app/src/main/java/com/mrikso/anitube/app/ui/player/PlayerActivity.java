@@ -650,7 +650,7 @@ public class PlayerActivity extends AppCompatActivity {
                         new Intent(ACTION_BROADCAST_CONTROL)
                                 .setPackage(this.getPackageName())
                                 .putExtra(PLAYBACK_ACTION, pauseAction),
-                        PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE))))
+                        PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE))));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             pipParams.setTitle(animeTitle);
