@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	android:visibility="gone"
-	android:orientation="vertical"
-	android:id="@+id/ll_sreenshots">
-		
-	<TextView
-		android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:padding="10dp"
-		 style="@style/LayoutHeader"
-		android:fontFamily="@font/roboto_medium"
-		android:text="@string/screenshots" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_sreenshots"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:overScrollMode="never"
-		android:clipToPadding="false"
-		android:orientation="horizontal"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		android:id="@+id/recycler_view_screenshots"
-	 />
+    <TextView
+        style="@style/LayoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/screenshots" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_screenshots"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>

@@ -110,7 +110,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="3"
-                            android:fontFamily="@font/roboto_bold" />
+                            android:fontFamily="@font/roboto_bold"
+                            tools:text="Бліч"/>
                         <TextView
                             android:ellipsize="end"
                             android:gravity="center"
@@ -120,7 +121,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:maxLines="1"
-                            style="@style/TextLabelAlpha" />
+                            style="@style/TextLabelAlpha"
+                            tools:text="Bletch"
+                            />
                     </LinearLayout>
 
                     <LinearLayout

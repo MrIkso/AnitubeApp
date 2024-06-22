@@ -213,8 +213,8 @@ public class DetailsAnimeFragmemt extends Fragment
         if (trailer != null) {
             binding.layoutTrailer.llVideo.setVisibility(View.VISIBLE);
 
-            ViewUtils.loadImage(binding.layoutTrailer.itemTrailer.sivScreenshot, trailer.getPreviewUrl());
-            binding.layoutTrailer.itemTrailer.sivScreenshot.setOnClickListener(v -> {
+            ViewUtils.loadImage(binding.layoutTrailer.itemTrailer.trailerPreview, trailer.getPreviewUrl());
+            binding.layoutTrailer.itemTrailer.getRoot().setOnClickListener(v -> {
                 IntentUtils.openInBrowser(requireContext(), trailer.getFullUrl());
             });
         }
