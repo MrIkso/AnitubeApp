@@ -388,12 +388,12 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void playVideo() {
-        Glide.with(this).load(R.drawable.anim_pause_to_play).into(exoPlay);
+        Glide.with(this).load(R.drawable.anim_play_to_pause).into(exoPlay);
         exoPlayer.play();
     }
 
     private void pauseVideo() {
-        Glide.with(this).load(R.drawable.anim_play_to_pause).into(exoPlay);
+        Glide.with(this).load(R.drawable.anim_pause_to_play).into(exoPlay);
         exoPlayer.pause();
     }
 
