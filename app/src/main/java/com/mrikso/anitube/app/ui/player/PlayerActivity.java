@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -80,6 +79,7 @@ import com.mrikso.player.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
@@ -186,7 +186,6 @@ public class PlayerActivity extends AppCompatActivity {
         setupTextViewValues();
         setupQuality();
         setupMiddleControllers();
-        broadcastReceiver(exoPlayer);
         //  }
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getLong(KEY_POSITION, 0);
@@ -338,6 +337,9 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayer.prepare();
 
         playVideo();
+        if (Utils.isPiPSupported(this)){
+            setPictureInPictureParams(getPipParams(exoPlayer.isPlaying()));
+        }
     }
 
     private void setupTextViewValues() {
@@ -346,7 +348,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void setupMiddleControllers() {
-        Log.i("TAG", "epnum:" + episodeNumber + "size:" + listRepo.getList().size());
+       // Log.i("TAG", "epnum:" + episodeNumber + "size:" + listRepo.getList().size());
 
         if (episodeNumber == 1) {
             exoPrevEp.setAlpha(0.4f);
@@ -608,7 +610,6 @@ public class PlayerActivity extends AppCompatActivity {
         enterPictureInPictureMode(getPipParams(exoPlayer.isPlaying()));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     protected PictureInPictureParams getPipParams(boolean isPlaying) {
         var pipParams = new PictureInPictureParams.Builder();
         final Format format = exoPlayer.getVideoFormat();
@@ -646,11 +647,11 @@ public class PlayerActivity extends AppCompatActivity {
                 pauseTitle, pauseTitle,
                 PendingIntent.getBroadcast(
                         this,
-                        isPlaying ? 0: 1,
+                        isPlaying ? 2 : 1,
                         new Intent(ACTION_BROADCAST_CONTROL)
                                 .setPackage(this.getPackageName())
                                 .putExtra(PLAYBACK_ACTION, pauseAction),
-                        PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE))));
+                        PendingIntent.FLAG_IMMUTABLE))));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             pipParams.setTitle(animeTitle);
@@ -659,13 +660,25 @@ public class PlayerActivity extends AppCompatActivity {
         return pipParams.build();
     }
 
+    /*void updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
+        final ArrayList<RemoteAction> actions = new ArrayList<>();
+        final PendingIntent intent = PendingIntent.getBroadcast(this, requestCode,
+                new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
+        final Icon icon = Icon.createWithResource(this, iconId);
+        final String title = getString(resTitle);
+        actions.add(new RemoteAction(icon, title, title, intent));
+        ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setActions(actions);
+        setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+    }*/
+
+
     private void broadcastReceiver(Player player) {
-        if (!isInPip() && player != null) {
+        if (player != null) {
             broadcastReceiver = new BroadcastReceiver() {
 
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent == null|| (intent.getAction() != ACTION_BROADCAST_CONTROL)) {
+                    if (intent == null || (!Objects.equals(intent.getAction(), ACTION_BROADCAST_CONTROL))) {
                         return;
                     }
 
@@ -692,7 +705,6 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private boolean isInPip() {
         if (!Utils.isPiPSupported(this)) return false;
         return isInPictureInPictureMode();
@@ -850,9 +862,18 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
         savePlayer();
         playerView.setUseController(!isInPictureInPictureMode);
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        if (isInPictureInPictureMode) {
+            broadcastReceiver(exoPlayer);
+        } else {
+            if (broadcastReceiver != null) {
+                unregisterReceiver(broadcastReceiver);
+                broadcastReceiver=null;
+            }
+        }
+
     }
 
     // Activity input
@@ -878,9 +899,6 @@ public class PlayerActivity extends AppCompatActivity {
         releasePlayer();
         binding = null;
         disposables.dispose();
-        if (broadcastReceiver != null) {
-            unregisterReceiver(broadcastReceiver);
-        }
     }
 
     @Override
