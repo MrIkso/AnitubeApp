@@ -4,11 +4,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mrikso.anitube.app.R;
+import com.google.android.material.color.MaterialColors;
 import com.mrikso.anitube.app.comparator.FranchiseDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemFranchiseBinding;
 import com.mrikso.anitube.app.model.FranchiseModel;
@@ -38,7 +37,7 @@ public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAda
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private ItemFranchiseBinding binding;
+        private final ItemFranchiseBinding binding;
 
         public ViewHolder(@NonNull ItemFranchiseBinding binding) {
             super(binding.getRoot());
@@ -52,9 +51,8 @@ public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAda
             ViewUtils.loadImage(binding.poster, ParserUtils.normaliseImageUrl(release.getPosterUrl()));
             if (release.isCurrent()) {
                 binding.getRoot().setEnabled(false);
-                binding.getRoot()
-                        .setBackgroundColor(
-                                ContextCompat.getColor(binding.getRoot().getContext(), R.color.grey_transpatent));
+                binding.getRoot().setBackgroundColor(
+                        MaterialColors.getColor(binding.getRoot(), com.google.android.material.R.attr.colorSurfaceContainer));
             } else {
                 if (listener != null) {
                     binding.getRoot().setOnClickListener(v -> listener.onReleaseItemSelected(release.getAnimeUrl()));
