@@ -106,6 +106,10 @@
 
     <style name="AppTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
         <item name="android:layout">@layout/fragment_preferences</item>
+    </style>
 
+    <!-- Uses Material Switches instead of the old ones -->
+    <style name="Preference.SwitchPreferenceCompat.Material3" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/view_preference_switch</item>
     </style>
 </resources>

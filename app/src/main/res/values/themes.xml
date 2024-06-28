@@ -62,7 +62,7 @@
         <item name="textColorPrimary">@color/text_color_primary</item>
         <item name="textColorSecondary">@color/text_color_secondary</item>
         <item name="textColorTertiary">@color/text_color_tertiary</item>
-
+        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.Material3</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
 
@@ -78,7 +78,7 @@
     </style>
 
     <style name="AppTheme.SplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">?colorOnPrimaryContainer</item>
+        <item name="windowSplashScreenBackground">?colorOnSurface</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
