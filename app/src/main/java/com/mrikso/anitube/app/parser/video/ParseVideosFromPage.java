@@ -88,7 +88,7 @@ public class ParseVideosFromPage {
 
                 for (PlayerJsonModelVideos element : videos) {
                     String url = ParserUtils.getMatcherResult(SRC_PATTERN, element.getCode(), 1);
-                    Log.i(TAG, " " + element.getName() + " " + url);
+                    //Log.i(TAG, " " + element.getName() + " " + url);
 
                     EpisodeModel episodeModel = new EpisodeModel(element.getName(), url);
                     LastWatchedEpisodeEnity dbEpisode = watchAnimeRepository.getWatchedEpisode(animeId, url);

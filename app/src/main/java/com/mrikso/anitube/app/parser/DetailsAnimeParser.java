@@ -1,5 +1,8 @@
 package com.mrikso.anitube.app.parser;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +36,7 @@ import io.reactivex.rxjava3.core.Single;
 public class DetailsAnimeParser {
     private static final String TAG = "DetailsAnimeParser";
     private final String LIST_PATTERN = "new(\\s)MyLists\\(\\'(.*)\\',(.*)\\)";
-    private final String DESCRIPTION_PATTERN = "\"description\":\\s*\"(.*)\"";
+    private final String DESCRIPTION_PATTERN = "\"description\"\\s*:\\s*\\\"([.+]|[\\s\\S]*)\",([\\s\\S]*)\"duration\"\\s*";
 
     public Single<AnimeDetailsModel> getDetailsModel(Document doc) {
         return Single.fromCallable(() -> parseAnimePage(doc));
@@ -335,7 +338,8 @@ public class DetailsAnimeParser {
         // #torrent_1522_info > div.right_torrent_info_block > div:nth-child(1) > span
     }
 
-    private String buildPreviewUrl(String previewUrl) {
+    @Nullable
+    private String buildPreviewUrl(@NonNull String previewUrl) {
         // Використовуємо регулярний вираз, щоб отримати ID відео
         Pattern pattern = Pattern.compile(".*\\/([a-zA-Z0-9_-]{11}).*");
         Matcher matcher = pattern.matcher(previewUrl);
