@@ -37,6 +37,7 @@ public class DetailsAnimeParser {
     private static final String TAG = "DetailsAnimeParser";
     private final String LIST_PATTERN = "new(\\s)MyLists\\(\\'(.*)\\',(.*)\\)";
     private final String DESCRIPTION_PATTERN = "\"description\"\\s*:\\s*\\\"([.+]|[\\s\\S]*)\",([\\s\\S]*)\"duration\"\\s*";
+    private final String TITLE_PATTERN = "\"name\"\\s*:\\s*\\\"([.+]|[\\s\\S]*)\",([\\s\\S]*)\"@id\"\\s*";
 
     public Single<AnimeDetailsModel> getDetailsModel(Document doc) {
         return Single.fromCallable(() -> parseAnimePage(doc));
@@ -48,6 +49,10 @@ public class DetailsAnimeParser {
 
         String jsonDetails = rootContentElement.selectFirst("script[type=application/ld+json]").html();
 
+        String name = ParserUtils.getMatcherResult(TITLE_PATTERN, jsonDetails, 1);
+        if (name != null) {
+            jsonDetails = jsonDetails.replace(name, StringEscapeUtils.escapeJson(name));
+        }
         String description = ParserUtils.getMatcherResult(DESCRIPTION_PATTERN, jsonDetails, 1);
         if (description != null) {
             jsonDetails = jsonDetails.replace(description, StringEscapeUtils.escapeJson(description));
