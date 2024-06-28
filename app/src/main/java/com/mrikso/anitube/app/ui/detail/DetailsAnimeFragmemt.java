@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.ctetin.expandabletextviewlibrary.ExpandableTextView;
+import com.blankj.utilcode.util.EncodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.common.base.Strings;
@@ -38,6 +38,7 @@ import com.mrikso.anitube.app.ui.dialogs.ChangeAnimeStatusDialog;
 import com.mrikso.anitube.app.ui.dialogs.TorrentSelectionDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.DownloadUtils;
+import com.mrikso.anitube.app.utils.HtmlTextSpanner;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -204,9 +205,8 @@ public class DetailsAnimeFragmemt extends Fragment
         String description = animeDetails.getDescription();
         if (!Strings.isNullOrEmpty(description)) {
             binding.layoutDescription.llDescription.setVisibility(View.VISIBLE);
-            ExpandableTextView expandableTextView = binding.layoutDescription.tvDescription;
-            expandableTextView.setContent(description);
-            expandableTextView.setNeedExpend(true);
+            var expandableTextView = binding.layoutDescription.tvDescription;
+            expandableTextView.setContent(EncodeUtils.htmlDecode(description));
         }
 
         ScreenshotModel trailer = animeDetails.getTrailerModel();

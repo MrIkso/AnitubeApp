@@ -13,8 +13,8 @@
     <string name="recommendations">Рекомендуємо</string>
     <string name="screenshots">Скріншоти</string>
     <string name="trailer">Трейлер</string>
-    <string name="detail">Детальніше</string>
-    <string name="hide">Приховати</string>
+    <string name="action_read_more">Детальніше</string>
+    <string name="action_read_less">Приховати</string>
     <string name="director">Режисер:</string>
     <string name="year">Рік:</string>
     <string name="studio">Студія:</string>
