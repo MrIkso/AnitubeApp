@@ -4,199 +4,157 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_height="wrap_content"
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:id="@+id/app_bar_layout">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="?actionBarSize">
+
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 app:contentInsetStart="0dp">
+
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/ib_back"
-                        android:background="@drawable/transparent_circle_background"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginStart="8dp"
+                        android:background="@drawable/transparent_circle_background"
                         app:srcCompat="@drawable/ic_back" />
+
                     <TextView
-                        android:textSize="18sp"
-                        android:textColor="@color/text"
-                        android:ellipsize="end"
-                        android:gravity="start|center"
                         android:id="@+id/tv_anime_title"
-                        android:background="@null"
                         android:layout_width="0dp"
                         android:layout_height="56dp"
-                        android:maxLines="1"
-                        android:includeFontPadding="false"
                         android:layout_weight="1.0"
+                        android:background="@null"
+                        android:ellipsize="end"
                         android:fontFamily="@font/roboto_medium"
-                        tools:text="Title"/>
+                        android:gravity="start|center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/text"
+                        android:textSize="18sp"
+                        tools:text="Title" />
                 </LinearLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </RelativeLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/nested_scroll_view"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true"
-        android:overScrollMode="never">
+        android:overScrollMode="never"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="visible">
+
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <com.mrikso.anitube.app.view.TreeViewGroup
                 android:id="@+id/tree_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
 
-            <!-- <com.google.android.material.chip.ChipGroup -->
-            <!-- android:layout_height="wrap_content" -->
-            <!-- android:layout_width="match_parent" -->
-            <!-- android:visibility="gone" -->
-            <!-- android:layout_marginTop="8dp" -->
-            <!-- android:layout_marginLeft="16dp" -->
-            <!-- android:layout_marginRight="16dp" -->
-            <!-- android:layout_marginHorizontal="16dp" -->
-            <!-- android:id="@+id/dubs_chip_group" /> -->
-            <!--  -->
-            <!-- <com.google.android.material.textfield.TextInputLayout -->
-            <!-- android:id="@+id/dub_text_til" -->
-            <!-- android:visibility="gone" -->
-            <!-- android:layout_width="fill_parent" -->
-            <!-- android:layout_height="wrap_content" -->
-            <!-- android:layout_marginLeft="16dp" -->
-            <!-- android:layout_marginTop="8dp" -->
-            <!-- android:layout_marginRight="16dp" -->
-            <!-- android:layout_marginBottom="8dp" -->
-            <!-- android:hint="@string/dub" -->
-            <!-- android:layout_marginHorizontal="16dp" -->
-            <!-- app:boxBackgroundColor="@color/bg" -->
-            <!-- app:boxCornerRadiusBottomEnd="8dp" -->
-            <!-- app:boxCornerRadiusBottomStart="8dp" -->
-            <!-- app:boxCornerRadiusTopEnd="8dp" -->
-            <!-- app:boxCornerRadiusTopStart="8dp" -->
-            <!-- app:endIconTint="@color/iconColor" -->
-            <!-- app:startIconDrawable="@drawable/ic_source_24" -->
-            <!-- app:startIconTint="@color/iconColor" -->
-            <!-- style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"> -->
-            <!-- <AutoCompleteTextView -->
-            <!-- android:textSize="14.0sp" -->
-            <!-- android:textColor="@color/text" -->
-            <!-- android:id="@+id/translations" -->
-            <!-- android:padding="16dp" -->
-            <!-- android:layout_width="fill_parent" -->
-            <!-- android:layout_height="wrap_content" -->
-            <!-- android:inputType="none" -->
-            <!-- android:alpha="0.9" -->
-            <!-- android:textAllCaps="true" -->
-            <!-- android:fontFamily="@font/roboto_medium" /> -->
-            <!-- </com.google.android.material.textfield.TextInputLayout> -->
-            <!--  -->
-            <!-- <com.google.android.material.chip.ChipGroup -->
-            <!-- android:layout_height="wrap_content" -->
-            <!-- android:layout_width="match_parent" -->
-            <!-- android:visibility="gone" -->
-            <!-- android:layout_marginLeft="16dp" -->
-            <!-- android:layout_marginRight="16dp" -->
-            <!-- android:layout_marginHorizontal="16dp" -->
-            <!-- android:id="@+id/players_chip_group" /> -->
-
             <LinearLayout
-                tools:visibility="visible"
-                android:visibility="gone"
                 android:id="@+id/title_layout"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginHorizontal="16dp">
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
-                    android:layout_height="wrap_content"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.0"
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:textColor="?android:attr/textColorPrimary"
                         android:includeFontPadding="false"
                         android:text="@string/episode_list"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_height="wrap_content"
+                        android:id="@+id/summary"
                         android:layout_width="wrap_content"
-                        
-                        android:textSize="12sp"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:fontFamily="@font/roboto_medium"
+
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        tools:text="епізодів 10"
+                        android:fontFamily="@font/roboto_medium"
                         android:lineSpacingExtra="2dp"
-                        android:id="@+id/summary" />
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:textSize="12sp"
+                        tools:text="епізодів 10" />
 
                 </LinearLayout>
 
                 <RelativeLayout
-                    android:layout_height="wrap_content"
+                    android:id="@+id/ib_sort"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/transparent_circle_background"
-                    android:focusable="true"
                     android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center"
-                    android:padding="8dp"
-                    android:id="@+id/ib_sort">
+                    android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/sort"
 
-                        app:srcCompat="@drawable/ic_up"
                         android:layout_width="24dp"
-                        android:layout_height="24dp" />
+                        android:layout_height="24dp"
+                        app:srcCompat="@drawable/ic_up" />
 
                 </RelativeLayout>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_episodes"
-                android:clipToPadding="false"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:overScrollMode="never"
+                android:clipToPadding="false"
                 android:orientation="vertical"
+                android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_episode"/>
+                tools:listitem="@layout/item_episode" />
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
+
     <include
-        tools:visibility="gone"
-        android:layout_gravity="center"
         android:id="@+id/load_state_layout"
+        layout="@layout/load_state_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/load_state_layout" />
+        android:layout_gravity="center"
+        tools:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -15,6 +15,7 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.google.android.material.chip.Chip;
@@ -187,6 +188,8 @@ public class WatchAnimeFragment extends Fragment
         episodesAdapter = new EpisodesAdapter();
         episodesAdapter.setOnItemClickListener(this);
         binding.rvEpisodes.setAdapter(episodesAdapter);
+        binding.rvEpisodes.setItemAnimator(new DefaultItemAnimator());
+        binding.rvEpisodes.setItemViewCacheSize(20);
 
         binding.treeView.setTreeItemClickListener(item -> {
             if (!item.isExpandable()) {
