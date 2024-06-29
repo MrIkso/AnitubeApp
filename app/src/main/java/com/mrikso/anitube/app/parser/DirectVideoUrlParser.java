@@ -15,6 +15,7 @@ import com.mrikso.anitube.app.extractors.MP4UploadExtractor;
 import com.mrikso.anitube.app.extractors.MoonAnimeArtExtractor;
 import com.mrikso.anitube.app.extractors.PeertubeExtractor;
 import com.mrikso.anitube.app.extractors.StreamSBExtractor;
+import com.mrikso.anitube.app.extractors.TortugaVideosExtractor;
 import com.mrikso.anitube.app.extractors.UdropExtractor;
 import com.mrikso.anitube.app.extractors.VeohVideodExtractor;
 import com.mrikso.anitube.app.extractors.csstExtractor;
@@ -23,10 +24,6 @@ import com.mrikso.anitube.app.extractors.utils.Utils;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 
-import io.reactivex.rxjava3.core.Single;
-
-import okhttp3.OkHttpClient;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,6 +31,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import javax.inject.Inject;
+
+import io.reactivex.rxjava3.core.Single;
+import okhttp3.OkHttpClient;
 
 public class DirectVideoUrlParser {
     private static final String TAG = "DirectVideoUrlParser";
@@ -69,7 +69,7 @@ public class DirectVideoUrlParser {
             BaseVideoLinkExtracror extracror;
 
             if (iframeDomain.contains("tortuga.wtf")) {
-                 extracror = new AhsdiVideosExtractor(iframeUrl, client);
+                extracror = new TortugaVideosExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("ashdi.vip")) {
                 extracror = new AhsdiVideosExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("udrop.com")) {

@@ -27,12 +27,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
-    private final String TAG = "AhsdiVideosExtractor";
+public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
+    private final String TAG = "TortugaVideosExtractor";
     private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
     private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
-	
-    public AhsdiVideosExtractor(String url, OkHttpClient client) {
+
+    public TortugaVideosExtractor(String url, OkHttpClient client) {
         super(url, client);
     }
 
@@ -44,17 +44,32 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
             String uri = variant.uri();
-            String newUri = uri;
-            Pattern pattern = Pattern.compile("/hls/(\\d+)/");
-            Matcher matcher = pattern.matcher(newUri);
+
+            Pattern pattern = Pattern.compile("./(\\d+)/");
+            Matcher matcher = pattern.matcher(uri);
 
             if (matcher.find()) {
                 String resolution = matcher.group(1);
-                Log.i(TAG, " " + resolution + "=>" + newUri);
-                qualitiesMap.put(ParserUtils.standardizeQuality(resolution), newUri);
+                Log.i(TAG, " " + resolution + "=>" + uri);
+                uri = playerJs.getFile().replaceAll("playlist.m3u8|index.m3u8", variant.uri().replaceFirst("./", ""));
+                qualitiesMap.put(ParserUtils.standardizeQuality(resolution), uri);
             } else {
                 qualitiesMap.put("AUTO", playerJs.getFile());
             }
+
+            /*if(uri.startsWith("./")) {
+                 newUri = playerJs.getFile().replace("playlist.m3u8", variant.uri().replaceFirst("./", ""));
+            }
+            else {
+                newUri = uri;
+            }
+            Optional<Resolution> resolutionOptional =  variant.resolution();
+            if(resolutionOptional.isPresent()){
+                qualitiesMap.put(ParserUtils.standardizeQuality(String.valueOf(resolutionOptional.get().height())), newUri);
+            }
+            else {
+                qualitiesMap.put("AUTO", newUri);
+            }*/
 
         }
         model.setHeaders(Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
