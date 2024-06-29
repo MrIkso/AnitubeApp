@@ -1,5 +1,7 @@
 package com.ctetin.expandabletextviewlibrary;
 
+import static androidx.core.util.PatternsCompat.AUTOLINK_WEB_URL;
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.text.DynamicLayout;
 import android.text.Layout;
 import android.text.Selection;
@@ -29,6 +28,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.ctetin.expandabletextviewlibrary.app.LinkType;
 import com.ctetin.expandabletextviewlibrary.app.StatusType;
 import com.ctetin.expandabletextviewlibrary.model.ExpandableStatusFix;
@@ -42,8 +45,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static androidx.core.util.PatternsCompat.AUTOLINK_WEB_URL;
 
 /**
  * @date: on 2018-08-24

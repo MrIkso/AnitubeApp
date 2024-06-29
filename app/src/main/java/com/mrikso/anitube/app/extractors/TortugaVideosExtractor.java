@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.extractors;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 
 import com.google.gson.Gson;
@@ -41,7 +39,7 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
         VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
         //Log.i(TAG, "start parse playlist");
-        Log.i(TAG, masterPlayList.toString());
+        //  Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
             String uri = variant.uri();
 
@@ -50,7 +48,7 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
 
             if (matcher.find()) {
                 String resolution = matcher.group(1);
-                Log.i(TAG, " " + resolution + "=>" + uri);
+                //Log.i(TAG, " " + resolution + "=>" + uri);
                 uri = playerJs.getFile().replaceAll("playlist.m3u8|index.m3u8", variant.uri().replaceFirst("./", ""));
                 qualitiesMap.put(ParserUtils.standardizeQuality(resolution), uri);
             } else {

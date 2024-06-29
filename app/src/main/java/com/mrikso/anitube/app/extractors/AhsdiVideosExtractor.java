@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.extractors;
 
-import android.util.Log;
-
 import androidx.core.util.Pair;
 
 import com.google.gson.Gson;
@@ -41,7 +39,7 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
         VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
         //Log.i(TAG, "start parse playlist");
-        Log.i(TAG, masterPlayList.toString());
+        // Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
             String uri = variant.uri();
             String newUri = uri;
@@ -50,7 +48,7 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
 
             if (matcher.find()) {
                 String resolution = matcher.group(1);
-                Log.i(TAG, " " + resolution + "=>" + newUri);
+                // Log.i(TAG, " " + resolution + "=>" + newUri);
                 qualitiesMap.put(ParserUtils.standardizeQuality(resolution), newUri);
             } else {
                 qualitiesMap.put("AUTO", playerJs.getFile());

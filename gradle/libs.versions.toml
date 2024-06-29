@@ -7,7 +7,6 @@ appcompat = "1.7.0"
 circleimageview = "3.1.0"
 glide = "4.16.0"
 coreSplashscreen = "1.0.1"
-expandabletextview = "v1.6.1-x"
 gson = "2.11.0"
 hiltAndroid = "2.51.1"
 jsoup = "1.17.2"
@@ -67,7 +66,7 @@ circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circ
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commonsText" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
-expandabletextview = { module = "com.github.MZCretin:ExpandableTextView", version.ref = "expandabletextview" }
+
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

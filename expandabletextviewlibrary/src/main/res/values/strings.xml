@@ -1,0 +1,5 @@
+<resources>
+    <string name="social_contract">收起</string>
+    <string name="social_expend">展开</string>
+    <string name="social_text_target">网页链接</string>
+</resources>

@@ -131,8 +131,6 @@ dependencies {
     implementation(libs.androidx.room.rxjava3)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.expandabletextview)
-
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.scalars)
@@ -192,6 +190,7 @@ dependencies {
     implementation(project(":treeview"))
     implementation(project(":bottomsheetMenu"))
     implementation(project(":doubletapplayerview"))
+    implementation(project(":expandabletextviewlibrary"))
 }
 
 // Delete large build log files from ~/.gradle/daemon/X.X/daemon-XXX.out.log
