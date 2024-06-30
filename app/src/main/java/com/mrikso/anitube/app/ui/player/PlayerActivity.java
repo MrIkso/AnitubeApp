@@ -665,6 +665,10 @@ public class PlayerActivity extends AppCompatActivity {
             pipParams.setTitle(animeTitle);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pipParams.setAutoEnterEnabled(true);
+        }
+
         return pipParams.build();
     }
 
@@ -928,6 +932,14 @@ public class PlayerActivity extends AppCompatActivity {
             if (playerView != null) {
                 playerView.onResume();
             }
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && !isInPictureInPictureMode()) {
+            enterPiP();
         }
     }
 
