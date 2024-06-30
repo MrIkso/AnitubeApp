@@ -1,14 +1,17 @@
 package com.mrikso.anitube.app.ui.detail;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
@@ -25,6 +28,7 @@ import com.mrikso.anitube.app.adapters.FranchisesAdapter;
 import com.mrikso.anitube.app.adapters.ScreenshotsAdapter;
 import com.mrikso.anitube.app.databinding.FragmentDetailsAnimeBinding;
 import com.mrikso.anitube.app.databinding.ItemChipBinding;
+import com.mrikso.anitube.app.databinding.ItemDetailsInfoRowBinding;
 import com.mrikso.anitube.app.databinding.LayoutReleaseActionBinding;
 import com.mrikso.anitube.app.interfaces.OnTorrentClickListener;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
@@ -38,20 +42,20 @@ import com.mrikso.anitube.app.ui.dialogs.ChangeAnimeStatusDialog;
 import com.mrikso.anitube.app.ui.dialogs.TorrentSelectionDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.DownloadUtils;
-import com.mrikso.anitube.app.utils.HtmlTextSpanner;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.StringUtils;
+import com.mrikso.anitube.app.utils.ViewExtKt;
 import com.mrikso.anitube.app.utils.ViewUtils;
-
-import dagger.hilt.android.AndroidEntryPoint;
 
 import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class DetailsAnimeFragmemt extends Fragment
@@ -66,6 +70,7 @@ public class DetailsAnimeFragmemt extends Fragment
     private List<ScreenshotModel> screenshotsList = null;
     private int mode = 0;
     private int animeId;
+    private int tableRowIndex = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,6 +112,7 @@ public class DetailsAnimeFragmemt extends Fragment
         similarAnimeAdapter = null;
         screenshotsList = null;
         franchisesAdapter = null;
+        tableRowIndex = 0;
     }
 
     private void initObservers() {
@@ -132,7 +138,7 @@ public class DetailsAnimeFragmemt extends Fragment
                     binding.clContent.setVisibility(View.GONE);
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                    binding.loadStateLayout.errorMessage.setText("no network");
+                    binding.loadStateLayout.errorMessage.setText(R.string.message_error_no_internet);
                     break;
             }
         });
@@ -206,6 +212,7 @@ public class DetailsAnimeFragmemt extends Fragment
         if (!Strings.isNullOrEmpty(description)) {
             binding.layoutDescription.llDescription.setVisibility(View.VISIBLE);
             var expandableTextView = binding.layoutDescription.tvDescription;
+            expandableTextView.setVisibility(View.VISIBLE);
             expandableTextView.setContent(EncodeUtils.htmlDecode(description));
         }
 
@@ -230,12 +237,12 @@ public class DetailsAnimeFragmemt extends Fragment
         List<BaseAnimeModel> similarAnimeList = animeDetails.getSimilarAnimeList();
         if (similarAnimeList != null && !similarAnimeList.isEmpty()) {
             binding.layoutSimilar.llSimilar.setVisibility(View.VISIBLE);
-                similarAnimeAdapter.submitList(similarAnimeList);
+            similarAnimeAdapter.submitList(similarAnimeList);
 
         }
 
         List<FranchiseModel> franchiseAnimeList = animeDetails.getFranchiseList();
-        if (franchiseAnimeList != null && !franchiseAnimeList.isEmpty() && franchiseAnimeList.size() > 1 ) {
+        if (franchiseAnimeList != null && !franchiseAnimeList.isEmpty() && franchiseAnimeList.size() > 1) {
             binding.layoutFranchises.llFranchise.setVisibility(View.VISIBLE);
             franchisesAdapter.submitList(franchiseAnimeList);
 
@@ -326,65 +333,69 @@ public class DetailsAnimeFragmemt extends Fragment
     }
 
     private void showInfoGroup(AnimeDetailsModel animeDetails) {
-
         SimpleModel yearRelease = animeDetails.getReleaseYear();
         if (yearRelease != null) {
-            binding.layoutInfo.yearLayout.setVisibility(View.VISIBLE);
-            TextView year = binding.layoutInfo.tvYear;
-            createClickableTextView(year, yearRelease.getText(), yearRelease.getUrl());
+            addTableRow(R.string.year, createClickableTextView(yearRelease.getText(), yearRelease.getUrl()));
         }
 
         String director = animeDetails.getDirector();
         if (!StringUtil.isBlank(director)) {
-            binding.layoutInfo.directorLayout.setVisibility(View.VISIBLE);
-            binding.layoutInfo.tvDirector.setText(director);
+            addTableRow(R.string.director, director);
         }
 
         String studio = animeDetails.getStudio();
         if (!StringUtil.isBlank(studio)) {
-            binding.layoutInfo.studioLayout.setVisibility(View.VISIBLE);
-            binding.layoutInfo.tvStudio.setText(studio);
+            addTableRow(R.string.studio, studio);
         }
+
         String episodes = animeDetails.getEpisodes();
         if (!StringUtil.isBlank(episodes)) {
-            binding.layoutInfo.episodesLayout.setVisibility(View.VISIBLE);
-            binding.layoutInfo.tvEpisodes.setText(episodes);
+            addTableRow(R.string.series, episodes);
         }
+
         List<SimpleModel> translators = animeDetails.getTranslators();
         if (translators != null && !translators.isEmpty()) {
-            binding.layoutInfo.translationLayout.setVisibility(View.VISIBLE);
             String translatorsString =
                     translators.stream().map(e -> e.getText()).collect(Collectors.joining(", "));
-            binding.layoutInfo.tvTransators.setText(translatorsString);
+            addTableRow(R.string.translation, translatorsString);
         }
+
         showVoicers(animeDetails.getVoicers());
         showDubbers(animeDetails.getDubbersTeamList());
-
         showGenresGroup(animeDetails.getGenres());
     }
 
     private void showVoicers(List<SimpleModel> voicers) {
         if (voicers != null && !voicers.isEmpty()) {
-            binding.layoutInfo.dubbersLayout.setVisibility(View.VISIBLE);
-            String dubbersString = voicers.stream().map(e -> e.getText()).collect(Collectors.joining(", "));
-            binding.layoutInfo.tvDubbers.setText(dubbersString);
+            String dubbersString = voicers.stream().map(SimpleModel::getText).collect(Collectors.joining(", ")).trim();
+            addTableRow(R.string.dubbers, dubbersString);
         }
     }
 
     private void showDubbers(List<DubbersTeam> dubbers) {
         if (dubbers != null && !dubbers.isEmpty()) {
-            binding.layoutInfo.dubbersLayout.setVisibility(View.VISIBLE);
             StringBuilder sb = new StringBuilder();
             for (DubbersTeam dubberTeam : dubbers) {
                 sb.append(dubberTeam.getDubberTeam().getText());
                 sb.append(": ");
                 String dubbersString =
-                        dubberTeam.getDubbers().stream().map(e -> e.getText()).collect(Collectors.joining(", "));
+                        dubberTeam.getDubbers().stream().map(SimpleModel::getText).collect(Collectors.joining(", "));
                 sb.append(dubbersString);
                 sb.append("\n");
             }
-            binding.layoutInfo.tvDubbers.setText(sb.toString().trim());
+            addTableRow(R.string.dubbers, sb.toString().trim());
         }
+    }
+
+    private void addTableRow(@StringRes int title, @Nullable CharSequence value) {
+        TableLayout table = binding.layoutInfo.tableLayout;
+        var row = ItemDetailsInfoRowBinding.inflate(getLayoutInflater(), table, false);
+        row.tvTitle.setText(title);
+        row.tvValue.setText(value);
+        row.tvValue.setClickable(true);
+        row.tvValue.setMovementMethod(LinkMovementMethod.getInstance());
+        table.addView(row.getRoot(), tableRowIndex);
+        tableRowIndex++;
     }
 
     private void showGenresGroup(List<SimpleModel> genres) {
@@ -451,9 +462,10 @@ public class DetailsAnimeFragmemt extends Fragment
         ViewUtils.makeLinks(tv, links);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    private SpannableString createClickableTextView(String message, String url) {
+        return ViewExtKt.makeLinks(message, message, (v) -> {
+            openSearchFragment(message, url);
+        });
     }
 
     private void addOrRemoveFromFavorites(int animeId, boolean isAdd) {

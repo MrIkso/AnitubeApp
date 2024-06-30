@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/details_frame"
-    android:clipToPadding="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="true">
 
     <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -14,140 +14,155 @@
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
-            android:scrollbars="none"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:scrollbars="none">
+
             <FrameLayout
                 android:id="@+id/content_frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <LinearLayout
+                    android:id="@+id/cl_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
                     android:orientation="vertical"
-                    android:id="@+id/cl_content"
                     android:visibility="gone"
-                    tools:visibility="visible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    tools:visibility="visible">
+
                     <FrameLayout
                         android:id="@+id/poster_frame"
                         android:layout_width="match_parent"
                         android:layout_height="300dp">
+
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/poster_bg"
-                            android:layout_height="fill_parent"
                             android:layout_width="fill_parent"
-                            android:scaleType="centerCrop"
-                        />
-                        <View
-                            android:background="@drawable/shadow_gradient"
                             android:layout_height="fill_parent"
-                            android:layout_width="fill_parent" />
+                            android:scaleType="centerCrop"
+                            tools:src="@drawable/image_hello" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:background="@drawable/shadow_gradient" />
+
                         <com.google.android.material.card.MaterialCardView
                             style="?attr/materialCardViewFilledStyle"
-                            android:layout_gravity="center"
                             android:layout_width="145dp"
                             android:layout_height="240dp"
+                            android:layout_gravity="center"
+                            android:layout_marginHorizontal="78dp"
                             android:layout_marginLeft="78dp"
                             android:layout_marginTop="@dimen/layout_margin_top"
                             android:layout_marginRight="78dp"
                             android:layout_marginBottom="@dimen/layout_margin_bottom"
-                            android:layout_marginHorizontal="78dp"
                             app:cardElevation="0dp">
+
                             <com.google.android.material.imageview.ShapeableImageView
                                 android:id="@+id/poster"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
-                                app:shapeAppearanceOverlay="@style/CardViewShapeableImageView" />
+                                app:shapeAppearanceOverlay="@style/CardViewShapeableImageView"
+                                tools:src="@drawable/image_hello" />
                         </com.google.android.material.card.MaterialCardView>
                     </FrameLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:id="@+id/ll_score"
                         android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        tools:visibility="visible">
+
                         <RatingBar
                             android:id="@+id/rb_score"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:rating="5.0"
-                            android:scaleX="1.25"
-                            android:scaleY="1.25"
                             android:isIndicator="true"
                             android:numStars="5"
                             android:progressBackgroundTint="?attr/colorSurfaceVariant"
                             android:progressTint="@color/material_yellow"
-                            style="@style/Widget.AppCompat.RatingBar.Small" />
+                            android:rating="5.0"
+                            android:scaleX="1.25"
+                            android:scaleY="1.25" />
+
                         <TextView
                             android:id="@+id/tv_score"
+                            style="@style/TextLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:includeFontPadding="false"
                             android:layout_marginStart="18dp"
-                            style="@style/TextLabel" />
+                            android:includeFontPadding="false"
+                            tools:text="10/10" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:id="@+id/ll_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginHorizontal="16dp">
+                        android:orientation="vertical">
+
                         <TextView
-                            android:textSize="20sp"
-                            android:textColor="@color/text"
-                            android:ellipsize="end"
-                            android:gravity="center"
                             android:id="@+id/title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:maxLines="3"
-                            android:fontFamily="@font/roboto_bold"
-                            tools:text="Бліч"/>
-                        <TextView
                             android:ellipsize="end"
+                            android:fontFamily="@font/roboto_bold"
                             android:gravity="center"
-                            android:visibility="gone"
+                            android:maxLines="3"
+                            android:textColor="@color/text"
+                            android:textSize="20sp"
+                            tools:text="БЛІЧ: ТИСЯЧОЛІТНЯ КРИВАВА ВІЙНА" />
+
+                        <TextView
                             android:id="@+id/title_eng"
+                            style="@style/TextLabelAlpha"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
                             android:maxLines="1"
-                            style="@style/TextLabelAlpha"
-                            tools:text="Bletch"
-                            />
+                            android:visibility="gone"
+                            tools:text="Bleach: Sennen Kessen-hen"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/details_ll"
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/layout_margin_bottom">
+                        android:layout_marginBottom="@dimen/layout_margin_bottom"
+                        android:orientation="vertical">
+
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/fab_watch"
                             style="@style/Widget.Material3.Button.Icon"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginHorizontal="32dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="@string/play"
-                            app:icon="@drawable/ic_play_circle"
-                            android:textAllCaps="false"
+                            android:layout_marginHorizontal="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="32dp"
                             android:elevation="4dp"
-                            app:iconGravity="textStart"
-                            app:cornerRadius="16dp" />
+                            android:text="@string/play"
+                            android:textAllCaps="false"
+                            app:cornerRadius="16dp"
+                            app:icon="@drawable/ic_play_circle"
+                            app:iconGravity="textStart" />
 
                         <include
                             android:id="@+id/layout_release_action"
@@ -155,66 +170,72 @@
 
                         <include
                             android:id="@+id/layout_info"
-                            layout="@layout/layout_info"
-                            style="@style/layout_detail_item" />
+                            style="@style/layout_detail_item"
+                            layout="@layout/layout_info" />
+
                         <include
                             android:id="@+id/layout_description"
-                            layout="@layout/layout_description"
-                            style="@style/layout_detail_item" />
+                            style="@style/layout_detail_item"
+                            layout="@layout/layout_description" />
+
                         <include
                             android:id="@+id/layout_trailer"
-                            layout="@layout/layout_trailer_video"
-                            style="@style/layout_detail_item" />
+                            style="@style/layout_detail_item"
+                            layout="@layout/layout_trailer_video" />
+
                         <include
                             android:id="@+id/layout_screenshots"
-                            layout="@layout/layout_screenshots"
-                            style="@style/layout_detail_item" />
+                            style="@style/layout_detail_item"
+                            layout="@layout/layout_screenshots" />
+
                         <include
                             android:id="@+id/layout_franchises"
-                            layout="@layout/layout_franchises"
-                            style="@style/layout_detail_item" />
+                            style="@style/layout_detail_item"
+                            layout="@layout/layout_franchises" />
+
                         <include
                             android:id="@+id/layout_similar"
-                            layout="@layout/layout_similar"
-                            style="@style/layout_detail_item" />
+                            style="@style/layout_detail_item"
+                            layout="@layout/layout_similar" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_comments"
                             style="@style/Widget.Material3.Button.Icon"
-                            android:layout_marginLeft="32dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="32dp"
-                            android:layout_marginHorizontal="32dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="@string/comments"
-                            app:icon="@drawable/ic_comment"
-                            android:textAllCaps="false"
+                            android:layout_marginHorizontal="32dp"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="32dp"
                             android:elevation="4dp"
-                            app:iconGravity="textStart"
-                            app:cornerRadius="16dp" />
+                            android:text="@string/comments"
+                            android:textAllCaps="false"
+                            app:cornerRadius="16dp"
+                            app:icon="@drawable/ic_comment"
+                            app:iconGravity="textStart" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <include
-                    tools:visibility="gone"
-                    android:layout_gravity="center"
                     android:id="@+id/load_state_layout"
+                    layout="@layout/load_state_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    layout="@layout/load_state_layout" />
+                    android:layout_gravity="center"
+                    tools:visibility="gone" />
             </FrameLayout>
         </androidx.core.widget.NestedScrollView>
     </com.mrikso.anitube.app.view.CustomSwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_back"
+        style="style/ShapeAppearanceOverlayExtended"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
         app:backgroundTint="?attr/colorSurfaceContainer"
-        app:tint="?attr/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="2dp"
         app:fabCustomSize="42dp"
@@ -222,6 +243,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended"
         app:srcCompat="@drawable/ic_back"
-        style="style/ShapeAppearanceOverlayExtended" />
+        app:tint="?attr/colorPrimary" />
 
 </FrameLayout>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_height="wrap_content"
 	android:layout_width="fill_parent"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:orientation="vertical"
 	android:visibility="gone"
+	tools:visibility="visible"
 	android:id="@+id/ll_description">
 
 	<TextView
@@ -33,6 +34,7 @@
 		app:ep_expand_text="@string/action_read_more"
 		app:ep_need_contract="true"
 		app:ep_need_animation="true"
-		app:ep_expand_color="?attr/colorAccent" />
+		app:ep_expand_color="?attr/colorAccent"
+		tools:text="У Суспільстві Душ спокій та мирне існування раптово дещо порушує. Тамтешні мешканці почали дедалі частіше зникати без жодного сліду і не відомо, хто за цим стоїть. А між тим чорна тінь підкрадається все ближче до Ічіґо та його друзів..." />
 
 </LinearLayout>
