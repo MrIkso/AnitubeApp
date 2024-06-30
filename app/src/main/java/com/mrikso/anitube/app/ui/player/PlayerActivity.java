@@ -17,12 +17,12 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Rational;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -127,9 +127,9 @@ public class PlayerActivity extends AppCompatActivity {
     private ImageView exoNextEp;
 
     // Bottom buttons
-    private ImageView exoPip;
-    private ImageView exoSkip;
-    private ImageView exoScreen;
+    private ImageButton exoPip;
+    private ImageButton exoSkip;
+    private ImageButton exoScreen;
 
     private LinearLayout exoTopControllers;
     private LinearLayout exoMiddleControllers;
@@ -164,6 +164,7 @@ public class PlayerActivity extends AppCompatActivity {
     private BaseAnimeModel animeModel;
     private String episodePath;
     private int doubleTapSeek;
+    private int fastSeek;
     private boolean autoPlayNextEpisode;
     private boolean gesturesEnabled;
     private boolean autoContinue;
@@ -173,11 +174,12 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadSettings();
         setView();
         initViewModel();
 
         setupViews();
-        loadSettings();
+
         // if (savedInstanceState == null) {
         hideNavBar();
         parseExtra();
@@ -228,7 +230,10 @@ public class PlayerActivity extends AppCompatActivity {
 
         // Bottom buttons
         exoPip = findViewById(R.id.exo_pip);
-        //  exoSkip = findViewById(R.id.exo_skip);
+        exoSkip = findViewById(R.id.exo_quick_skip);
+        if (!(fastSeek > 0)) {
+            exoSkip.setVisibility(View.GONE);
+        }
         exoScreen = findViewById(R.id.exo_screen);
 
         youTubeOverlay = findViewById(R.id.youtube_overlay);
@@ -337,7 +342,7 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayer.prepare();
 
         playVideo();
-        if (Utils.isPiPSupported(this)){
+        if (Utils.isPiPSupported(this)) {
             setPictureInPictureParams(getPipParams(exoPlayer.isPlaying()));
         }
     }
@@ -348,7 +353,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void setupMiddleControllers() {
-       // Log.i("TAG", "epnum:" + episodeNumber + "size:" + listRepo.getList().size());
+        // Log.i("TAG", "epnum:" + episodeNumber + "size:" + listRepo.getList().size());
 
         if (episodeNumber == 1) {
             exoPrevEp.setAlpha(0.4f);
@@ -434,7 +439,7 @@ public class PlayerActivity extends AppCompatActivity {
             exoQuality.setOnItemClickListener((parent, view, position, id) -> {
                 currentQuality = (String) parent.getAdapter().getItem(position);
                 String qualityItem = episodeLinks.getLinksQuality().get(currentQuality);
-                currentPosition = Math.max(0, exoPlayer.getContentPosition());
+                currentPosition = Math.max(0, exoPlayer.getCurrentPosition());
 
                 MediaSource mediaSource = mediaSourceHelper.getMediaSource(qualityItem, true);
                 exoPlayer.setMediaSource(mediaSource);
@@ -474,7 +479,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void savePlayer() {
         if (exoPlayer != null) {
-            currentPosition = Math.max(0, exoPlayer.getContentPosition());
+            currentPosition = Math.max(0, exoPlayer.getCurrentPosition());
             sharedViewModel.addOrUpdateWatchedAnime(
                     animeModel, episodePath, episodeNumber, exoPlayer.getContentDuration(), currentPosition);
             sharedViewModel.addOrUpdateWatchedEpisode(
@@ -546,6 +551,9 @@ public class PlayerActivity extends AppCompatActivity {
         });
         exoPip.setOnClickListener(v -> {
             enterPiP();
+        });
+        exoSkip.setOnClickListener(v -> {
+            exoPlayer.seekTo(exoPlayer.getCurrentPosition() + fastSeek * 1000L);
         });
     }
 
@@ -831,6 +839,7 @@ public class PlayerActivity extends AppCompatActivity {
         var prefs = PreferencesHelper.getInstance();
 
         doubleTapSeek = prefs.getPlayerDoubleTapSeek();
+        fastSeek = prefs.getPlayerFastSeek();
         autoPlayNextEpisode = prefs.isPlayerEnabledPlayNextEpisode();
         gesturesEnabled = prefs.isPlayerEnabledSwipeControls();
         autoContinue = prefs.isPlayerAutoContinuePlay();
@@ -870,7 +879,7 @@ public class PlayerActivity extends AppCompatActivity {
         } else {
             if (broadcastReceiver != null) {
                 unregisterReceiver(broadcastReceiver);
-                broadcastReceiver=null;
+                broadcastReceiver = null;
             }
         }
 

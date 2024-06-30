@@ -41,8 +41,8 @@
         <item>10 секунд</item>
         <item>15 секунд</item>
         <item>30 секунд</item>
-        <item>60 секунд</item>
-        <item>120 секунд</item>
+        <item>1 хвилина</item>
+        <item>2 хвилини</item>
     </string-array>
 
     <string-array name="double_tap_seek_values">
@@ -54,5 +54,27 @@
         <item>30</item>
         <item>60</item>
         <item>120</item>
+    </string-array>
+
+    <string-array name="fast_seek_entries">
+        <item>@string/disabled</item>
+        <item>30 секунд</item>
+        <item>45 секунд</item>
+        <item>1 хвилина</item>
+        <item>1 хвилина 30 cекунд</item>
+        <item>2 хвилини</item>
+        <item>3 хвилини</item>
+        <item>4 хвилини</item>
+    </string-array>
+
+    <string-array name="fast_seek_values">
+        <item>0</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>180</item>
+        <item>240</item>
     </string-array>
 </resources>

@@ -165,4 +165,5 @@
     <string name="state_no_recent_search_desc">Почніть шукати аніме і тут з\'явиться історія вашого пошуку</string>
     <string name="pause">Пауза</string>
     <string name="resume">Відновити</string>
+    <string name="fast_seek">Швидка перемотка</string>
 </resources>

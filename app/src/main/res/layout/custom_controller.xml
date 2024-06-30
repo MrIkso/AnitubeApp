@@ -242,12 +242,25 @@
                 tools:text="24:00" />
 
             <ImageButton
+                android:id="@+id/exo_quick_skip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/transparent_circle_background"
+                android:clickable="true"
+                android:contentDescription="@null"
+                android:focusable="true"
+                android:padding="11dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_fast_forward"
+                app:tint="#fff" />
+
+            <ImageButton
                 android:id="@+id/exo_pip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/transparent_circle_background"
-                android:padding="8dp"
+                android:padding="11dp"
                 app:srcCompat="@drawable/ic_picture_in_picture"
                 app:tint="@color/white"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
@@ -257,7 +270,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/transparent_circle_background"
-                android:padding="8dp"
+                android:padding="11dp"
                 app:srcCompat="@drawable/ic_open_in_fullscreen"
                 app:tint="@color/white"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />

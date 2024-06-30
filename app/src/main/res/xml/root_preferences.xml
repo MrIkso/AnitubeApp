@@ -33,6 +33,15 @@
             app:title="@string/double_tap_seek"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:defaultValue="60"
+            app:entries="@array/fast_seek_entries"
+            app:entryValues="@array/fast_seek_values"
+            app:icon="@drawable/ic_fast_forward"
+            app:key="player_fast_seek"
+            app:title="@string/fast_seek"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:icon="@drawable/ic_swipe_gesture"

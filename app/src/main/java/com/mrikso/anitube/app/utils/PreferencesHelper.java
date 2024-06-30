@@ -92,11 +92,16 @@ public class PreferencesHelper {
     }
 
     public int getPlayerDoubleTapSeek() {
-        String sec = preferences.getString(PreferenceKeys.PREF_PLAYER_DOUBLE_TAP_SEEK, "10");
-        if(sec.equals("off")){
+        String seek = preferences.getString(PreferenceKeys.PREF_PLAYER_DOUBLE_TAP_SEEK, "10");
+        if (seek.equals("off")) {
             return -1;
         }
-        return Integer.parseInt(sec);
+        return Integer.parseInt(seek);
+    }
+
+    public int getPlayerFastSeek() {
+        String seek = preferences.getString(PreferenceKeys.PREF_PLAYER_FAST_SEEK, "60");
+        return Integer.parseInt(seek);
     }
 
     public boolean isPlayerEnabledSwipeControls() {
