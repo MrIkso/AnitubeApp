@@ -16,7 +16,6 @@ import com.mrikso.anitube.app.model.SimpleModel;
 import com.mrikso.anitube.app.model.TorrentModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
 import com.mrikso.anitube.app.network.ApiClient;
-import com.mrikso.anitube.app.utils.EscapeStringSerializer;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.StringUtils;
 
@@ -74,7 +73,7 @@ public class DetailsAnimeParser {
         int animeId = ParserUtils.getAnimeId(simpleDetailAnimeModel.getId());
 
         AnimeDetailsModel animeDetailsModel = new AnimeDetailsModel(animeId, simpleDetailAnimeModel.getName(), simpleDetailAnimeModel.getThumbnail(), simpleDetailAnimeModel.getUrl());
-        animeDetailsModel.setDescription(simpleDetailAnimeModel.getDescription());
+        animeDetailsModel.setDescription(StringEscapeUtils.unescapeJson(simpleDetailAnimeModel.getDescription()));
 
         String trailerUrl = simpleDetailAnimeModel.getEmbedUrl();
         if (!Strings.isNullOrEmpty(trailerUrl)) {
