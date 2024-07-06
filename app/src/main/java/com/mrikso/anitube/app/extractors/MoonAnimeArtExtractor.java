@@ -74,22 +74,37 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
 
     private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
         return Single.create(emitter -> {
-            extract();
+            Response request = client.newCall(new Request.Builder()
+                            .url(getUrl())
+                            .addHeader("Host", "moonanime.art")
+                            .addHeader("Accept", "*/*")
+                            .addHeader("User-Agent", ApiClient.DESKTOP_USER_AGENT)
+                            .addHeader("accept-language", "uk-UA,uk;q=0.9,ru-UA;q=0.8,ru;q=0.7,en-US;q=0.6,en;q=0.5")
+                            .get()
+                            .build())
+                    .execute();
+            if(!request.isSuccessful()){
+                emitter.onError(new Exception("moonanime.art manifest don`t downloaded"));
+            }
+            String responseBody = request.body().string();
+
             Gson gson = new Gson();
             String json = ParserUtils.getMatcherResult(
-                    PLAYER_JS_PATTERN, getDocument().data(), 1);
+                    PLAYER_JS_PATTERN, responseBody, 1);
             int lastIndex = json.lastIndexOf(",");
             if (lastIndex >= 0) {
                 json = json.substring(0, lastIndex) + "}";
             }
             PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
-            Log.d(TAG, playerJs.getFile());
+            //Log.d(TAG, playerJs.getFile());
+            request.close();
             Request build = new Request.Builder().url(playerJs.getFile()).get().build();
             try (Response response = client.newCall(build).execute()) {
                 String masterPlaylist = response.body().string();
                 if (Strings.isNullOrEmpty(masterPlaylist)) {
                     emitter.onError(new Throwable("masterPlaylist is null of empty"));
                 }
+                response.close();
                 emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
 
             } catch (UnknownHostException exception) {
