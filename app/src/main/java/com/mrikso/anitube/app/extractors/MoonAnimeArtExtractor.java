@@ -85,6 +85,7 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                     .execute();
             if(!request.isSuccessful()){
                 emitter.onError(new Exception("moonanime.art manifest don`t downloaded"));
+                return;
             }
             String responseBody = request.body().string();
 
