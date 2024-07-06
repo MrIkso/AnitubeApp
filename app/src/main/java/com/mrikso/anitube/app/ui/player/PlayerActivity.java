@@ -768,10 +768,16 @@ public class PlayerActivity extends AppCompatActivity {
         if (model.getLinksQuality() != null && !model.getLinksQuality().isEmpty()) {
             Map<String, String> qualitiesMap = model.getLinksQuality();
 
-            currentQuality = model.getDefaultQuality();
+            //currentQuality = model.getDefaultQuality();
 
-            if (Strings.isNullOrEmpty(currentQuality)) {
-                currentQuality = qualitiesMap.keySet().stream().findFirst().get();
+            if (Strings.isNullOrEmpty(currentQuality) && !qualitiesMap.containsKey(currentQuality)) {
+                // load default player quality
+                var defaultQuality = model.getDefaultQuality();
+                if (!Strings.isNullOrEmpty(defaultQuality)) {
+                    currentQuality = defaultQuality;
+                } else {
+                    currentQuality = qualitiesMap.keySet().stream().findFirst().get();
+                }
             }
 
             // qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
