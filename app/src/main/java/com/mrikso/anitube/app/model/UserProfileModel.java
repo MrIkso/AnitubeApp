@@ -14,6 +14,7 @@ public class UserProfileModel {
     private String userOnline;
     private int userCommentsCount;
     private String userCommentsRating;
+    private String profileBackground;
 
     public String getUsername() {
         return this.username;
@@ -117,5 +118,13 @@ public class UserProfileModel {
 
     public void setUserCommentsRating(String userCommentsRating) {
         this.userCommentsRating = userCommentsRating;
+    }
+
+    public String getProfileBackground() {
+        return this.profileBackground;
+    }
+
+    public void setProfileBackground(String profileBackground) {
+        this.profileBackground = profileBackground;
     }
 }

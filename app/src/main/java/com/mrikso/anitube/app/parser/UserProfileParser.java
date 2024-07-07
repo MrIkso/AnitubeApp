@@ -1,6 +1,9 @@
 package com.mrikso.anitube.app.parser;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.model.UserProfileModel;
+import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ParserUtils;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,6 +21,15 @@ public class UserProfileParser {
         // #dle-content > div.lcol > div > h1 > span:nth-child(1)
         UserProfileModel model = new UserProfileModel();
         Element userinfoElenment = doc.selectFirst("#dle-content");
+
+        String profileCardStyle = userinfoElenment.selectFirst("div.lcol > div.box").attr("style");
+        if (Strings.isNullOrEmpty(profileCardStyle)) {
+            model.setProfileBackground(ApiClient.PROFILE_BG_URL);
+        } else {
+            String profileCardBg = ParserUtils.getMatcherResult("background:url\\((.+)\\)", profileCardStyle, 1);
+            model.setProfileBackground(Strings.isNullOrEmpty(profileCardBg) ? ApiClient.PROFILE_BG_URL : ParserUtils.normaliseImageUrl(profileCardBg));
+        }
+
         String username = userinfoElenment.selectFirst("h1 span").text().trim();
         model.setUsername(username);
 

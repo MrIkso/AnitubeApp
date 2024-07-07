@@ -119,6 +119,14 @@ public class ParserUtils {
         return ApiClient.BASE_URL + "/" + rawUrl;
     }
 
+    public static String loadSmartphoneNoAvatar(String imageUrl) {
+        if (imageUrl.contains("/templates/AniTubenew/dleimages/noavatar.png")) {
+            return "templates/smartphone/dleimages/noavatar.png";
+        } else {
+            return imageUrl;
+        }
+    }
+
     public static void parseDleHash(String data) {
         Executors.newSingleThreadExecutor().execute(() -> {
             String hash = DleHashParser.getHash(data);

@@ -171,9 +171,9 @@ public class AnimeListFragment extends Fragment {
         Navigation.findNavController(requireView()).navigate(R.id.nav_search);
     }
 
-    private void setUserData(UserModel userModel) {
-        profileLink = userModel.getUserUrl();
-        ViewUtils.loadAvatar(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(userModel.getUserAvatar()));
+    private void setUserData(UserModel data) {
+        profileLink = data.getUserUrl();
+        ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
     }
 
     private void openProfileFragment() {

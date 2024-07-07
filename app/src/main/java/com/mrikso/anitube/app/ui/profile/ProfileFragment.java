@@ -158,14 +158,14 @@ public class ProfileFragment extends Fragment {
         // https://anitube.in.ua/templates/smartphone/images/profile_bg.jpg
 
         ViewUtils.loadImage(
-                binding.layoutProfileHeader.avatar, ParserUtils.normaliseImageUrl(model.getUserAvatarUrl()));
+                binding.layoutProfileHeader.avatar, ParserUtils.normaliseImageUrl(ParserUtils.loadSmartphoneNoAvatar(model.getUserAvatarUrl())));
 
         boolean isOnline = model.getUserOnline().equalsIgnoreCase("онлайн");
         binding.layoutProfileHeader.online.setImageResource(
                 isOnline ? R.drawable.ic_circle_status_online : R.drawable.ic_circle_status_offline);
 
         ViewUtils.loadImage(
-                binding.layoutProfileHeader.avatarBg, /*ProfileBackgroundImages.getImage()*/ ApiClient.PROFILE_BG_URL);
+                binding.layoutProfileHeader.avatarBg, model.getProfileBackground());
         binding.layoutProfileHeader.userNickname.setText(model.getUsername());
 
         binding.layoutProfileHeader.userGroupTv.setText(model.getUserGroup());
