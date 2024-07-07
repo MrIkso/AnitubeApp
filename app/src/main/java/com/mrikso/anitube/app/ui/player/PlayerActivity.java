@@ -666,7 +666,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            pipParams.setAutoEnterEnabled(true);
+            pipParams.setAutoEnterEnabled(isPlaying);
         }
 
         return pipParams.build();
@@ -944,7 +944,7 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && !isInPictureInPictureMode()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && !isInPictureInPictureMode() && exoPlayer.isPlaying()) {
             enterPiP();
         }
     }
