@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -31,7 +30,6 @@ import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
-
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 @AndroidEntryPoint
@@ -73,26 +71,16 @@ public class AnimeListFragment extends Fragment {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
             if (refreshLoadState instanceof LoadState.Loading) {
-                binding.container.setVisibility(View.GONE);
-                binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                showLoadingState();
             }
             if (refreshLoadState instanceof LoadState.NotLoading) {
                 if (refreshLoadState.getEndOfPaginationReached() && animePpagingAdapter.getItemCount() < 1) {
                     showNoDataState();
                 } else {
-                    binding.container.setVisibility(View.VISIBLE);
-                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                    binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+                    showReadyState();
                 }
             } else if (refreshLoadState instanceof LoadState.Error) {
-                binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-                binding.container.setVisibility(View.GONE);
-                binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-                binding.loadStateLayout.repeat.setOnClickListener(v -> animePpagingAdapter.retry());
-                LoadState.Error loadStateError = (LoadState.Error) refreshLoadState;
-                binding.loadStateLayout.errorMessage.setText(
-                        loadStateError.getError().getLocalizedMessage());
+                showErrorState((LoadState.Error) refreshLoadState);
             }
             if (!(refreshLoadState instanceof LoadState.Loading) && appendLoadState instanceof LoadState.NotLoading) {
                 if (appendLoadState.getEndOfPaginationReached() && animePpagingAdapter.getItemCount() < 1) {
@@ -116,6 +104,33 @@ public class AnimeListFragment extends Fragment {
         binding.layoutToolbar.profileAvatar.setOnClickListener(v -> openProfileFragment());
     }
 
+    private void showReadyState() {
+        if (binding != null) {
+            binding.container.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showLoadingState() {
+        if (binding != null) {
+            binding.container.setVisibility(View.GONE);
+            binding.loadStateLayout.progressBar.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showErrorState(LoadState.Error refreshLoadState) {
+        if (binding != null) {
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.container.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.repeat.setOnClickListener(v -> animePpagingAdapter.retry());
+            binding.loadStateLayout.errorMessage.setText(
+                    refreshLoadState.getError().getLocalizedMessage());
+        }
+    }
+
     private void openDetailsFragment(final String link) {
         AnimeListFragmentDirections.ActionNavAnimeListToNavDetailsAnimeInfo action =
                 AnimeListFragmentDirections.actionNavAnimeListToNavDetailsAnimeInfo(link);
@@ -123,14 +138,16 @@ public class AnimeListFragment extends Fragment {
     }
 
     private void showNoDataState() {
-        binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
-        binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
-        binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_anime_list_desc);
+        if (binding != null) {
+            binding.loadStateLayout.ivIcon.setImageResource(R.drawable.image_no_data);
+            binding.loadStateLayout.errorMessageTitle.setText(R.string.state_no_data);
+            binding.loadStateLayout.errorMessage.setText(R.string.state_no_data_anime_list_desc);
 
-        binding.container.setVisibility(View.GONE);
-        binding.loadStateLayout.progressBar.setVisibility(View.GONE);
-        binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
-        binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.container.setVisibility(View.GONE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initObservers() {
