@@ -773,7 +773,7 @@ public class PlayerActivity extends AppCompatActivity {
             if (Strings.isNullOrEmpty(currentQuality) && !qualitiesMap.containsKey(currentQuality)) {
                 // load default player quality
                 var defaultQuality = model.getDefaultQuality();
-                if (!Strings.isNullOrEmpty(defaultQuality)) {
+                if (!Strings.isNullOrEmpty(defaultQuality) && qualitiesMap.containsKey(defaultQuality)) {
                     currentQuality = defaultQuality;
                 } else {
                     currentQuality = qualitiesMap.keySet().stream().findFirst().get();
