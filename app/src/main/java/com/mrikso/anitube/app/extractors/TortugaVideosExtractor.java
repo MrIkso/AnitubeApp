@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.extractors;
 
+import android.util.Log;
+
 import androidx.core.util.Pair;
 
 import com.google.gson.Gson;
@@ -27,32 +29,34 @@ import okhttp3.Request;
 
 public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "TortugaVideosExtractor";
-    private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
+    private final String PLAYER_JS_PATTERN = "file:\\s*\"([^\"]*|\\d+|\\{[^}]*\\})\"";
     private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
 
     public TortugaVideosExtractor(String url, OkHttpClient client) {
         super(url, client);
     }
 
-    private VideoLinksModel getModel(String masterU3u8, PlayerJsResponse playerJs) throws IOException {
+    private VideoLinksModel getModel(String masterU3u8, String masterPlayListUrl) throws IOException {
         Map<String, String> qualitiesMap = new HashMap<>();
-        VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
+        VideoLinksModel model = new VideoLinksModel(masterPlayListUrl);
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
-        //Log.i(TAG, "start parse playlist");
-        //  Log.i(TAG, masterPlayList.toString());
+        Log.i(TAG, "start parse playlist");
+        Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
             String uri = variant.uri();
 
-            Pattern pattern = Pattern.compile("./(\\d+)/");
+            Pattern pattern = Pattern.compile("/(\\d+)/");
             Matcher matcher = pattern.matcher(uri);
 
             if (matcher.find()) {
                 String resolution = matcher.group(1);
-                //Log.i(TAG, " " + resolution + "=>" + uri);
-                uri = playerJs.getFile().replaceAll("playlist.m3u8|index.m3u8", variant.uri().replaceFirst("./", ""));
+                if (!uri.startsWith("https://")) {
+                    uri = model.getIfRameUrl().replaceAll("playlist.m3u8|index.m3u8", variant.uri().replaceFirst("./", ""));
+                }
+                Log.i(TAG, " " + resolution + "=>" + uri);
                 qualitiesMap.put(ParserUtils.standardizeQuality(resolution), uri);
             } else {
-                qualitiesMap.put("AUTO", playerJs.getFile());
+                qualitiesMap.put("AUTO", model.getIfRameUrl());
             }
 
             /*if(uri.startsWith("./")) {
@@ -72,32 +76,34 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
         }
         model.setHeaders(Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
         model.setLinksQuality(qualitiesMap);
-        model.setDefaultQuality(ParserUtils.standardizeQuality(playerJs.getDefaultQuality()));
-        model.setSubtileUrl(playerJs.getSubtitle());
+        if (!qualitiesMap.isEmpty()) {
+            model.setDefaultQuality(qualitiesMap.keySet().stream().findFirst().get());
+        }
+        //model.setSubtileUrl(playerJs.getSubtitle());
         return model;
     }
 
-    private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
+    private Single<Pair<String, String>> downloadManifest() {
         return Single.create(emitter -> {
             String page = client.newCall(
                             new Request.Builder().url(getUrl()).get().build())
                     .execute()
                     .body()
                     .string();
-            Gson gson = new Gson();
+            // Gson gson = new Gson();
             //  String jsCode = getDocument().selectFirst("script").data();
             //  Log.i(TAG, " " + getDocument().bo());
-            String json = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
-            // Log.i(TAG, " " + json);
-            PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
+            String masterPlaylistUrl = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
+            Log.i(TAG, "masterPlaylistUrl: " + masterPlaylistUrl);
+            //  PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
 
             String masterPlaylist = client.newCall(
-                            new Request.Builder().url(playerJs.getFile()).get().build())
+                            new Request.Builder().url(masterPlaylistUrl).get().build())
                     .execute()
                     .body()
                     .string();
 
-            emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+            emitter.onSuccess(new Pair<>(masterPlaylist, masterPlaylistUrl));
         });
     }
 

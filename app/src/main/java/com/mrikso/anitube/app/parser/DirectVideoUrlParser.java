@@ -68,7 +68,7 @@ public class DirectVideoUrlParser {
             Log.i(TAG, "iframeurl: " + iframeUrl + " iframeDomain: " + iframeDomain);
             BaseVideoLinkExtracror extracror;
 
-            if (iframeDomain.contains("tortuga.wtf")) {
+            if (iframeDomain.contains("tortuga")) {
                 extracror = new TortugaVideosExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("ashdi.vip")) {
                 extracror = new AhsdiVideosExtractor(iframeUrl, client);
