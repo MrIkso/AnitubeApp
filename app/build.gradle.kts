@@ -175,7 +175,7 @@ dependencies {
     // Utility
     implementation(libs.utilcodex)
     implementation(libs.m3u8.parser)
-    implementation(libs.nextlib)
+    implementation(libs.nextlib.media3ext)
     implementation(libs.tagsoup)
 
     // newpipe yt taken from https://github.com/TeamNewPipe/NewPipe/blob/dev/app/build.gradle#L204
