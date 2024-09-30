@@ -34,8 +34,9 @@ public class csstExtractor extends BaseVideoLinkExtracror {
         return Single.fromCallable(() -> {
             extract();
             Gson gson = new Gson();
-            String json = ParserUtils.getMatcherResult(
-                    PLAYER_JS_PATTERN, getDocument().data(), 1);
+            String json = StringUtils.toValidJson(ParserUtils.getMatcherResult(
+                    PLAYER_JS_PATTERN, getDocument().data(), 1));
+
             // int lastIndex = json.lastIndexOf(",");
             //  if (lastIndex >= 0) {
             //     json = json.substring(0, lastIndex) + "}";

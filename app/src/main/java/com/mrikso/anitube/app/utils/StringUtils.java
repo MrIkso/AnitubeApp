@@ -3,6 +3,8 @@ package com.mrikso.anitube.app.utils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONObject;
+
 public class StringUtils {
     public static String removeLastChar(String str) {
         return removeChars(str, 1);
@@ -22,5 +24,17 @@ public class StringUtils {
             return filename.substring(lastIndex);
         }
         return null;
+    }
+
+    public static String toValidJson(@NonNull String input) {
+        input = input.replaceAll("'", "\"")
+                .replaceAll("(\\w+):(?<!https:|http:)", "\"$1\":")
+                .replaceAll(",\\s*\\}", "}");
+        try {
+            JSONObject jsonObject = new JSONObject(input);
+            return jsonObject.toString(4);
+        } catch (Exception e) {
+            throw new IllegalStateException("Invalid JSON input");
+        }
     }
 }
