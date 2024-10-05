@@ -40,8 +40,8 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(masterPlayListUrl);
         MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
-        Log.i(TAG, "start parse playlist");
-        Log.i(TAG, masterPlayList.toString());
+        //Log.i(TAG, "start parse playlist");
+        //Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
             String uri = variant.uri();
 
@@ -53,7 +53,7 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
                 if (!uri.startsWith("https://")) {
                     uri = model.getIfRameUrl().replaceAll("playlist.m3u8|index.m3u8", variant.uri().replaceFirst("./", ""));
                 }
-                Log.i(TAG, " " + resolution + "=>" + uri);
+                //Log.i(TAG, " " + resolution + "=>" + uri);
                 qualitiesMap.put(ParserUtils.standardizeQuality(resolution), uri);
             } else {
                 qualitiesMap.put("AUTO", model.getIfRameUrl());
@@ -85,8 +85,9 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
 
     private Single<Pair<String, String>> downloadManifest() {
         return Single.create(emitter -> {
+            String newPlayerUrl = getUrl().replaceAll("https://tortuga\\.[a-z]{2,3}/vod/(\\d+\\w*)", "https://tortuga.tw/vod/$1");
             String page = client.newCall(
-                            new Request.Builder().url(getUrl()).get().build())
+                            new Request.Builder().url(newPlayerUrl).get().build())
                     .execute()
                     .body()
                     .string();
@@ -94,7 +95,7 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
             //  String jsCode = getDocument().selectFirst("script").data();
             //  Log.i(TAG, " " + getDocument().bo());
             String masterPlaylistUrl = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
-            Log.i(TAG, "masterPlaylistUrl: " + masterPlaylistUrl);
+            // Log.i(TAG, "masterPlaylistUrl: " + masterPlaylistUrl);
             //  PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
 
             String masterPlaylist = client.newCall(
