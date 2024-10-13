@@ -14,6 +14,7 @@ import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -138,16 +139,19 @@ public class HomePageParser {
                 }
 
                 // Отримання кількості серій та їх тривалості
-                String episodes = infa.select("div.news_2_infa dt:contains(Серій:)")
-                        .first()
-                        .nextSibling()
-                        .toString()
-                        .trim();
+                // body > div.content > div.box.lcol > div:nth-child(3) > div.news_2_c > div.news_2_c_r > div.news_2_c_inf > div.news_2_infa > dt:nth-child(4)
+                Element seriesElement = infa.selectFirst("div.news_2_infa dt:contains(Серій:)");
+                if (seriesElement != null) {
+                    Node seiesNode = seriesElement.nextSibling();
+                    if (seiesNode != null) {
+                        String episodes = seiesNode.toString().trim();
+                        animeRelease.setEpisodes(episodes);
+                    }
+                }
 
                 Element newsElement = infaBase.selectFirst(".news_2_c_text");
                 String description = newsElement.text().replace("Опис:", "").trim();
 
-                animeRelease.setEpisodes(episodes);
                 animeRelease.setDescription(description);
 
                 releasesAnimeList.add(animeRelease);
