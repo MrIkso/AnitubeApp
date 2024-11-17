@@ -1,95 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 xmlns:app="http://schemas.android.com/apk/res-auto"
-	 android:layout_height="wrap_content"
-	 android:layout_width="match_parent"
-	 app:layout_behavior="@string/bottom_sheet_behavior"
-	 android:orientation="vertical"
-	 style="@style/Widget.Material3.BottomSheet">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Material3.BottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
-	<TextView
-		 android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:gravity="center"
-		 android:padding="16dp"
-		 android:textSize="20sp"
-		 android:text="@string/change_anime_status_title"
-		 android:id="@+id/tv_title" />
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="@string/change_anime_status_title"
+        android:textSize="20sp" />
 
-	<RadioGroup
-		 android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:layout_marginEnd="16dp"
-		 android:orientation="vertical"
-		 android:layout_marginStart="16dp"
-		 android:id="@+id/radio_group">
-		 <RadioButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:id="@+id/anime_status_no_watch"
-			 android:text="@string/anime_status_no_watch" />
-			 
-		<RadioButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:id="@+id/anime_status_seen"
-			 android:text="@string/anime_status_seen" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-		<RadioButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:id="@+id/anime_status_will"
-			 android:text="@string/anime_status_will" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-		<RadioButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:id="@+id/anime_status_watch"
-			 android:text="@string/anime_status_watch" />
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp">
 
-		<RadioButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:id="@+id/anime_status_poned"
-			 android:text="@string/anime_status_poned" />
+                <RadioButton
+                    android:id="@+id/anime_status_no_watch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_status_no_watch" />
 
-		<RadioButton
-			 android:layout_height="wrap_content"
-			 android:layout_width="match_parent"
-			 android:id="@+id/anime_status_adand"
-			 android:text="@string/anime_status_adand" />
+                <RadioButton
+                    android:id="@+id/anime_status_seen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_status_seen" />
 
-	</RadioGroup>
+                <RadioButton
+                    android:id="@+id/anime_status_will"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_status_will" />
 
-	<LinearLayout
-		 android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:weightSum="2"
-		 android:paddingEnd="8dp"
-		 android:orientation="horizontal"
-		 android:paddingStart="8dp"
-		 android:id="@+id/container_bottom_sheet_dialog_base_buttons">
+                <RadioButton
+                    android:id="@+id/anime_status_watch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_status_watch" />
 
-		<com.google.android.material.button.MaterialButton
-			 android:layout_height="match_parent"
-			 android:layout_width="match_parent"
-			 android:layout_margin="4dp"
-			 android:singleLine="false"
-			 android:layout_weight="1"
-			 android:id="@+id/button_bottom_sheet_dialog_base_cancel"
-			 android:text="@android:string/cancel" />
+                <RadioButton
+                    android:id="@+id/anime_status_poned"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_status_poned" />
 
-		<com.google.android.material.button.MaterialButton
-			 android:layout_height="match_parent"
-			 android:layout_width="match_parent"
-			 android:visibility="gone"
-			 android:layout_margin="4dp"
-			 android:singleLine="false"
-			 android:layout_weight="1"
-			 android:id="@+id/button_bottom_sheet_dialog_base_ok"
-			 android:text="@android:string/ok" />
+                <RadioButton
+                    android:id="@+id/anime_status_adand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_status_adand" />
 
-	</LinearLayout>
+            </RadioGroup>
+        </ScrollView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/container_bottom_sheet_dialog_base_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bottom_sheet_dialog_base_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:singleLine="false"
+            android:text="@android:string/cancel" />
+
+    </LinearLayout>
 
 </LinearLayout>

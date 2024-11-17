@@ -20,7 +20,7 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     private DialogBottomSheetBaseBinding binding;
 
-    @Nullable
+    @NonNull
     @Override
     public final View onCreateView(
             @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

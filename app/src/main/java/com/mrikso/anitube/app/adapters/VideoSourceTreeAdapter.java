@@ -1,6 +1,7 @@
 package com.mrikso.anitube.app.adapters;
 
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -12,8 +13,8 @@ import com.mrikso.treeview.TreeView;
 public class VideoSourceTreeAdapter extends TreeView.Adapter<VideoSourceTreeAdapter.ViewHolder, PlayerModel> {
 
     public VideoSourceTreeAdapter() {
-        setDisablePadding(true);
-        setDisableExpandIcon(true);
+        // setDisablePadding(false);
+        // setDisableExpandIcon(true);
     }
 
     @Override
@@ -29,15 +30,15 @@ public class VideoSourceTreeAdapter extends TreeView.Adapter<VideoSourceTreeAdap
 
     @Override
     public int getLayoutRes() {
-        return R.layout.item_chip;
+        return R.layout.item_tree;
     }
 
     static class ViewHolder extends TreeView.ViewHolder {
-        Chip name;
+        TextView name;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.chip);
+            name = itemView.findViewById(R.id.name);
         }
     }
 }

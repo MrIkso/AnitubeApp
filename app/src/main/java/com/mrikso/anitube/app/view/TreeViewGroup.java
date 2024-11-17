@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +27,15 @@ import com.mrikso.treeview.TreeItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TreeViewGroup extends LinearLayout {
     protected TreeItem<PlayerModel> model;
     protected Map<String, Pair<Integer, Integer>> chipGroups = new HashMap<>();
-    protected List<Integer> colors = new ArrayList<>();
+    private Set<Integer> colors = new HashSet<>();
     private boolean showRoot = false;
     private LayoutInflater inflater;
     private OnTreeItemClickListener<PlayerModel> clickListener;
@@ -68,7 +71,6 @@ public class TreeViewGroup extends LinearLayout {
 
     private void init() {
         inflater = LayoutInflater.from(getContext());
-
         setOrientation(VERTICAL);
     }
 
@@ -81,7 +83,8 @@ public class TreeViewGroup extends LinearLayout {
         this.model = root;
         chipGroups.clear();
 
-        // Log.i("TreeViewGroup", "Set root called");
+        Log.i("TreeViewGroup", "Set root called");
+        Log.i("TreeViewGroup", root.toString());
         // showAllFistNode(root);
         showLevel(root, "root", 0, viewIndex);
         viewIndex++;
@@ -91,18 +94,32 @@ public class TreeViewGroup extends LinearLayout {
 
     private void showLevel(TreeItem<PlayerModel> root, String key, int depth, int viewIndex) {
         if (root == null) return;
-        //Log.i("TreeViewGroup", "showLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
 
         if (chipGroups.containsKey(key)) {
 
-            //	showAllChildrenRecursive(root);
+            onRestoreSelected(root);
             findViewById(chipGroups.get(key).second).setVisibility(VISIBLE);
 
         } else {
+            // Создаем новую группу, если она еще не была создана
             ChipGroup chipGroup = createChipGroup(root);
-            //Log.i("TreeViewGroup", "create new node");
             chipGroups.put(key, new Pair<>(depth, chipGroup.getId()));
             addView(chipGroup, viewIndex);
+        }
+    }
+
+    private void onRestoreSelected(TreeItem<PlayerModel> root) {
+        if (root == null) return;
+
+        for (TreeItem<PlayerModel> child : root.getChildren()) {
+            if (child.isSelected()) {
+                // Log.i("TreeViewGroup", "restoreState child: " + child);
+                if (restoreListener != null) {
+                    // Log.i("TreeViewGroup", "restoreState restoreListener to fragment");
+                    restoreListener.onRestored(child);
+                }
+            }
+            onRestoreSelected(child);
         }
     }
 
@@ -168,7 +185,9 @@ public class TreeViewGroup extends LinearLayout {
     }
 
     private void removeLevel(String key, int depth) {
-        //Log.i("TreeViewGroup", "removeLevel key: " + key + " depth: " + depth + " viewIndex: " + viewIndex);
+        Log.i("TreeViewGroup", "removeLevel key: " + key + " depth: " + depth);
+
+        // Проходим по всем элементам и скрываем те, которые на глубине, равной или большей переданному значению
         for (Map.Entry<String, Pair<Integer, Integer>> entry : chipGroups.entrySet()) {
             String entryKey = entry.getKey();
             Pair<Integer, Integer> value = entry.getValue();
@@ -179,7 +198,6 @@ public class TreeViewGroup extends LinearLayout {
             }
             if (!key.contains(entryKey) && entryDepth >= depth) {
                 View nextChild = findViewById(entryId);
-                //Log.i("TreeViewGroup", "exits node: " + value);
                 nextChild.setVisibility(GONE);
             }
         }
@@ -239,56 +257,36 @@ public class TreeViewGroup extends LinearLayout {
 
         //todo add restore generated colors
         int bgColor = ViewUtils.getRandomMaterialColor(getContext());
-        if (colors.contains(bgColor)) {
+        while (colors.contains(bgColor)) {
             bgColor = ViewUtils.getRandomMaterialColor(getContext());
-            colors.add(bgColor);
-        } else {
-            colors.add(bgColor);
         }
+        colors.add(bgColor);
         for (TreeItem<PlayerModel> model : result.getChildren()) {
 
             Chip chip = createChip(model.getValue().getName(), bgColor, v -> {
-                if (clickListener != null) {
-                    clickListener.onClick(model);
-                }
                 // click with debounce
                 long lastClickTime = (long) v.getTag();
                 if (System.currentTimeMillis() - lastClickTime < ANIM_TIME) {
                     return;
                 }
+                v.setEnabled(false);
+                v.postDelayed(() -> v.setEnabled(true), ANIM_TIME);
+
                 v.setTag(System.currentTimeMillis());
                 model.setSelected(!model.isSelected());
-                //  removeAllExpandedItemRecursive(model);
-                // showLevel(model, model.getDepth());
-                // v.setChecked(model.isSelected());
 
                 if (model.isExpandable()) {
-                    // if (model.isExpanded()) {
-                    // model.setExpanded(false);
-                    //     removeAllExpandedItemRecursive(result);
-                    //  } else {
-                    // model.setExpanded(true);
-                    // removeLevel(model.getValue().getId(), model.getDepth());
                     removeAllExpandedItemRecursive(result);
-
                     showLevel(model, model.getValue().getId(), model.getDepth(), viewIndex);
 
                     if (!model.isExpanded()) {
                         viewIndex++;
                     }
                     model.setExpanded(true);
-                    //   }
-                    //  model.setExpanded(!model.isExpanded());
-                    // v.setSelected(model.isExpanded());
-                    // } else {
-                    // model.setExpanded(true);
-                    // showLevel(model, model.getDepth());
-                    // v.setSelected(!v.isSelected());
                 }
-
-                // removeLevel(model.getDepth());
-                // showLevel(model, model.getDepth());
-                //   v.setSelected(!model.isExpanded());
+                if (clickListener != null) {
+                    clickListener.onClick(model);
+                }
             });
 
             chip.setChecked(model.isSelected());

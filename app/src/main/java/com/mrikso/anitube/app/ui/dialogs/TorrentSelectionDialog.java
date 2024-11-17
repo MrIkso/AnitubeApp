@@ -16,13 +16,14 @@ import com.mrikso.anitube.app.model.TorrentModel;
 import com.mrikso.anitube.app.ui.dialogs.base.BaseBottomSheetDialogFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TorrentSelectionDialog extends BaseBottomSheetDialogFragment {
     protected static final String ARG_PARAMS = "params";
     public static final String TAG = "TorrentSelectionDialog";
 
-    private ArrayList<TorrentModel> arrayList;
+    private List arrayList;
 
     private OnTorrentClickListener listener;
 
