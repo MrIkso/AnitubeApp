@@ -76,21 +76,19 @@ public class TreeItem<T> implements Serializable {
         return printTree(0);
     }
 
-    private static final int indent = 4; // Увеличим отступ для читабельности
+    private static final int indent = 4;
 
     private String printTree(int increment) {
         StringBuilder s;
         StringBuilder inc = new StringBuilder();
 
-        // Генерируем отступ для текущего уровня
+
         for (int i = 0; i < increment; ++i) {
             inc.append(" ");
         }
 
-        // Выводим текущее значение узла
         s = new StringBuilder(inc + "|-- " + value);
 
-        // Выводим все дочерние элементы
         for (TreeItem<T> child : children) {
             s.append("\n").append(child.printTree(increment + indent));
         }
