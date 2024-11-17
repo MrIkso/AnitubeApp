@@ -103,7 +103,8 @@ public class LoginFragment extends Fragment {
                 switch (state) {
                     case ERROR:
                         binding.loginBtn.setIcon(null);
-                        Toast.makeText(getContext(), getText(R.string.login_error), Toast.LENGTH_SHORT)
+                        binding.loginBtn.setEnabled(true);
+                        Toast.makeText(getContext(), getText(R.string.login_error), Toast.LENGTH_LONG)
                                 .show();
                         break;
                     case LOADING:
