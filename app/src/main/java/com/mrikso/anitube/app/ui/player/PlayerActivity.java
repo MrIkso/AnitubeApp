@@ -281,6 +281,8 @@ public class PlayerActivity extends AppCompatActivity {
         playerView.setControllerHideOnTouch(true);
         playerView.setControllerAutoShow(true);
         playerView.setUseController(true);
+        // playerView.setUseArtwork(true);
+        //playerView.setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER);
         /// playerView.setControllerShowTimeoutMs(-1);
 
         var doubleTapView = ((DoubleTapPlayerView) playerView);
@@ -341,7 +343,10 @@ public class PlayerActivity extends AppCompatActivity {
         // exoPlayer.setPlayWhenReady(playWhenReady);
         exoPlayer.prepare();
 
+        //  if (autoContinue) {
         playVideo();
+        //  }
+
         if (Utils.isPiPSupported(this)) {
             setPictureInPictureParams(getPipParams(exoPlayer.isPlaying()));
         }
@@ -830,6 +835,28 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
+    private void showProgressBarAndControlToggle(boolean isShow) {
+        if (isShow) {
+            playerView.showController();
+            exoProgressBar.setVisibility(View.VISIBLE);
+            exoPlay.setVisibility(View.GONE);
+            exoNextEp.setVisibility(View.INVISIBLE);
+            exoPrevEp.setVisibility(View.INVISIBLE);
+            exoTopControllers.setVisibility(View.INVISIBLE);
+            exoBottomControllers.setVisibility(View.INVISIBLE);
+            exoLock.setVisibility(View.INVISIBLE);
+        } else {
+            playerView.hideController();
+            exoProgressBar.setVisibility(View.GONE);
+            exoPlay.setVisibility(View.VISIBLE);
+            exoNextEp.setVisibility(View.VISIBLE);
+            exoPrevEp.setVisibility(View.VISIBLE);
+            exoTopControllers.setVisibility(View.VISIBLE);
+            exoBottomControllers.setVisibility(View.VISIBLE);
+            exoLock.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void parseExtra() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -983,16 +1010,11 @@ public class PlayerActivity extends AppCompatActivity {
 
             switch (playbackState) {
                 case Player.STATE_BUFFERING:
-                    exoProgressBar.setVisibility(View.VISIBLE);
-                    exoPlay.setVisibility(View.GONE);
+                case Player.STATE_IDLE:
+                    showProgressBarAndControlToggle(true);
                     break;
                 case Player.STATE_READY:
-                    exoProgressBar.setVisibility(View.GONE);
-                    exoPlay.setVisibility(View.VISIBLE);
-                    break;
-                case Player.STATE_IDLE:
-                    exoProgressBar.setVisibility(View.VISIBLE);
-                    exoPlay.setVisibility(View.GONE);
+                    showProgressBarAndControlToggle(false);
                     break;
                 case Player.STATE_ENDED:
                     if (autoPlayNextEpisode) {
