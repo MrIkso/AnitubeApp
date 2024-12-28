@@ -26,6 +26,7 @@ import io.lindstrom.m3u8.parser.MasterPlaylistParser;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -35,6 +36,9 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "MoonAnimeArtExtractor";
     private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
     private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
+
+    private final Map<String, String> HEADERS = Map.of("User-Agent", ApiClient.DESKTOP_USER_AGENT,
+            "Host", "moonanime.art", "Accept", "*/*", "accept-language", "uk,ru;q=0.9,en-US;q=0.8,en;q=0.7");
 
     public MoonAnimeArtExtractor(String url, OkHttpClient client) {
         super(url, client);
@@ -74,20 +78,17 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
 
     private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
         return Single.create(emitter -> {
-            Response request = client.newCall(new Request.Builder()
+            Response manifestRequest = client.newCall(new Request.Builder()
                             .url(getUrl())
-                            .addHeader("Host", "moonanime.art")
-                            .addHeader("Accept", "*/*")
-                            .addHeader("User-Agent", ApiClient.DESKTOP_USER_AGENT)
-                            .addHeader("accept-language", "uk-UA,uk;q=0.9,ru-UA;q=0.8,ru;q=0.7,en-US;q=0.6,en;q=0.5")
+                            .headers(Headers.of(HEADERS))
                             .get()
                             .build())
                     .execute();
-            if(!request.isSuccessful()){
+            if (!manifestRequest.isSuccessful()) {
                 emitter.onError(new Exception("moonanime.art manifest don`t downloaded"));
                 return;
             }
-            String responseBody = request.body().string();
+            String responseBody = manifestRequest.body().string();
 
             Gson gson = new Gson();
             String json = ParserUtils.getMatcherResult(
@@ -98,9 +99,13 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
             }
             PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
             //Log.d(TAG, playerJs.getFile());
-            request.close();
-            Request build = new Request.Builder().url(playerJs.getFile()).get().build();
-            try (Response response = client.newCall(build).execute()) {
+            manifestRequest.close();
+            Request masterPlaylistRequest = new Request.Builder()
+                    .url(playerJs.getFile())
+                    .headers(Headers.of(HEADERS))
+                    .get()
+                    .build();
+            try (Response response = client.newCall(masterPlaylistRequest).execute()) {
                 String masterPlaylist = response.body().string();
                 if (Strings.isNullOrEmpty(masterPlaylist)) {
                     emitter.onError(new Throwable("masterPlaylist is null of empty"));
@@ -109,7 +114,7 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                 emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
 
             } catch (UnknownHostException exception) {
-                emitter.onError(exception.fillInStackTrace());
+                emitter.onError(exception);
             }
         });
     }
