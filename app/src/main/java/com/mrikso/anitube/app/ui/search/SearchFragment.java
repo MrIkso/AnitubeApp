@@ -188,7 +188,7 @@ public class SearchFragment extends Fragment
             if (addToHistory) {
                 viewModel.addRecentSearch(query);
             }
-            //preSearch();
+            preSearch();
             viewModel.getSearchResult(query);
         }
     }
@@ -207,8 +207,7 @@ public class SearchFragment extends Fragment
 
     private void preSearch() {
         if (binding != null) {
-            binding.content.setVisibility(View.GONE);
-            binding.loadStateLayout.stateFrame.setVisibility(View.VISIBLE);
+            showLoadingState();
         }
     }
 

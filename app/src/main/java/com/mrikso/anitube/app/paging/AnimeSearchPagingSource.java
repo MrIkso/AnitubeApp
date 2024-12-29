@@ -45,7 +45,7 @@ public class AnimeSearchPagingSource extends RxPagingSource<Integer, AnimeReleas
         //  Log.d("AnimeSearchPagingSource", "loadSingle: loading page " + page);
 
         // Send request to server with page number
-        return service.search(query, page)
+        return service.search("search", "search", page, 0, 11, query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(data -> Single.just(mapper.transform(data)))

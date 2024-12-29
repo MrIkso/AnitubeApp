@@ -27,8 +27,10 @@ public interface AnitubeApiService {
     @GET
     Single<Document> getPage(@Url String url);
 
-    @POST("?do=search&subaction=search")
-    Single<Document> search(@Query("story") String query, @Query("from_page") int page);
+    @POST("?do=search")
+    @FormUrlEncoded
+    Single<Document> search(@Field("do") String doAction, @Field("subaction") String subaction, @Field("search_start") int search_start, @Field("full_search") int full_search,
+                            @Field("result_from") int result_from, @Field("story") String story);
 
     @POST("/engine/lazydev/dle_search/ajax.php")
     @Headers("X-Requested-With: XMLHttpRequest")
