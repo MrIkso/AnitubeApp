@@ -62,14 +62,7 @@ public class EpisodeModel implements Serializable, Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EpisodeModel that = (EpisodeModel) o;
-
-        return totalWatchTime == that.totalWatchTime
-                && totalEpisodeTime == that.totalEpisodeTime
-                && isWatched == that.isWatched
-                && playerId.equals(that.playerId)
-                && episodeId.equals(that.episodeId)
-                && name.equals(that.name)
-                && episodeUrl.equals(that.episodeUrl);
+        return totalWatchTime == that.totalWatchTime && totalEpisodeTime == that.totalEpisodeTime && isWatched == that.isWatched && Objects.equal(playerId, that.playerId) && Objects.equal(episodeId, that.episodeId) && Objects.equal(name, that.name) && Objects.equal(episodeUrl, that.episodeUrl);
     }
 
     @Override

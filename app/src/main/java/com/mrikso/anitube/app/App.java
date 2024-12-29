@@ -17,10 +17,8 @@ public class App extends Application {
         super.onCreate();
         instance = this;
         preferenceHelper = PreferencesHelper.getInstance();
-        if (preferenceHelper.isDynamicColorsEnabled()) {
-            if (DynamicColors.isDynamicColorAvailable()) {
-                DynamicColors.applyToActivitiesIfAvailable(this);
-            }
+        if (preferenceHelper.isDynamicColorsEnabled() && DynamicColors.isDynamicColorAvailable()) {
+            DynamicColors.applyToActivitiesIfAvailable(this);
         }
 
         preferenceHelper.applyThemeMode(preferenceHelper.getThemeMode());

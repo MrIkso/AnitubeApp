@@ -368,9 +368,6 @@ public class WatchAnimeFragment extends Fragment
     private void openPlayerActivity(VideoLinksModel model) {
         List<EpisodeModel> listEpisodes = episodesAdapter.getCurrentList();
 
-        // HashMap<Integer, EpisodeModel> map = new HashMap<>();
-        //  IntStream.range(0, listEpisodes.size()).forEach(i -> map.put(i, listEpisodes.get(i)));
-
         WatchAnimeFragmentArgs arg = WatchAnimeFragmentArgs.fromBundle(getArguments());
         WatchAnimeFragmentDirections.ActionNavWatchToNavPlayerActivity action =
                 WatchAnimeFragmentDirections.actionNavWatchToNavPlayerActivity(
