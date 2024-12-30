@@ -25,6 +25,11 @@ android {
         targetSdk = 35
         versionCode = 6
         versionName = "1.0.5"
+        resourceConfigurations += listOf("en", "ua")
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     if (keystorePropertiesFile.exists()) {
