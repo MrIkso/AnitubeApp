@@ -1,4 +1,4 @@
-package com.mrikso.anitube.app.network;
+package com.mrikso.anitube.app.network
 
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup

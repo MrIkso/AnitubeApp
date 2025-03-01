@@ -3,12 +3,14 @@ package com.mrikso.anitube.app.ui.detail;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
+import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.parser.DetailsAnimeParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
@@ -40,7 +42,8 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final AnitubeRepository repository;
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
-    private MutableLiveData<AnimeDetailsModel> detailsModel;
+    private MutableLiveData<AnimeDetailsModel> detailsModel ;
+    private MutableLiveData<AnimeMobileDetailsModel> mobileDetailsModelMutableLiveData = new MutableLiveData<>(new AnimeMobileDetailsModel());
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
 
     @Inject
@@ -94,6 +97,29 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
                 });
 
         compositeDisposable.add(disposable);
+
+        loadMobileAnimeDetails(url);
+    }
+
+    private void loadMobileAnimeDetails(String url){
+        compositeDisposable.add(repository
+                .getMobilePage(url)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(v -> {
+                   // loadSate.setValue(new Pair<>(LoadState.LOADING, null));
+                    Log.d(TAG, "start mobile loading");
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> {
+                            Executors.newSingleThreadExecutor().execute(() -> {
+                                parseMobileDetailAnime(response);
+                            });
+                        },
+                        throwable -> {
+                            throwable.printStackTrace();
+                            //loadSate.postValue(new Pair<>(LoadState.ERROR, null));
+                        }));
     }
 
     public LiveData<LoadState> getLoadState() {
@@ -102,6 +128,10 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
 
     public LiveData<AnimeDetailsModel> getDetails() {
         return detailsModel;
+    }
+
+    public LiveData<AnimeMobileDetailsModel> getMobileDetails(){
+        return mobileDetailsModelMutableLiveData;
     }
 
     public void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
@@ -134,6 +164,15 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
         compositeDisposable.add(
                 parser.getDetailsModel(document).subscribeOn(Schedulers.io()).subscribe(v -> {
                     detailsModel.postValue(v);
+                    loadSate.postValue(LoadState.DONE);
+                }));
+    }
+
+    private void parseMobileDetailAnime(Document response) {
+
+        compositeDisposable.add(
+                parser.getMobileDetailsModel(response).subscribeOn(Schedulers.io()).subscribe(v -> {
+                    mobileDetailsModelMutableLiveData.postValue(v);
                     loadSate.postValue(LoadState.DONE);
                 }));
     }

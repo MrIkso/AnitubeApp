@@ -4,8 +4,7 @@ plugins {
 
 android {
     namespace 'com.ctetin.expandabletextviewlibrary'
-    compileSdk 34
-    buildToolsVersion "34.0.0"
+    compileSdk 35
 
     defaultConfig {
         minSdk 21
@@ -14,6 +13,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
     buildTypes {
         release {
             minifyEnabled false

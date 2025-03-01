@@ -5,6 +5,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -12,13 +19,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class OkHttpUtils {
     private static OkHttpClient mOkHttpClient = null;
@@ -101,13 +101,10 @@ public class OkHttpUtils {
 
     private static boolean hasNetworkPermission(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context != null
+            return context != null
                     && PackageManager.PERMISSION_GRANTED
-                            == context.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-                    && PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(Manifest.permission.INTERNET)) {
-                return true;
-            }
-            return false;
+                    == context.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+                    && PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(Manifest.permission.INTERNET);
         }
         return true;
     }

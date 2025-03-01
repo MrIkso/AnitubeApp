@@ -7,6 +7,7 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
+import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.DubbersTeam;
 import com.mrikso.anitube.app.model.FranchiseModel;
@@ -27,6 +28,7 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +42,10 @@ public class DetailsAnimeParser {
 
     public Single<AnimeDetailsModel> getDetailsModel(Document doc) {
         return Single.fromCallable(() -> parseAnimePage(doc));
+    }
+
+    public Single<AnimeMobileDetailsModel> getMobileDetailsModel(Document doc) {
+        return Single.fromCallable(() -> parseMobileAnimePage(doc));
     }
 
     private AnimeDetailsModel parseAnimePage(Document doc) {
@@ -159,6 +165,27 @@ public class DetailsAnimeParser {
         //String json = gson.toJson(animeDetailsModel);
         //Log.i(TAG, json);
         return animeDetailsModel;
+    }
+
+    private AnimeMobileDetailsModel parseMobileAnimePage(Document doc){
+        AnimeMobileDetailsModel model = new AnimeMobileDetailsModel();
+        Element rootContentElement = doc.selectFirst("div#dle-content");
+        Element fullPageElement = rootContentElement.selectFirst("div.full_page");
+        String updateStatus = Objects.requireNonNull(fullPageElement.selectFirst("div.to_view")).text();
+
+        Element typeElement = fullPageElement.selectFirst("li.vis:has(span:containsOwn(Тип))");
+        if (typeElement !=null){
+            SimpleModel year = ParserUtils.buidlSimpleModel(
+                    typeElement.selectFirst("a"));
+            model.setAnimeType(year);
+        }
+        //#full_info > ul > li:nth-child(2) > span
+        model.setAnimeUpdateStatus(updateStatus);
+
+
+        ///html/body/div[1]/div/section/main/section/div/article/div/div[1]/div[1]/div[2]/text()
+        ////*[@id="dle-content"]/article/div/div[1]/div[1]/div[2]/text()
+        return model;
     }
 
     private void parseDetails(Element storyElements, AnimeDetailsModel model) {

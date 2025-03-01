@@ -3,12 +3,16 @@ package com.mrikso.anitube.app.repository;
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
+import com.mrikso.anitube.app.network.ApiClient;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Single;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Response;
 
 public class AnitubeRepository {
@@ -25,6 +29,27 @@ public class AnitubeRepository {
 
     public Single<Document> getPage(String url) {
         return anitubeApi.getPage(url);
+    }
+
+    public Single<Document> getMobilePage(String url) {
+        return Single.create(emitter -> {
+            OkHttpClient client = new OkHttpClient();
+            Request request1 = new Request.Builder()
+                    .url(url)
+                    .header("User-Agent", ApiClient.MOBILE_USER_AGENT)
+                    .build();
+
+            try  {
+                okhttp3.Response response = client.newCall(request1).execute();
+                if (response.isSuccessful() || response.code() == 200) {
+                    emitter.onSuccess(Jsoup.parse(response.body().string()));
+                }
+            }
+            catch (Exception ex){
+                emitter.onError(ex);
+            }
+        });
+       // return anitubeApi.getMobilePage(ApiClient.MOBILE_USER_AGENT, url);
     }
 
     public Single<Document> getAnimeByPage(int page) {

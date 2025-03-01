@@ -5,8 +5,7 @@ plugins {
 
 android {
 	namespace 'com.mrikso.player'
-	compileSdk 34
-	buildToolsVersion "34.0.0"
+	compileSdk 35
 
 	defaultConfig {
 		minSdk 21

@@ -17,6 +17,9 @@
     <string name="action_read_less">Приховати</string>
     <string name="director">Режисер:</string>
     <string name="year">Рік:</string>
+    <string name="type">Тип:</string>
+    <string name="anime_status">Cтатус:</string>
+    <string name="anime_update_status">Оновлено:</string>
     <string name="studio">Студія:</string>
     <string name="series">Серій:</string>
     <string name="translation">Переклад:</string>

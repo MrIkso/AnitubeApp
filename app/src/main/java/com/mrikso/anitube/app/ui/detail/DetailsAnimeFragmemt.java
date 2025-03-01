@@ -32,6 +32,7 @@ import com.mrikso.anitube.app.databinding.ItemDetailsInfoRowBinding;
 import com.mrikso.anitube.app.databinding.LayoutReleaseActionBinding;
 import com.mrikso.anitube.app.interfaces.OnTorrentClickListener;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
+import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.DubbersTeam;
 import com.mrikso.anitube.app.model.FranchiseModel;
@@ -148,6 +149,14 @@ public class DetailsAnimeFragmemt extends Fragment
                 showDetails(results);
             } else {
                 binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewModel.getMobileDetails().observe(getViewLifecycleOwner(), results -> {
+            if (results != null) {
+                showMobileDetails(results);
+            } else {
+               // binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -384,6 +393,18 @@ public class DetailsAnimeFragmemt extends Fragment
                 sb.append("\n");
             }
             addTableRow(R.string.dubbers, sb.toString().trim());
+        }
+    }
+
+    private void showMobileDetails(AnimeMobileDetailsModel detailsModel){
+        SimpleModel typeAnime = detailsModel.getAnimeType();
+        if (typeAnime != null) {
+            addTableRow(R.string.type, createClickableTextView(typeAnime.getText(), typeAnime.getUrl()));
+        }
+
+        String animeStatus = detailsModel.getAnimeUpdateStatus();
+        if (!StringUtil.isBlank(animeStatus)) {
+            addTableRow(R.string.anime_status, animeStatus);
         }
     }
 
