@@ -42,6 +42,8 @@ android {
                 keyPassword = keystoreProperties["keyPassword"].toString()
                 storeFile = file(keystoreProperties["storeFile"]!!)
                 storePassword = keystoreProperties["storePassword"].toString()
+                enableV2Signing = true
+                enableV3Signing = true
             }
         }
     }
