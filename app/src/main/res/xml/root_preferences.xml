@@ -66,6 +66,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/others_cat_title">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_read_more"
+            app:key="load_additional_anime_information"
+            app:summary="@string/load_additional_anime_information_summary"
+            app:title="@string/load_additional_anime_information_title" />
+
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/about">
 
         <!--<Preference

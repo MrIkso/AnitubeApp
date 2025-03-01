@@ -14,4 +14,6 @@ public class PreferenceKeys {
     public static final String PREF_PLAYER_SWIPE_CONTROLS = "player_swipe_controls";
     public static final String PREF_PLAYER_AUTOPLAY_NEXT_EPISODE = "player_autoplay_next_episode";
     public static final String PREF_PLAYER_AUTO_CONTINUE_PLAY = "player_auto_continue_play";
+
+    public static final String PREF_KEY_LOAD_ADDITIONAL_ANIME_INFO = "load_additional_anime_information";
 }

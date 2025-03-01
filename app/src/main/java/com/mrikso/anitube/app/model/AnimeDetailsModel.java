@@ -10,6 +10,8 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
     private String studio;
     private String director;
     private String age;
+    private String lastUpdateTime;
+    private SimpleModel animeSeason;
     private List<SimpleModel> genres;
     private List<SimpleModel> translators;
     private List<SimpleModel> voicers;
@@ -138,5 +140,21 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
 
     public void setTorrensList(List<TorrentModel> torrensList) {
         this.torrensList = torrensList;
+    }
+
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public SimpleModel getAnimeSeason() {
+        return animeSeason;
+    }
+
+    public void setAnimeSeason(SimpleModel animeSeason) {
+        this.animeSeason = animeSeason;
     }
 }

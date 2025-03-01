@@ -122,6 +122,20 @@ public class DetailsAnimeParser {
             parseScreenshotsBlock(screenshotElement, animeDetailsModel);
         }
 
+        Element taggersElement = storyElement.selectFirst("div.tagers");
+        if (taggersElement != null) {
+
+            Element tagsElement = taggersElement.selectFirst("span");
+            if (tagsElement != null) {
+                Element teamListByTag = tagsElement.getElementsByTag("a").first();
+                String seasonName = teamListByTag.text();
+                String seasonUrl = teamListByTag.attr("href");
+                animeDetailsModel.setAnimeSeason(new SimpleModel(seasonName, seasonUrl));
+            }
+            String updateDate = taggersElement.selectFirst("div.story_ico_time").text().trim();
+            animeDetailsModel.setLastUpdateTime(updateDate);
+        }
+
         parseRelatedBlock(storyElement.selectFirst("div.box"), animeDetailsModel, animeUrl);
 
         animeDetailsModel.setRating(ParserUtils.parseRatingBlock(rootContentElement));
@@ -167,14 +181,14 @@ public class DetailsAnimeParser {
         return animeDetailsModel;
     }
 
-    private AnimeMobileDetailsModel parseMobileAnimePage(Document doc){
+    private AnimeMobileDetailsModel parseMobileAnimePage(Document doc) {
         AnimeMobileDetailsModel model = new AnimeMobileDetailsModel();
         Element rootContentElement = doc.selectFirst("div#dle-content");
         Element fullPageElement = rootContentElement.selectFirst("div.full_page");
         String updateStatus = Objects.requireNonNull(fullPageElement.selectFirst("div.to_view")).text();
 
         Element typeElement = fullPageElement.selectFirst("li.vis:has(span:containsOwn(Тип))");
-        if (typeElement !=null){
+        if (typeElement != null) {
             SimpleModel year = ParserUtils.buidlSimpleModel(
                     typeElement.selectFirst("a"));
             model.setAnimeType(year);

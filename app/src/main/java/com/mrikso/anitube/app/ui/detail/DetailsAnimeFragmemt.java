@@ -344,7 +344,7 @@ public class DetailsAnimeFragmemt extends Fragment
     private void showInfoGroup(AnimeDetailsModel animeDetails) {
         SimpleModel yearRelease = animeDetails.getReleaseYear();
         if (yearRelease != null) {
-            addTableRow(R.string.year, createClickableTextView(yearRelease.getText(), yearRelease.getUrl()));
+            addTableRow(R.string.year, createClickableTextView(yearRelease));
         }
 
         String director = animeDetails.getDirector();
@@ -367,6 +367,16 @@ public class DetailsAnimeFragmemt extends Fragment
             String translatorsString =
                     translators.stream().map(e -> e.getText()).collect(Collectors.joining(", "));
             addTableRow(R.string.translation, translatorsString);
+        }
+
+        SimpleModel animeSeason = animeDetails.getAnimeSeason();
+        if (animeSeason != null) {
+            addTableRow(R.string.anime_season, createClickableTextView(animeSeason));
+        }
+
+        String lastUpdateTime = animeDetails.getLastUpdateTime();
+        if (!StringUtil.isBlank(lastUpdateTime)) {
+            addTableRow(R.string.anime_last_update_status, lastUpdateTime);
         }
 
         showVoicers(animeDetails.getVoicers());
@@ -399,7 +409,7 @@ public class DetailsAnimeFragmemt extends Fragment
     private void showMobileDetails(AnimeMobileDetailsModel detailsModel){
         SimpleModel typeAnime = detailsModel.getAnimeType();
         if (typeAnime != null) {
-            addTableRow(R.string.type, createClickableTextView(typeAnime.getText(), typeAnime.getUrl()));
+            addTableRow(R.string.type, createClickableTextView(typeAnime));
         }
 
         String animeStatus = detailsModel.getAnimeUpdateStatus();
@@ -481,6 +491,10 @@ public class DetailsAnimeFragmemt extends Fragment
         }));
 
         ViewUtils.makeLinks(tv, links);
+    }
+
+    private SpannableString createClickableTextView(SimpleModel simpleModel) {
+        return createClickableTextView(simpleModel.getText(), simpleModel.getUrl());
     }
 
     private SpannableString createClickableTextView(String message, String url) {

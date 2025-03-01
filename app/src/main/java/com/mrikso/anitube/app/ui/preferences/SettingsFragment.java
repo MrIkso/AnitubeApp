@@ -76,6 +76,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
 
         bindOnPreferenceChangeListener(PreferenceKeys.PREF_PLAYER_SWIPE_CONTROLS);
         bindOnPreferenceChangeListener(PreferenceKeys.PREF_PLAYER_AUTOPLAY_NEXT_EPISODE);
+        bindOnPreferenceChangeListener(PreferenceKeys.PREF_KEY_LOAD_ADDITIONAL_ANIME_INFO);
 
         // about prefs
         Preference about = findPreference("pref_key_version");
@@ -84,7 +85,10 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
 
     private void bindOnPreferenceChangeListener(String key) {
         Preference preference = findPreference(key);
-        preference.setOnPreferenceChangeListener(this);
+        if(preference!=null) {
+            preference.setOnPreferenceChangeListener(this);
+        }
+        else throw new IllegalArgumentException(String.format("preference key %s not found", key));
     }
 
     private void bindOnPreferenceChangeListener(Preference preference) {

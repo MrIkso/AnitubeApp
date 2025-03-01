@@ -19,7 +19,8 @@
     <string name="year">Рік:</string>
     <string name="type">Тип:</string>
     <string name="anime_status">Cтатус:</string>
-    <string name="anime_update_status">Оновлено:</string>
+    <string name="anime_season">Сезон:</string>
+    <string name="anime_last_update_status">Оновлено:</string>
     <string name="studio">Студія:</string>
     <string name="series">Серій:</string>
     <string name="translation">Переклад:</string>
@@ -107,7 +108,9 @@
     <string name="dynamic_colors_enabled_summary">Динамічні кольори увімкнено</string>
     <string name="dynamic_colors_title">Динамічні кольори</string>
     <string name="theme_mode_pref_title">Тема</string>
-
+    <string name="others_cat_title">Інше</string>
+    <string name="load_additional_anime_information_title">Завантажувати додаткову інформацію</string>
+    <string name="load_additional_anime_information_summary">Завантажувати додаткову інформацію про аніме таку як додана серія, тип</string>
     <string name="about">Про додаток</string>
     <string name="version">Версія</string>
     <string name="source_code">Відкритий код</string>

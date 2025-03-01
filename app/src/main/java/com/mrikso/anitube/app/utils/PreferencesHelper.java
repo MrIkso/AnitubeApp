@@ -116,6 +116,10 @@ public class PreferencesHelper {
         return preferences.getBoolean(PreferenceKeys.PREF_PLAYER_AUTO_CONTINUE_PLAY, false);
     }
 
+    public boolean isLoadAnimeAdditionalInfo() {
+        return preferences.getBoolean(PreferenceKeys.PREF_KEY_LOAD_ADDITIONAL_ANIME_INFO, false);
+    }
+
     public void applyThemeMode(String mode) {
         switch (mode) {
             case "dark":

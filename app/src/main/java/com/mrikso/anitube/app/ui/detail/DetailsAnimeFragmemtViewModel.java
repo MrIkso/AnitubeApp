@@ -98,7 +98,9 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
 
         compositeDisposable.add(disposable);
 
-        loadMobileAnimeDetails(url);
+        if(PreferencesHelper.getInstance().isLoadAnimeAdditionalInfo()) {
+            loadMobileAnimeDetails(url);
+        }
     }
 
     private void loadMobileAnimeDetails(String url){
