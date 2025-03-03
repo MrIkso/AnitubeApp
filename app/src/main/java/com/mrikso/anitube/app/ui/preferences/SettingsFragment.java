@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -25,29 +27,39 @@ import com.google.android.material.color.HarmonizedColorsOptions;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.ui.base.BasePreferenceFragment;
+import com.mrikso.anitube.app.ui.detail.DetailsAnimeFragmemtViewModel;
 import com.mrikso.anitube.app.ui.main.MainActivity;
 import com.mrikso.anitube.app.utils.DialogUtils;
+import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.viewmodel.SharedViewModel;
+
+import org.apache.commons.lang3.StringUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.HttpUrl;
 
 @AndroidEntryPoint
 public class SettingsFragment extends BasePreferenceFragment implements Preference.OnPreferenceChangeListener {
     private PreferencesHelper prefHelper;
+    private SharedViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefHelper = App.getApplication().getPreferenceHelper();
-        initPreferences();
+        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        initObservers();
     }
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
+        prefHelper = PreferencesHelper.getInstance();
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+        initPreferences();
     }
 
     private void initPreferences() {
@@ -76,11 +88,30 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
 
         bindOnPreferenceChangeListener(PreferenceKeys.PREF_PLAYER_SWIPE_CONTROLS);
         bindOnPreferenceChangeListener(PreferenceKeys.PREF_PLAYER_AUTOPLAY_NEXT_EPISODE);
+
+        // Open website Preference
+        Preference hikkaLogin = findPreference(PreferenceKeys.PREF_KEY_HIKKA_LOGIN);
+
+        if (prefHelper.isLogginedToHikka()) {
+            PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_loggined));
+        }
+
+        PreferenceUtils.setOnPreferenceClickListener(hikkaLogin, preference -> {
+            if (prefHelper.isLogginedToHikka()) {
+                prefHelper.setHikkaToken("");
+                PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_login));
+            } else {
+                final String url = buildHikkaOauthUrl();
+                IntentUtils.openInBrowser(requireContext(), url);
+            }
+            return true;
+        });
+
         bindOnPreferenceChangeListener(PreferenceKeys.PREF_KEY_LOAD_ADDITIONAL_ANIME_INFO);
 
         // about prefs
         Preference about = findPreference("pref_key_version");
-        about.setSummary(getString(R.string.version_summary, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
+        PreferenceUtils.setSummary(about, getString(R.string.version_summary, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
     }
 
     private void bindOnPreferenceChangeListener(String key) {
@@ -133,6 +164,23 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
         return true;
     }
 
+    private void initObservers() {
+        viewModel.hikkaLogin().observe(this, result -> {
+            if (result) {
+                Preference hikkaLogin = findPreference(PreferenceKeys.PREF_KEY_HIKKA_LOGIN);
+                PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_loggined));
+            }
+        });
+    }
+
+    private String buildHikkaOauthUrl() {
+        HttpUrl url = HttpUrl.parse(String.format("%s/oauth", ApiClient.HIKKA_URL)).newBuilder()
+                .addQueryParameter("reference", BuildConfig.CLIENT_ID)
+                .addQueryParameter("scope", "update:watchlist,read:watchlist")  // OkHttp автоматично кодує символи
+                .build();
+
+        return url.toString();
+    }
     private void restartMainActivity() {
         Intent intent = getActivity().getIntent();
         getActivity().finish();

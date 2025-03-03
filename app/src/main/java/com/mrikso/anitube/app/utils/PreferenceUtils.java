@@ -4,11 +4,41 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
+import androidx.annotation.Nullable;
+import androidx.preference.Preference;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class PreferenceUtils {
+
+    private PreferenceUtils() {
+        // utility class
+    }
+
+    public static void setOnPreferenceChangeListener(@Nullable final Preference preference, @Nullable final Preference.OnPreferenceChangeListener changeListener) {
+        if (preference != null) {
+            preference.setOnPreferenceChangeListener(changeListener);
+        }
+    }
+
+    public static void setOnPreferenceClickListener(@Nullable final Preference preference, @Nullable final Preference.OnPreferenceClickListener clickListener) {
+        if (preference != null) {
+            preference.setOnPreferenceClickListener(clickListener);
+        }
+    }
+
+    public static void setEnabled(@Nullable final Preference preference, final boolean enabled) {
+        if (preference != null) {
+            preference.setEnabled(enabled);
+        }
+    }
+
+    public static void setSummary(@Nullable final Preference preference, @Nullable final CharSequence summary) {
+        if (preference != null) {
+            preference.setSummary(summary);
+        }
+    }
 
     public static String getPrefString(Context context, String key, final String defaultValue) {
         final SharedPreferences settings =

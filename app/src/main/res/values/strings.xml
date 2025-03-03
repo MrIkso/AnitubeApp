@@ -172,4 +172,7 @@
     <string name="pause">Пауза</string>
     <string name="resume">Відновити</string>
     <string name="fast_seek">Швидка перемотка</string>
+    <string name="hikka_login_succes">Ви успішно авторизувались в hikka.io!</string>
+    <string name="hikka_login">Увійти на hikka.io для сихронізації ваших переглядів на сайт</string>
+    <string name="hikka_loggined">Ви авторизовані на hikka.io. Натисніть щоб вийти</string>
 </resources>

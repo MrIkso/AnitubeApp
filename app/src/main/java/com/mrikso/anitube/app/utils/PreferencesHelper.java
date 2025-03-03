@@ -6,6 +6,7 @@ import android.os.Build;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.App;
 
 import java.util.Set;
@@ -89,6 +90,18 @@ public class PreferencesHelper {
 
     public void setDleHash(String hash) {
         preferences.edit().putString(PreferenceKeys.PREF_KEY_DLE_HASH, hash).apply();
+    }
+
+    public boolean isLogginedToHikka() {
+        return !Strings.isNullOrEmpty(getHikkaToken());
+    }
+
+    public String getHikkaToken() {
+        return preferences.getString(PreferenceKeys.PREF_KEY_HIKKA_TOKEN, "");
+    }
+
+    public void setHikkaToken(String token) {
+        preferences.edit().putString(PreferenceKeys.PREF_KEY_HIKKA_TOKEN, token).apply();
     }
 
     public int getPlayerDoubleTapSeek() {

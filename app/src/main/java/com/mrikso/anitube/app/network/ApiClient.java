@@ -17,4 +17,6 @@ public class ApiClient {
     public static final String ANIME_RANDOM_BG_URL = "https://mrikso.bitbucket.io/AnitubeApp/images/random_anime.jpg";
     public static final String SIGN_UP_URL = BASE_URL +"/index.php?do=register";
     public static final String LOSTPASSWORD_URL = BASE_URL + "/index.php?do=lostpassword";
+    public static final String HIKKA_URL = "https://hikka.io";
+    public static final String HIKKA_API_URL = "https://api.hikka.io";
 }

@@ -9,8 +9,10 @@ import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.data.history.HistoryDatabase;
 import com.mrikso.anitube.app.data.search.SearchDatabase;
 import com.mrikso.anitube.app.network.AddCookiesInterceptor;
+import com.mrikso.anitube.app.network.AddTokenInterceptor;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.network.HikkaApi;
 import com.mrikso.anitube.app.network.JsoupConverterFactory;
 import com.mrikso.anitube.app.network.UserAgentInterceptor;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
@@ -18,6 +20,7 @@ import com.mrikso.anitube.app.parser.CollectionsParser;
 import com.mrikso.anitube.app.parser.CommentsParser;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.repository.HikkaRepository;
 import com.mrikso.anitube.app.ui.anime_list.AnimeListRepository;
 import com.mrikso.anitube.app.ui.collections.CollectionsRepository;
 import com.mrikso.anitube.app.ui.comments.CommentsRepository;
@@ -104,6 +107,22 @@ public class AppModules {
 
     @Singleton
     @Provides
+    @Named("Hikka")
+    public static OkHttpClient provideHikkaHttpClint(
+            HttpLoggingInterceptor httpLoggingInterceptor, UserAgentInterceptor userAgentInterceptor) {
+        return new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(userAgentInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(new AddCookiesInterceptor())
+                .followRedirects(false)
+                .followSslRedirects(true)
+                .build();
+    }
+
+    @Singleton
+    @Provides
     @Named("Anitube")
     public static OkHttpClient provideAnitubeHttpClint(
             HttpLoggingInterceptor httpLoggingInterceptor,
@@ -120,6 +139,7 @@ public class AppModules {
 
     @Singleton
     @Provides
+    @Named("Anitube")
     public static Retrofit provideRetrofitInstance(@Named("Anitube") OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(ApiClient.BASE_URL)
@@ -133,14 +153,38 @@ public class AppModules {
 
     @Singleton
     @Provides
-    public static AnitubeApiService provideApiFactory(Retrofit retrofit) {
+    @Named("Hikka")
+    public static Retrofit provideHikkaRetrofitInstance(@Named("Hikka") OkHttpClient okHttpClient) {
+        return new Retrofit.Builder()
+                .baseUrl(ApiClient.HIKKA_API_URL)
+                .client(okHttpClient)
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.createAsync())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    @Singleton
+    @Provides
+    public static AnitubeApiService provideApiFactory(@Named("Anitube") Retrofit retrofit) {
         return retrofit.create(AnitubeApiService.class);
+    }
+
+    @Singleton
+    @Provides
+    public static HikkaApi provideHikkaFactory(@Named("Hikka") Retrofit retrofit) {
+        return retrofit.create(HikkaApi.class);
     }
 
     @Singleton
     @Provides
     public static AnitubeRepository provideAnitubeRepository(AnitubeApiService apiService) {
         return new AnitubeRepository(apiService);
+    }
+
+    @Singleton
+    @Provides
+    public static HikkaRepository provideHikkaRepository(HikkaApi apiService) {
+        return new HikkaRepository(apiService);
     }
 
     @Singleton

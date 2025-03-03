@@ -1,6 +1,7 @@
 package com.mrikso.anitube.app.ui.main;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         // set content view to binding's root
         setContentView(binding.getRoot());
 
-        //  initViewModel();
+        initViewModel();
+        initObservers();
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
@@ -94,11 +96,19 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         navController = null;
         binding = null;
-        // viewModel = null;
+        viewModel = null;
     }
 
     private void initViewModel() {
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+    }
+
+    private void initObservers() {
+        viewModel.hikkaLogin().observe(this, result -> {
+            if (result) {
+                Toast.makeText(this, getString(R.string.hikka_login_succes), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -121,7 +131,13 @@ public class MainActivity extends AppCompatActivity {
     void handleIntent(Intent intent) {
         if (intent != null && intent.getData() != null) {
             String uriLink = intent.getData().toString();
-            if (ParserUtils.isAnimeLink(uriLink)) {
+            // hikka login case
+            if (uriLink.contains("anitube://auth?reference=")) {
+                String reference = intent.getData().getQueryParameter("reference");
+                viewModel.hikkaLogin(reference);
+            }
+            // anitube anime link
+            else if (ParserUtils.isAnimeLink(uriLink)) {
                 Bundle bundle = new Bundle();
                 bundle.putString("url", uriLink);
                 navController.navigate(R.id.nav_details_anime_info, bundle);

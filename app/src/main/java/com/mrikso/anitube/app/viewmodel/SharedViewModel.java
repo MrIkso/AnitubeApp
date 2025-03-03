@@ -1,8 +1,13 @@
 package com.mrikso.anitube.app.viewmodel;
 
+import android.util.Log;
+
 import androidx.core.util.Pair;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.data.history.enity.HistoryEnity;
 import com.mrikso.anitube.app.data.history.enity.LastWatchedEpisodeEnity;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
@@ -10,20 +15,22 @@ import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.parser.DirectVideoUrlParser;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
+import com.mrikso.anitube.app.repository.HikkaRepository;
 import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
-
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import okhttp3.OkHttpClient;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 
 @HiltViewModel
 public class SharedViewModel extends ViewModel {
@@ -32,11 +39,15 @@ public class SharedViewModel extends ViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final WatchAnimeRepository watchAnimeRepository;
     private final OkHttpClient client;
+    private final MutableLiveData<Boolean> hikkaLogin = new MutableLiveData<>();
+
+    private final HikkaRepository hikkaRepository;
 
     @Inject
-    public SharedViewModel(@Named("Normal") OkHttpClient client, WatchAnimeRepository watchAnimeRepository) {
+    public SharedViewModel(@Named("Normal") OkHttpClient client, WatchAnimeRepository watchAnimeRepository, HikkaRepository hikkaRepository) {
         this.client = client;
         this.watchAnimeRepository = watchAnimeRepository;
+        this.hikkaRepository = hikkaRepository;
         listRepo = ListRepository.getInstance();
     }
 
@@ -100,6 +111,22 @@ public class SharedViewModel extends ViewModel {
             lastWatchEntry.setEpisodeId(episodeModel.getEpisodeId());
             watchAnimeRepository.addOrUpdateWatchedEpisode(lastWatchEntry);
         });
+    }
+
+    public void hikkaLogin(String reference) {
+        compositeDisposable.add(hikkaRepository.getAuthToken(BuildConfig.CLIENT_SECET, reference)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(results -> {
+                    if (results != null) {
+                        hikkaLogin.postValue(true);
+                        PreferencesHelper.getInstance().setHikkaToken(results.getSecret());
+                    }
+                }));
+    }
+
+    public LiveData<Boolean> hikkaLogin() {
+        return hikkaLogin;
     }
 
     @Override

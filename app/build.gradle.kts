@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ApplicationBaseFlavor
+import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import java.io.FileInputStream
@@ -30,6 +32,7 @@ android {
             //noinspection ChromeOsAbiSupport
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
+        loadConfig("secret.properties")
     }
 
     if (keystorePropertiesFile.exists()) {
@@ -113,6 +116,20 @@ android {
         }
         jniLibs.useLegacyPackaging = true
     }
+}
+
+fun ApplicationBaseFlavor.loadConfig(file: String) {
+    val secretProps = rootProject.loadProperties(file)
+    buildConfigField(
+        "String",
+        "CLIENT_ID",
+        "\"${secretPropslistOf(secretProps, "client_id")}\""
+    )
+    buildConfigField(
+        "String",
+        "CLIENT_SECET",
+        "\"${secretPropslistOf(secretProps, "client_secret")}\""
+    )
 }
 
 dependencies {
@@ -199,6 +216,17 @@ dependencies {
     implementation(project(":doubletapplayerview"))
     implementation(project(":expandabletextviewlibrary"))
 }
+
+fun Project.loadProperties(file: String) = if (file(file).exists()) {
+    val fis = FileInputStream(file(file))
+    val prop = Properties()
+    prop.load(fis)
+    prop
+} else null
+
+
+fun secretPropslistOf(secretProps: Properties?, name: String, default: String = ""): String =
+    secretProps?.getProperty(name) ?: default
 
 // Delete large build log files from ~/.gradle/daemon/X.X/daemon-XXX.out.log
 // Source: https://discuss.gradle.org/t/gradle-daemon-produces-a-lot-of-logs/9905
