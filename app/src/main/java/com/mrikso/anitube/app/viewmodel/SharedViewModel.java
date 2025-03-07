@@ -13,10 +13,12 @@ import com.mrikso.anitube.app.data.history.enity.LastWatchedEpisodeEnity;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
+import com.mrikso.anitube.app.network.response.ProfileResponse;
 import com.mrikso.anitube.app.parser.DirectVideoUrlParser;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.repository.HikkaRepository;
 import com.mrikso.anitube.app.repository.ListRepository;
+import com.mrikso.anitube.app.repository.TokenManager;
 import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
@@ -38,16 +40,20 @@ public class SharedViewModel extends ViewModel {
     private final ListRepository listRepo;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final WatchAnimeRepository watchAnimeRepository;
+    private final TokenManager tokenManager;
     private final OkHttpClient client;
     private final MutableLiveData<Boolean> hikkaLogin = new MutableLiveData<>();
 
+    private final MutableLiveData<ProfileResponse> hikkaProfileResponse = new MutableLiveData<>();
     private final HikkaRepository hikkaRepository;
 
     @Inject
-    public SharedViewModel(@Named("Normal") OkHttpClient client, WatchAnimeRepository watchAnimeRepository, HikkaRepository hikkaRepository) {
+    public SharedViewModel(@Named("Normal") OkHttpClient client, WatchAnimeRepository watchAnimeRepository,
+                           HikkaRepository hikkaRepository, TokenManager tokenManager) {
         this.client = client;
         this.watchAnimeRepository = watchAnimeRepository;
         this.hikkaRepository = hikkaRepository;
+        this.tokenManager = tokenManager;
         listRepo = ListRepository.getInstance();
     }
 
@@ -117,16 +123,38 @@ public class SharedViewModel extends ViewModel {
         compositeDisposable.add(hikkaRepository.getAuthToken(BuildConfig.CLIENT_SECET, reference)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(results -> {
-                    if (results != null) {
-                        hikkaLogin.postValue(true);
-                        PreferencesHelper.getInstance().setHikkaToken(results.getSecret());
+                .flatMap(tokenResponse -> {
+                    hikkaLogin.postValue(true);
+                    PreferencesHelper.getInstance().setHikkaToken(tokenResponse.getSecret(), tokenResponse.getExpiration());
+                    updateToken(tokenResponse.getExpiration());
+                    return hikkaRepository.getMeProfile();
+                })
+                .subscribe(profileResponse -> {
+                    if (profileResponse != null) {
+                        hikkaProfileResponse.postValue(profileResponse);
                     }
+                }, throwable -> {
+                    Log.e(TAG, throwable.getMessage());
+                    throwable.printStackTrace();
                 }));
     }
 
     public LiveData<Boolean> hikkaLogin() {
         return hikkaLogin;
+    }
+
+    public void updateToken(long expirationTime) {
+        compositeDisposable.add(tokenManager.updateToken(expirationTime)
+                .subscribeOn(Schedulers.io())
+                .subscribe(() -> {
+                    // Токен успішно збережено
+                }, throwable -> {
+                    throwable.printStackTrace();
+                }));
+    }
+
+    public LiveData<ProfileResponse> getHikkaProfile() {
+        return hikkaProfileResponse;
     }
 
     @Override

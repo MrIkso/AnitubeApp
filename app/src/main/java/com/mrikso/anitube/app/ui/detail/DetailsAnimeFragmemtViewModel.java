@@ -3,7 +3,6 @@ package com.mrikso.anitube.app.ui.detail;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,6 +13,7 @@ import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.parser.DetailsAnimeParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.repository.HikkaRepository;
 import com.mrikso.anitube.app.utils.FileCache;
 import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.ParserUtils;
@@ -24,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -40,15 +39,18 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     private final String TAG = "DetailsAnimeFragmemtViewModel";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final AnitubeRepository repository;
+    private final AnitubeRepository anitubeRepository;
+    private final HikkaRepository hikkaRepository;
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
     private MutableLiveData<AnimeDetailsModel> detailsModel ;
-    private MutableLiveData<AnimeMobileDetailsModel> mobileDetailsModelMutableLiveData = new MutableLiveData<>(new AnimeMobileDetailsModel());
+    private final MutableLiveData<AnimeMobileDetailsModel> mobileDetailsModelMutableLiveData = new MutableLiveData<>(new AnimeMobileDetailsModel());
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
-
+    private final PreferencesHelper preferencesHelper;
     @Inject
-    public DetailsAnimeFragmemtViewModel(AnitubeRepository repository) {
-        this.repository = repository;
+    public DetailsAnimeFragmemtViewModel(AnitubeRepository repository, HikkaRepository hikkaRepository, PreferencesHelper preferencesHelper) {
+        this.anitubeRepository = repository;
+        this.hikkaRepository = hikkaRepository;
+        this.preferencesHelper = preferencesHelper;
     }
 
     public void loadData(String url) {
@@ -65,7 +67,7 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
             loadSate.setValue(LoadState.NO_NETWORK);
             return;
         }
-        Disposable disposable = repository
+        Disposable disposable = anitubeRepository
                 .getPage(url)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable1 -> {
@@ -98,13 +100,13 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
 
         compositeDisposable.add(disposable);
 
-        if(PreferencesHelper.getInstance().isLoadAnimeAdditionalInfo()) {
+        if (preferencesHelper.isLoadAnimeAdditionalInfo()) {
             loadMobileAnimeDetails(url);
         }
     }
 
     private void loadMobileAnimeDetails(String url){
-        compositeDisposable.add(repository
+        compositeDisposable.add(anitubeRepository
                 .getMobilePage(url)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(v -> {
@@ -138,9 +140,9 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
 
     public void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
 
-        compositeDisposable.add(repository
+        compositeDisposable.add(anitubeRepository
                 .addOrRemoveFromFavorites(
-                        animeId, isAdd, PreferencesHelper.getInstance().getDleHash())
+                        animeId, isAdd, preferencesHelper.getDleHash())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(v -> {
@@ -151,8 +153,16 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     }
 
     public void changeAnimeStatus(int animeId, int viewStatus) {
-        compositeDisposable.add(repository
-                .changeAnimeStatus(animeId, viewStatus)
+        changeAnimeStatusOnAnitube(animeId, viewStatus);
+
+        if (preferencesHelper.isLogginedToHikka()) {
+            changeAnimeStatusOnHikka(animeId, viewStatus);
+        }
+    }
+
+    private void changeAnimeStatusOnAnitube(int anitubeId, int viewStatus) {
+        compositeDisposable.add(anitubeRepository
+                .changeAnimeStatus(anitubeId, viewStatus)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(v -> {
@@ -161,11 +171,28 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
                 }));
     }
 
+    private void changeAnimeStatusOnHikka(int anitubeId, int viewStatus) {
+        compositeDisposable.add(hikkaRepository
+                .getAnimeAndWatchStatus(anitubeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(v -> {
+                            Log.d(TAG, v.toString());
+                            //   Toast.makeText(App.getApplication(), v.getMessage(), Toast.LENGTH_SHORT)
+                            //        .show();
+                        },
+                        throwable -> {
+                            // Обробка помилки
+                            Log.e(TAG, ("Error: " + throwable.getMessage()));
+                        }));
+    }
+
     public void parseAnimePage(Document document) {
 
         compositeDisposable.add(
                 parser.getDetailsModel(document).subscribeOn(Schedulers.io()).subscribe(v -> {
                     detailsModel.postValue(v);
+                    changeAnimeStatusOnHikka(v.getAnimeId(), 0);
                     loadSate.postValue(LoadState.DONE);
                 }));
     }

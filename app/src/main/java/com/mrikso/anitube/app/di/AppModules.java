@@ -21,6 +21,7 @@ import com.mrikso.anitube.app.parser.CommentsParser;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.repository.HikkaRepository;
+import com.mrikso.anitube.app.repository.TokenManager;
 import com.mrikso.anitube.app.ui.anime_list.AnimeListRepository;
 import com.mrikso.anitube.app.ui.collections.CollectionsRepository;
 import com.mrikso.anitube.app.ui.comments.CommentsRepository;
@@ -29,6 +30,7 @@ import com.mrikso.anitube.app.ui.search.SearchRepository;
 import com.mrikso.anitube.app.ui.search_result.SearchResultRepository;
 import com.mrikso.anitube.app.ui.watch.WatchAnimeRepository;
 import com.mrikso.anitube.app.repository.UserProfileRepository;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -115,8 +117,8 @@ public class AppModules {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(userAgentInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(new AddCookiesInterceptor())
-                .followRedirects(false)
+                .addInterceptor(new AddTokenInterceptor())
+                .followRedirects(true)
                 .followSslRedirects(true)
                 .build();
     }
@@ -254,5 +256,17 @@ public class AppModules {
     @Provides
     public static HomePageParser provideHomePageParser() {
         return HomePageParser.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    public static PreferencesHelper providePreferenceHelper() {
+        return PreferencesHelper.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    public static TokenManager provideTokenManager(HikkaRepository hikkaRepository, PreferencesHelper preferencesHelper) {
+        return new TokenManager(hikkaRepository, preferencesHelper);
     }
 }

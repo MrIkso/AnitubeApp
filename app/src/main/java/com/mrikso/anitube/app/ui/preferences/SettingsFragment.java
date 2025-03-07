@@ -51,7 +51,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         initObservers();
     }
 
@@ -98,7 +98,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
 
         PreferenceUtils.setOnPreferenceClickListener(hikkaLogin, preference -> {
             if (prefHelper.isLogginedToHikka()) {
-                prefHelper.setHikkaToken("");
+                prefHelper.removeHikkaToken();
                 PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_login));
             } else {
                 final String url = buildHikkaOauthUrl();
@@ -165,10 +165,10 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
     }
 
     private void initObservers() {
-        viewModel.hikkaLogin().observe(this, result -> {
-            if (result) {
+        viewModel.getHikkaProfile().observe(this, result -> {
+            if (result != null) {
                 Preference hikkaLogin = findPreference(PreferenceKeys.PREF_KEY_HIKKA_LOGIN);
-                PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_loggined));
+                PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_loggined, result.getUsername()));
             }
         });
     }
@@ -176,7 +176,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
     private String buildHikkaOauthUrl() {
         HttpUrl url = HttpUrl.parse(String.format("%s/oauth", ApiClient.HIKKA_URL)).newBuilder()
                 .addQueryParameter("reference", BuildConfig.CLIENT_ID)
-                .addQueryParameter("scope", "update:watchlist,read:watchlist")  // OkHttp автоматично кодує символи
+                .addQueryParameter("scope", "update:watchlist,read:watchlist,read:user-details")  // OkHttp автоматично кодує символи
                 .build();
 
         return url.toString();

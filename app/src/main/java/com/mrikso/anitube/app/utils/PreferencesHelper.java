@@ -8,6 +8,7 @@ import androidx.preference.PreferenceManager;
 
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.App;
+import com.mrikso.anitube.app.network.response.TokenResponse;
 
 import java.util.Set;
 
@@ -97,11 +98,28 @@ public class PreferencesHelper {
     }
 
     public String getHikkaToken() {
-        return preferences.getString(PreferenceKeys.PREF_KEY_HIKKA_TOKEN, "");
+        return preferences.getString(PreferenceKeys.PREF_KEY_HIKKA_TOKEN, null);
     }
 
-    public void setHikkaToken(String token) {
-        preferences.edit().putString(PreferenceKeys.PREF_KEY_HIKKA_TOKEN, token).apply();
+    public long getHikkaTokenExpirationTime() {
+        return preferences.getLong(PreferenceKeys.PREF_KEY_HIKKA_TOKEN_EXPIRATION_TIME, 0L);
+    }
+
+    public void setHikkaToken(String token, long expirationTime) {
+        preferences.edit().putString(PreferenceKeys.PREF_KEY_HIKKA_TOKEN, token)
+                .putLong(PreferenceKeys.PREF_KEY_HIKKA_TOKEN_EXPIRATION_TIME, expirationTime)
+                .apply();
+    }
+
+    public void updateHikkaExpirationToken(long expirationTime) {
+        preferences.edit().putLong(PreferenceKeys.PREF_KEY_HIKKA_TOKEN_EXPIRATION_TIME, expirationTime).apply();
+    }
+
+    public void removeHikkaToken() {
+        preferences.edit()
+                .remove(PreferenceKeys.PREF_KEY_HIKKA_TOKEN)
+                .remove(PreferenceKeys.PREF_KEY_HIKKA_TOKEN_EXPIRATION_TIME)
+                .apply();
     }
 
     public int getPlayerDoubleTapSeek() {

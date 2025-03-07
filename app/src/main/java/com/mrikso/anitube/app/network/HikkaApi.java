@@ -3,7 +3,9 @@ package com.mrikso.anitube.app.network;
 import com.mrikso.anitube.app.network.request.AddWatchRequest;
 import com.mrikso.anitube.app.network.request.TokenRequest;
 import com.mrikso.anitube.app.network.response.AnitubeAnimeResponse;
+import com.mrikso.anitube.app.network.response.ProfileResponse;
 import com.mrikso.anitube.app.network.response.SuccesResponse;
+import com.mrikso.anitube.app.network.response.TokenInfoResponse;
 import com.mrikso.anitube.app.network.response.TokenResponse;
 import com.mrikso.anitube.app.network.response.WatchAnimeResponse;
 
@@ -19,7 +21,13 @@ public interface HikkaApi {
     @POST("/auth/token")
     Single<TokenResponse> getAuthToken(@Body TokenRequest tokenRequest);
 
-    @POST("/integrations/anitube/anime/{anitube_id}")
+    @GET("/auth/token/info")
+    Single<TokenInfoResponse> getTokenInfo();
+
+    @GET("/user/me")
+    Single<ProfileResponse> getMeProfile();
+
+    @GET("/integrations/anitube/anime/{anitube_id}")
     Single<AnitubeAnimeResponse> getAnimeFromHikka(@Path("anitube_id") int anitubeId);
 
     @GET("/watch/{slug}")

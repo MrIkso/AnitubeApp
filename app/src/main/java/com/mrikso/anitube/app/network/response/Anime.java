@@ -87,4 +87,22 @@ public class Anime {
     public String getStatus() {
         return status;
     }
+
+    @Override
+    public String toString() {
+        return "Anime{" +
+                "image='" + image + '\'' +
+                ", score=" + score +
+                ", titleJa='" + titleJa + '\'' +
+                ", mediaType='" + mediaType + '\'' +
+                ", dataType='" + dataType + '\'' +
+                ", scoredBy=" + scoredBy +
+                ", titleUa='" + titleUa + '\'' +
+                ", titleEn='" + titleEn + '\'' +
+                ", episodesTotal=" + episodesTotal +
+                ", slug='" + slug + '\'' +
+                ", episodesReleased=" + episodesReleased +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

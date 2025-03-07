@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.network;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -15,12 +17,15 @@ public class AddTokenInterceptor implements Interceptor {
     @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request.Builder builder = chain.request().newBuilder();
-
-        if (PreferencesHelper.getInstance().isLogginedToHikka()) {
-            String authToken = PreferencesHelper.getInstance().getHikkaToken();
-            builder.addHeader("auth", authToken);
+        Request.Builder requestBuilder = chain.request().newBuilder();
+        PreferencesHelper helper = PreferencesHelper.getInstance();
+        if (helper.isLogginedToHikka()) {
+            String authToken = helper.getHikkaToken();
+            Log.v("TAG", "added auth token: " + authToken);
+            requestBuilder.addHeader("auth", authToken);
         }
-        return chain.proceed(builder.build());
+        requestBuilder.header("Content-Type", "application/json");
+        requestBuilder.header("Accept", "application/json");
+        return chain.proceed(requestBuilder.build());
     }
 }

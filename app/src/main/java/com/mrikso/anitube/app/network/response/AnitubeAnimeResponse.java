@@ -136,4 +136,29 @@ public class AnitubeAnimeResponse {
     public int getStartDate() {
         return startDate;
     }
+
+    @Override
+    public String toString() {
+        return "AnitubeAnimeResponse{" +
+                "endDate=" + endDate +
+                ", image='" + image + '\'' +
+                ", year=" + year +
+                ", scoredBy=" + scoredBy +
+                ", rating='" + rating + '\'' +
+                ", episodesTotal=" + episodesTotal +
+                ", source='" + source + '\'' +
+                ", episodesReleased=" + episodesReleased +
+                ", translatedUa=" + translatedUa +
+                ", score=" + score +
+                ", titleJa='" + titleJa + '\'' +
+                ", mediaType='" + mediaType + '\'' +
+                ", dataType='" + dataType + '\'' +
+                ", titleUa='" + titleUa + '\'' +
+                ", season='" + season + '\'' +
+                ", titleEn='" + titleEn + '\'' +
+                ", slug='" + slug + '\'' +
+                ", status='" + status + '\'' +
+                ", startDate=" + startDate +
+                '}';
+    }
 }

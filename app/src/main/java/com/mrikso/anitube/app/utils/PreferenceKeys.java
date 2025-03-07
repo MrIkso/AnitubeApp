@@ -17,4 +17,6 @@ public class PreferenceKeys {
     public static final String PREF_KEY_LOAD_ADDITIONAL_ANIME_INFO = "load_additional_anime_information";
     public static final String PREF_KEY_HIKKA_LOGIN = "pref_key_hikka_login";
     public static final String PREF_KEY_HIKKA_TOKEN = "pref_key_hikka_token";
+    public static final String PREF_KEY_HIKKA_TOKEN_EXPIRATION_TIME = "pref_key_hikka_token_expiration_time";
+
 }
