@@ -275,6 +275,8 @@ public class DetailsAnimeFragmemt extends Fragment
     }
 
     private void reloadPage() {
+        tableRowIndex = 0;
+        binding.layoutInfo.tableLayout.removeAllViews();
         String url = DetailsAnimeFragmemtArgs.fromBundle(getArguments()).getUrl();
         viewModel.loadAnime(url);
     }
@@ -365,7 +367,7 @@ public class DetailsAnimeFragmemt extends Fragment
         List<SimpleModel> translators = animeDetails.getTranslators();
         if (translators != null && !translators.isEmpty()) {
             String translatorsString =
-                    translators.stream().map(e -> e.getText()).collect(Collectors.joining(", "));
+                    translators.stream().map(SimpleModel::getText).collect(Collectors.joining(", "));
             addTableRow(R.string.translation, translatorsString);
         }
 
