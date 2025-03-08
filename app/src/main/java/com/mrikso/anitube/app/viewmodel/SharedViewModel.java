@@ -143,6 +143,20 @@ public class SharedViewModel extends ViewModel {
         return hikkaLogin;
     }
 
+    public void loadHikkaProfile() {
+        compositeDisposable.add(hikkaRepository.getMeProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(profileResponse -> {
+                    if (profileResponse != null) {
+                        hikkaProfileResponse.postValue(profileResponse);
+                    }
+                }, throwable -> {
+                    Log.e(TAG, throwable.getMessage());
+                    throwable.printStackTrace();
+                }));
+    }
+
     public void updateToken(long expirationTime) {
         compositeDisposable.add(tokenManager.updateToken(expirationTime)
                 .subscribeOn(Schedulers.io())

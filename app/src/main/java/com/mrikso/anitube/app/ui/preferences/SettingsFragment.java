@@ -49,14 +49,9 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
     private SharedViewModel viewModel;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         initObservers();
-    }
-
-    @Override
-    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         prefHelper = PreferencesHelper.getInstance();
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         initPreferences();
@@ -93,7 +88,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
         Preference hikkaLogin = findPreference(PreferenceKeys.PREF_KEY_HIKKA_LOGIN);
 
         if (prefHelper.isLogginedToHikka()) {
-            PreferenceUtils.setSummary(hikkaLogin, getString(R.string.hikka_loggined));
+            viewModel.loadHikkaProfile();
         }
 
         PreferenceUtils.setOnPreferenceClickListener(hikkaLogin, preference -> {
@@ -190,7 +185,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
     }
 
     @Override
-    public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle bundle) {
         super.onViewCreated(view, bundle);
         MaterialToolbar toolbar = view.findViewById(R.id.settings_toolbar);
         toolbar.setNavigationOnClickListener(
