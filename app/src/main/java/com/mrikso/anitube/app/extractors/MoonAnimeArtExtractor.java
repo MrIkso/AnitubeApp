@@ -38,7 +38,9 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
     private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
 
     private final Map<String, String> HEADERS = Map.of("User-Agent", ApiClient.DESKTOP_USER_AGENT,
-            "Host", "moonanime.art", "Accept", "*/*", "accept-language", "uk,ru;q=0.9,en-US;q=0.8,en;q=0.7");
+            "Accept", "*/*",
+            "accept-language", "uk,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            "origin", "https://moonanime.art");
 
     public MoonAnimeArtExtractor(String url, OkHttpClient client) {
         super(url, client);
@@ -69,7 +71,7 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                 qualitiesMap.put("AUTO", playerJs.getFile());
             }
         }
-        model.setHeaders(Collections.singletonMap("User-Agent", ApiClient.DESKTOP_USER_AGENT));
+        model.setHeaders(HEADERS);
         model.setLinksQuality(qualitiesMap);
         model.setDefaultQuality(ParserUtils.standardizeQuality(playerJs.getDefaultQuality()));
         model.setSubtileUrl(playerJs.getSubtitle());
@@ -89,7 +91,7 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                 return;
             }
             String responseBody = manifestRequest.body().string();
-
+            // Log.d(TAG, responseBody);
             Gson gson = new Gson();
             String json = ParserUtils.getMatcherResult(
                     PLAYER_JS_PATTERN, responseBody, 1);
