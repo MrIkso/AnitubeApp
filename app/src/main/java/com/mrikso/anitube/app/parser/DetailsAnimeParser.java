@@ -195,10 +195,14 @@ public class DetailsAnimeParser {
         }
         //#full_info > ul > li:nth-child(2) > span
         model.setAnimeUpdateStatus(updateStatus);
+        //#full_poster > img
 
+        Element posterElement = fullPageElement.selectFirst("#full_poster > img");
+        if (posterElement != null) {
+            String posterUrl = posterElement.attr("src");
+            model.setPosterUrl(posterUrl);
+        }
 
-        ///html/body/div[1]/div/section/main/section/div/article/div/div[1]/div[1]/div[2]/text()
-        ////*[@id="dle-content"]/article/div/div[1]/div[1]/div[2]/text()
         return model;
     }
 

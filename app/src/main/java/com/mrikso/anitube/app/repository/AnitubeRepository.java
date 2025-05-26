@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.repository;
 
+import android.util.Log;
+
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
@@ -32,6 +34,7 @@ public class AnitubeRepository {
     }
 
     public Single<Document> getMobilePage(String url) {
+        Log.d("AnitubeRepository", "load page " + url);
         return Single.create(emitter -> {
             OkHttpClient client = new OkHttpClient();
             Request request1 = new Request.Builder()

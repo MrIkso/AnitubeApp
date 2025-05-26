@@ -200,9 +200,9 @@ public class DetailsAnimeFragment extends Fragment
             binding.titleEng.setText(titleEng);
         }
 
-        String posterUrl = ParserUtils.normaliseImageUrl(animeDetails.getPosterUrl());
-        ViewUtils.loadImage(binding.poster, posterUrl);
-        ViewUtils.loadBluredImage(binding.posterBg, posterUrl);
+        if (!PreferencesHelper.getInstance().isLoadAnimeAdditionalInfo()) {
+            loadPosterImage(animeDetails.getPosterUrl());
+        }
 
         String rating = animeDetails.getRating();
         if (!Strings.isNullOrEmpty(rating)) {
@@ -266,6 +266,12 @@ public class DetailsAnimeFragment extends Fragment
                     animeDetails.getAnimeUrl(),
                     animeDetails.isHavePlaylistsAjax());
         });
+    }
+
+    private void loadPosterImage(String posterUrl) {
+        String posterUrlNormal = ParserUtils.normaliseImageUrl(posterUrl);
+        ViewUtils.loadImage(binding.poster, posterUrlNormal);
+        ViewUtils.loadBluredImage(binding.posterBg, posterUrlNormal);
     }
 
     private void loadPage() {
@@ -412,6 +418,9 @@ public class DetailsAnimeFragment extends Fragment
     }
 
     private void showMobileDetails(AnimeMobileDetailsModel detailsModel) {
+        if (detailsModel == null) {
+            return;
+        }
         SimpleModel typeAnime = detailsModel.getAnimeType();
         if (typeAnime != null) {
             addTableRow(R.string.type, createClickableTextView(typeAnime));
@@ -420,6 +429,10 @@ public class DetailsAnimeFragment extends Fragment
         String animeStatus = detailsModel.getAnimeUpdateStatus();
         if (!StringUtil.isBlank(animeStatus)) {
             addTableRow(R.string.anime_status, animeStatus);
+        }
+        String poster = detailsModel.getPosterUrl();
+        if (!StringUtil.isBlank(poster)) {
+            loadPosterImage(poster);
         }
     }
 
