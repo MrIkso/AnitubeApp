@@ -198,7 +198,7 @@
                             style="@style/layout_detail_item"
                             layout="@layout/layout_similar" />
 
-                        <com.google.android.material.button.MaterialButton
+                        <!--<com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_comments"
                             style="@style/Widget.Material3.Button.Icon"
                             android:layout_width="match_parent"
@@ -213,7 +213,7 @@
                             android:textAllCaps="false"
                             app:cornerRadius="16dp"
                             app:icon="@drawable/ic_comment"
-                            app:iconGravity="textStart" />
+                            app:iconGravity="textStart" />-->
                     </LinearLayout>
                 </LinearLayout>
 

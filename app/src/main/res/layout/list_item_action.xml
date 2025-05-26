@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="75dp"
+    android:layout_height="75dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/transparent_circle_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/action_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        tools:ignore="ContentDescription"
+        tools:srcCompat="@drawable/ic_add" />
+
+    <TextView
+        android:id="@+id/action_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceLabelSmall"
+        tools:text="Add to List" />
+
+</LinearLayout>

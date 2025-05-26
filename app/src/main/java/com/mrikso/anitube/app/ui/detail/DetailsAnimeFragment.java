@@ -8,34 +8,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
 import androidx.core.util.Pair;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.blankj.utilcode.util.EncodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
+import com.mrikso.anitube.app.adapters.ActionsAdapter;
 import com.mrikso.anitube.app.adapters.BaseAnimeAdapter;
 import com.mrikso.anitube.app.adapters.FranchisesAdapter;
 import com.mrikso.anitube.app.adapters.ScreenshotsAdapter;
 import com.mrikso.anitube.app.databinding.FragmentDetailsAnimeBinding;
 import com.mrikso.anitube.app.databinding.ItemChipBinding;
 import com.mrikso.anitube.app.databinding.ItemDetailsInfoRowBinding;
-import com.mrikso.anitube.app.databinding.LayoutReleaseActionBinding;
 import com.mrikso.anitube.app.interfaces.OnTorrentClickListener;
+import com.mrikso.anitube.app.model.ActionItem;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
 import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
@@ -65,7 +62,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class DetailsAnimeFragment extends Fragment
-        implements BaseAnimeAdapter.OnItemClickListener, ScreenshotsAdapter.OnItemClickListener {
+        implements BaseAnimeAdapter.OnItemClickListener, ScreenshotsAdapter.OnItemClickListener,
+        ActionsAdapter.OnItemClickListener {
     public static final String TAG = "DetailsAnimeFragment";
 
     private DetailsAnimeFragmemtViewModel viewModel;
@@ -74,12 +72,12 @@ public class DetailsAnimeFragment extends Fragment
     private BaseAnimeAdapter similarAnimeAdapter;
     private FranchisesAdapter franchisesAdapter;
     private List<ScreenshotModel> screenshotsList = null;
-    private int mode = 0;
+    private int currentWatchMode = 0;
     private int animeId;
+    private String animeUrl;
+    private AnimeDetailsModel currentAnimeDetails;
     private int tableRowIndex = 0;
-
-    private int initialFabMarginStart = -1;
-    private int initialFabMarginTop = -1;
+    private ActionsAdapter actionsAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,7 +153,7 @@ public class DetailsAnimeFragment extends Fragment
             if (results != null) {
                 showMobileDetails(results);
             } else {
-               // binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                // binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -181,13 +179,17 @@ public class DetailsAnimeFragment extends Fragment
         similarAnimeAdapter.setOnItemClickListener(this);
         binding.layoutSimilar.recyclerViewSimilar.setAdapter(similarAnimeAdapter);
 
-        binding.btnComments.setOnClickListener(v -> {
-            openCommentsFragment(animeId);
-        });
+        actionsAdapter = new ActionsAdapter(this);
+
+        binding.layoutReleaseAction.rvActions.setLayoutManager(new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        binding.layoutReleaseAction.rvActions.setAdapter(actionsAdapter);
     }
 
     private void showDetails(AnimeDetailsModel animeDetails) {
+        currentAnimeDetails = animeDetails;
         animeId = animeDetails.getAnimeId();
+        animeUrl = animeDetails.getAnimeUrl();
         binding.clContent.setVisibility(View.VISIBLE);
         binding.fabWatch.setVisibility(View.VISIBLE);
         binding.title.setText(animeDetails.getTitle());
@@ -212,7 +214,7 @@ public class DetailsAnimeFragment extends Fragment
             binding.tvScore.setText(String.format("%s/10", rating));
         }
 
-        showReleaseActions(animeDetails);
+        updateReleaseActions(animeDetails);
 
         showInfoGroup(animeDetails);
 
@@ -273,72 +275,75 @@ public class DetailsAnimeFragment extends Fragment
     }
 
     private void reloadPage() {
-        tableRowIndex = 0;
-        binding.layoutInfo.tableLayout.removeAllViews();
+        clearDetailsTable();
         String url = DetailsAnimeFragmentArgs.fromBundle(getArguments()).getUrl();
         viewModel.loadAnime(url);
     }
 
-    private void showReleaseActions(AnimeDetailsModel animeDetails) {
-        LayoutReleaseActionBinding actionBinding = binding.layoutReleaseAction;
+    private void clearDetailsTable() {
+        tableRowIndex = 0;
+        binding.layoutInfo.tableLayout.removeAllViews();
+    }
+
+    private void updateReleaseActions(AnimeDetailsModel animeDetails) {
+        List<ActionItem> newActions = new ArrayList<>();
+
         if (PreferencesHelper.getInstance().isLogin()) {
-            actionBinding.bookmarkContainer.setVisibility(View.VISIBLE);
-            actionBinding.statusContainer.setVisibility(View.VISIBLE);
-
-            showBookmarkStatus(animeDetails.isFavorites());
-
-            actionBinding.bookmarkContainer.setOnClickListener(v -> {
-                boolean isAdd = !animeDetails.isFavorites();
-                if (!isAdd) {
-                    DialogUtils.showConfirmation(
-                            requireContext(),
-                            R.string.dialog_confirm_title,
-                            R.string.dialog_confirm_delete_from_bookmarks,
-                            () -> addOrRemoveFromFavorites(animeDetails.getAnimeId(), isAdd));
-                } else {
-                    addOrRemoveFromFavorites(animeDetails.getAnimeId(), isAdd);
-                }
-            });
+            ActionItem statusItem = new ActionItem(
+                    ActionItem.ID.STATUS,
+                    R.drawable.ic_add,
+                    R.string.release_action_add_to_list,
+                    true
+            );
 
             if (animeDetails.getWatchStatusModdel() != null) {
-                mode = animeDetails.getWatchStatusModdel().getViewStatus().getStatusCode();
-                showReleaseWatchStatus(animeDetails.getWatchStatusModdel());
+                WatchAnimeStatusModel watchStatus = animeDetails.getWatchStatusModdel();
+                currentWatchMode = watchStatus.getViewStatus().getStatusCode();
+
+                statusItem.setCurrentIconResId(R.drawable.ic_done);
+                statusItem.setCurrentIconColor(watchStatus.getColor());
+                statusItem.setCurrentDisplayText(watchStatus.getStatus());
+            } else {
+                statusItem.setCurrentIconResId(R.drawable.ic_add);
+                statusItem.setCurrentIconColor(0);
+                statusItem.setCurrentDisplayText(null);
             }
+            newActions.add(statusItem);
 
-            actionBinding.statusContainer.setOnClickListener(v -> {
-                ChangeAnimeStatusDialog dialog = ChangeAnimeStatusDialog.newInstance(mode);
-                dialog.setListener(newMode -> {
-                    mode = newMode;
-                    viewModel.changeAnimeStatus(animeDetails.getAnimeId(), newMode);
-                    WatchAnimeStatusModel newModel = ParserUtils.getWatchModel(newMode);
-                    showReleaseWatchStatus(newModel);
-                });
-                dialog.show(getParentFragmentManager(), ChangeAnimeStatusDialog.TAG);
-            });
+            ActionItem bookmarkItem = new ActionItem(
+                    ActionItem.ID.BOOKMARK,
+                    animeDetails.isFavorites() ? R.drawable.ic_bookmark_added : R.drawable.ic_bookmark_border,
+                    animeDetails.isFavorites() ? R.string.release_action_remove_from_bookmarks : R.string.release_action_add_to_bookmarks,
+                    true
+            );
+
+            newActions.add(bookmarkItem);
         }
+
+        newActions.add(new ActionItem(
+                ActionItem.ID.SHARE,
+                R.drawable.ic_share,
+                R.string.action_share,
+                true
+        ));
+
         if (animeDetails.isHasTorrent()) {
-            actionBinding.downloadTorrentContainer.setVisibility(View.VISIBLE);
-            actionBinding.downloadTorrentContainer.setOnClickListener(v -> {
-                TorrentSelectionDialog dialog =
-                        TorrentSelectionDialog.newInstance(animeDetails.getTorrentPageUrl());
-                dialog.setListener(new OnTorrentClickListener() {
-                    @Override
-                    public void onDownloadTorrent(String url) {
-                        DownloadUtils.downloadFile(requireActivity(), url);
-                    }
-
-                    @Override
-                    public void onDownloadByMagnet(String url) {
-                        IntentUtils.openInBrowser(requireContext(), url);
-                    }
-                });
-                dialog.show(getParentFragmentManager(), TorrentSelectionDialog.TAG);
-            });
+            newActions.add(new ActionItem(
+                    ActionItem.ID.TORRENT,
+                    R.drawable.ic_torrent_file,
+                    R.string.download_torrent,
+                    true
+            ));
         }
 
-        actionBinding.shareContainer.setOnClickListener(v -> {
-            IntentUtils.shareLink(requireContext(), animeDetails.getAnimeUrl());
-        });
+        newActions.add(new ActionItem(
+                ActionItem.ID.COMMENT,
+                R.drawable.ic_comment,
+                R.string.comments,
+                true
+        ));
+
+        actionsAdapter.submitList(newActions);
     }
 
     private void showInfoGroup(AnimeDetailsModel animeDetails) {
@@ -406,7 +411,7 @@ public class DetailsAnimeFragment extends Fragment
         }
     }
 
-    private void showMobileDetails(AnimeMobileDetailsModel detailsModel){
+    private void showMobileDetails(AnimeMobileDetailsModel detailsModel) {
         SimpleModel typeAnime = detailsModel.getAnimeType();
         if (typeAnime != null) {
             addTableRow(R.string.type, createClickableTextView(typeAnime));
@@ -503,95 +508,76 @@ public class DetailsAnimeFragment extends Fragment
         });
     }
 
-    private void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
-        showBookmarkStatus(isAdd);
-        viewModel.addOrRemoveFromFavorites(animeId, isAdd);
-    }
+    private void handleBookmarkClick() {
+        boolean isAdding = !currentAnimeDetails.isFavorites();
 
-    private void showBookmarkStatus(boolean isFavorite) {
-        binding.layoutReleaseAction.bookmarkStatusText.setText(
-                isFavorite ? R.string.release_action_remove_from_bookmarks : R.string.release_action_add_to_bookmarks);
-
-        binding.layoutReleaseAction.bookmark.setImageDrawable(
-                isFavorite
-                        ? ContextCompat.getDrawable(requireContext(), R.drawable.ic_bookmark_added)
-                        : ContextCompat.getDrawable(requireContext(), R.drawable.ic_bookmark_border));
-    }
-
-    private void showReleaseWatchStatus(WatchAnimeStatusModel watchStatus) {
-        if (watchStatus != null) {
-            binding.layoutReleaseAction.status.setImageDrawable(
-                    ViewUtils.changeIconColor(requireContext(), R.drawable.ic_done, watchStatus.getColor()));
-
-            binding.layoutReleaseAction.watchStatusText.setText(watchStatus.getStatus());
-        } else {
-            binding.layoutReleaseAction.status.setImageDrawable(
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_add));
-
-            binding.layoutReleaseAction.watchStatusText.setText(R.string.release_action_add_to_list);
-        }
-    }
-
-    private void setupWindowInsetsListener() {
-        // Переконайтеся, що binding не null
-        if (binding == null) return;
-
-        NestedScrollView nestedScrollView = binding.nestedScrollView;
-        FloatingActionButton fabBack = binding.fabBack;
-
-        // Зберігаємо початкові відступи кнопки, якщо ще не збережені
-        // Це важливо, щоб кожен раз при виклику listener'а ми додавали
-        // inset до *оригінального* відступу, а не до вже зміненого.
-        if (initialFabMarginStart == -1) {
-            ViewGroup.MarginLayoutParams fabLayoutParams = (ViewGroup.MarginLayoutParams) fabBack.getLayoutParams();
-            initialFabMarginStart = fabLayoutParams.leftMargin; // Або використовуйте startMargin
-            initialFabMarginTop = fabLayoutParams.topMargin;
-        }
-
-        // Встановлюємо слухач на кореневий елемент фрагмента (або інший, що охоплює і FAB, і ScrollView)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            // Отримуємо системні відступи (статус-бар, навігація, вирізи)
-            Insets systemBarInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // Отримуємо відступи для вирізів окремо (якщо потрібно для специфічного позиціонування)
-            Insets cutoutInsets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
-
-            android.util.Log.d("InsetsDebug", "Applying insets: top=" + systemBarInsets.top + ", bottom=" + systemBarInsets.bottom + ", left=" + systemBarInsets.left + ", right=" + systemBarInsets.right);
-
-
-            // --- Обробка кнопки "Назад" (fab_back) ---
-            ViewGroup.MarginLayoutParams fabLayoutParams = (ViewGroup.MarginLayoutParams) fabBack.getLayoutParams();
-            // Додаємо ВЕРХНІЙ відступ = висота статус-бару + початковий відступ
-            fabLayoutParams.topMargin = systemBarInsets.top + initialFabMarginTop;
-            // Додаємо ЛІВИЙ відступ = системний лівий відступ (для країв/вирізів) + початковий відступ
-            // Якщо використовуєте layout_marginStart, то fabLayoutParams.setMarginStart(...)
-            fabLayoutParams.leftMargin = systemBarInsets.left + cutoutInsets.left + initialFabMarginStart;
-            fabBack.setLayoutParams(fabLayoutParams); // Застосовуємо зміни
-
-
-            // --- Обробка NestedScrollView ---
-            // Важливо: Ми НЕ додаємо systemBarInsets.top до paddingTop самого ScrollView,
-            // бо хочемо, щоб poster_bg малювався ПІД статус-баром.
-            // Ми додаємо відступи зліва/справа/знизу, щоб контент *всередині*
-            // ScrollView не заходив під краї екрану або навігаційну панель.
-            nestedScrollView.setPadding(
-                    // Якщо у вас вже є якийсь початковий paddingLeft, додайте його:
-                    // v.getPaddingLeft() + systemBarInsets.left + cutoutInsets.left,
-                    systemBarInsets.left + cutoutInsets.left, // Додаємо ліві системні відступи
-                    nestedScrollView.getPaddingTop(), // Верхній НЕ чіпаємо (залишаємо як є в XML)
-                    // v.getPaddingRight() + systemBarInsets.right + cutoutInsets.right,
-                    systemBarInsets.right + cutoutInsets.right, // Додаємо праві системні відступи
-                    // v.getPaddingBottom() + systemBarInsets.bottom
-                    systemBarInsets.bottom // Додаємо нижній відступ для навігаційної панелі
+        if (!isAdding) {
+            DialogUtils.showConfirmation(
+                    requireContext(),
+                    R.string.dialog_confirm_title,
+                    R.string.dialog_confirm_delete_from_bookmarks,
+                    () -> addOrRemoveFromFavorites(animeId, false)
             );
+        } else {
+            addOrRemoveFromFavorites(animeId, true);
+        }
+    }
 
-            // Вказуємо системі, що ми обробили ці відступи.
-            // Це запобігає тому, щоб батьківські або дочірні елементи
-            // намагалися застосувати ці ж самі відступи ще раз.
-            // return WindowInsetsCompat.CONSUMED; // Зазвичай це правильно
+    private void addOrRemoveFromFavorites(int animeId, boolean isAdding) {
+        clearDetailsTable();
+        viewModel.addOrRemoveFromFavorites(animeId, isAdding);
+        updateReleaseActions(currentAnimeDetails);
+        Toast.makeText(requireContext(), isAdding ? "Додано до закладок!" : "Видалено з закладок!", Toast.LENGTH_SHORT).show();
+    }
 
-            // АБО, якщо ви хочете, щоб дочірні елементи всередині ScrollView
-            // теж могли отримати ці інсети (малоймовірно потрібно тут):
-            return windowInsets;
+    private void handleChangeStatusClick() {
+        ChangeAnimeStatusDialog dialog = ChangeAnimeStatusDialog.newInstance(currentWatchMode);
+        dialog.setListener(newMode -> {
+            currentWatchMode = newMode;
+            viewModel.changeAnimeStatus(currentAnimeDetails.getAnimeId(), newMode);
+
+            WatchAnimeStatusModel newModel = ParserUtils.getWatchModel(newMode);
+            currentAnimeDetails.setWatchStatusModdel(newModel);
+            updateReleaseActions(currentAnimeDetails);
         });
+        dialog.show(getParentFragmentManager(), ChangeAnimeStatusDialog.TAG);
+    }
+
+    private void handleTorrentClick() {
+        TorrentSelectionDialog dialog =
+                TorrentSelectionDialog.newInstance(currentAnimeDetails.getTorrentPageUrl());
+        dialog.setListener(new OnTorrentClickListener() {
+            @Override
+            public void onDownloadTorrent(String url) {
+                DownloadUtils.downloadFile(requireActivity(), url);
+            }
+
+            @Override
+            public void onDownloadByMagnet(String url) {
+                IntentUtils.openInBrowser(requireContext(), url);
+            }
+        });
+        dialog.show(getParentFragmentManager(), TorrentSelectionDialog.TAG);
+    }
+
+    @Override
+    public void onItemClick(ActionItem item) {
+        switch (item.getId()) {
+            case BOOKMARK:
+                handleBookmarkClick();
+                break;
+            case STATUS:
+                handleChangeStatusClick();
+                break;
+            case SHARE:
+                IntentUtils.shareLink(requireContext(), animeUrl);
+                break;
+            case TORRENT:
+                handleTorrentClick();
+                break;
+            case COMMENT:
+                openCommentsFragment(animeId);
+                break;
+        }
     }
 }
