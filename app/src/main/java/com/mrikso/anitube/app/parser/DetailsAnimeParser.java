@@ -14,11 +14,8 @@ import com.mrikso.anitube.app.model.FranchiseModel;
 import com.mrikso.anitube.app.model.ScreenshotModel;
 import com.mrikso.anitube.app.model.SimpleDetailAnimeModel;
 import com.mrikso.anitube.app.model.SimpleModel;
-import com.mrikso.anitube.app.model.TorrentModel;
 import com.mrikso.anitube.app.model.WatchAnimeStatusModel;
-import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
-import com.mrikso.anitube.app.utils.StringUtils;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.internal.StringUtil;
@@ -148,9 +145,12 @@ public class DetailsAnimeParser {
             parseSimilarBlock(similarsElement, animeDetailsModel);
         }
 
-        Elements torrentsElement = rootContentElement.select("div.box > div.torrent_info_block");
+        // body > div.content > div:nth-child(9) > div > center > a
+        Element torrentsElement = rootContentElement.selectFirst("div.box > div.my-text");
         if (torrentsElement != null) {
-            parseTorrentsBlock(torrentsElement, animeDetailsModel);
+            animeDetailsModel.setHasTorrent(true);
+            String torrentPageUrl = torrentsElement.selectFirst("a").attr("href");
+            animeDetailsModel.setTorrentPageUrl(torrentPageUrl);
         }
 
         String listContent = ParserUtils.getMatcherResult(LIST_PATTERN, doc.html(), 2);
@@ -341,46 +341,6 @@ public class DetailsAnimeParser {
             List<FranchiseModel> franchises = fran.parseFranchises(currentUrl, relatedElement);
             model.setFranchiseList(franchises);
         }
-    }
-
-    private void parseTorrentsBlock(Elements torrents, AnimeDetailsModel model) {
-        List<TorrentModel> torrentsList = new ArrayList<>(torrents.size());
-        for (Element element : torrents) {
-            String name = StringUtils.removeLastChar(
-                    element.selectFirst("div.torrent_title").text().trim());
-            Element left_torrent_info_block = element.selectFirst("div.left_torrent_info_block");
-            int seeds = Integer.parseInt(left_torrent_info_block
-                    .selectFirst("div.col_download > span")
-                    .text()
-                    .trim());
-            int leechers = Integer.parseInt(left_torrent_info_block
-                    .selectFirst("div.col_distribution > span")
-                    .text()
-                    .trim());
-            Elements torrentInfo = left_torrent_info_block.select("div.info_file_torrent");
-
-            int downloadedCount = Integer.parseInt(
-                    torrentInfo.get(0).text().replaceFirst("Завантажено:", "").trim());
-            String size = torrentInfo.get(1).text().replaceFirst("Розмір:", "").trim();
-
-            Element right_torrent_info_block = element.selectFirst("div.right_torrent_info_block");
-            Elements torrentUrls = right_torrent_info_block.select("div.btn_block_right_torrent_info_block");
-
-            String torrentUrl =
-                    ApiClient.BASE_URL + torrentUrls.get(0).selectFirst("a").attr("href");
-            String magrentUrl = torrentUrls.get(1).selectFirst("a").attr("href");
-            TorrentModel torrentModel = new TorrentModel();
-            torrentModel.setName(name);
-            torrentModel.setSize(size);
-            torrentModel.setDownloadedCount(downloadedCount);
-            torrentModel.setSeeds(seeds);
-            torrentModel.setLeechers(leechers);
-            torrentModel.setTorrentUrl(torrentUrl);
-            torrentModel.setMagnetUrl(magrentUrl);
-            torrentsList.add(torrentModel);
-        }
-        model.setTorrensList(torrentsList);
-        // #torrent_1522_info > div.right_torrent_info_block > div:nth-child(1) > span
     }
 
     @Nullable

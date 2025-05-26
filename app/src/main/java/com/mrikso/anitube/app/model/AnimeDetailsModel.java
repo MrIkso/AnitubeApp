@@ -18,8 +18,8 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
     private List<DubbersTeam> dubbersTeamList;
     private List<FranchiseModel> franchiseList;
     private List<BaseAnimeModel> similarAnimeList;
-    private List<TorrentModel> torrensList;
-
+    private boolean hasTorrent;
+    private String torrentPageUrl;
     private boolean isHavePlaylistsAjax;
 
     public AnimeDetailsModel(int animeId, String title, String animeUrl) {
@@ -134,14 +134,6 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
         this.isHavePlaylistsAjax = isHavePlaylistsAjax;
     }
 
-    public List<TorrentModel> getTorrensList() {
-        return this.torrensList;
-    }
-
-    public void setTorrensList(List<TorrentModel> torrensList) {
-        this.torrensList = torrensList;
-    }
-
     public String getLastUpdateTime() {
         return lastUpdateTime;
     }
@@ -156,5 +148,21 @@ public class AnimeDetailsModel extends AnimeReleaseModel {
 
     public void setAnimeSeason(SimpleModel animeSeason) {
         this.animeSeason = animeSeason;
+    }
+
+    public boolean isHasTorrent() {
+        return hasTorrent;
+    }
+
+    public void setHasTorrent(boolean hasTorrent) {
+        this.hasTorrent = hasTorrent;
+    }
+
+    public void setTorrentPageUrl(String torrentPageUrl) {
+        this.torrentPageUrl = torrentPageUrl;
+    }
+
+    public String getTorrentPageUrl() {
+        return torrentPageUrl;
     }
 }

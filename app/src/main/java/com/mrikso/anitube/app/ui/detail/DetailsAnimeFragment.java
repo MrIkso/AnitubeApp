@@ -316,12 +316,11 @@ public class DetailsAnimeFragment extends Fragment
                 dialog.show(getParentFragmentManager(), ChangeAnimeStatusDialog.TAG);
             });
         }
-        if (animeDetails.getTorrensList() != null
-                && !animeDetails.getTorrensList().isEmpty()) {
+        if (animeDetails.isHasTorrent()) {
             actionBinding.downloadTorrentContainer.setVisibility(View.VISIBLE);
             actionBinding.downloadTorrentContainer.setOnClickListener(v -> {
                 TorrentSelectionDialog dialog =
-                        TorrentSelectionDialog.newInstance((ArrayList) animeDetails.getTorrensList());
+                        TorrentSelectionDialog.newInstance(animeDetails.getTorrentPageUrl());
                 dialog.setListener(new OnTorrentClickListener() {
                     @Override
                     public void onDownloadTorrent(String url) {
@@ -336,6 +335,7 @@ public class DetailsAnimeFragment extends Fragment
                 dialog.show(getParentFragmentManager(), TorrentSelectionDialog.TAG);
             });
         }
+
         actionBinding.shareContainer.setOnClickListener(v -> {
             IntentUtils.shareLink(requireContext(), animeDetails.getAnimeUrl());
         });
