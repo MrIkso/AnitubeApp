@@ -44,7 +44,7 @@ public interface AnitubeApiService {
     // https://anitube.in.ua/engine/ajax/playlists.php?news_id=4597&xfield=playlist&user_hash=f6dbfddfd72df5d81c9731a18abdf53742d37bba
     @GET("/engine/ajax/playlists.php")
     @Headers("X-Requested-With: XMLHttpRequest")
-    Single<String> getPlaylist(@Query("news_id") int newsId, @Query("xfield") String xField, @Query("user_hash") String userHash);
+    Single<String> getPlaylist(@Header("referer") String referer, @Query("news_id") int newsId, @Query("xfield") String xField, @Query("user_hash") String userHash);
 
     @POST("/")
     @FormUrlEncoded

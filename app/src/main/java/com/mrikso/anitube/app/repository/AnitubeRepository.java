@@ -72,8 +72,8 @@ public class AnitubeRepository {
         return anitubeApi.changeAnimeStatus(animeId, viewStatus);
     }
 
-    public Single<String> getPlaylist(int animeId, String dleHash) {
-        return anitubeApi.getPlaylist(animeId, "playlist", dleHash);
+    public Single<String> getPlaylist(String referer, int animeId, String dleHash) {
+        return anitubeApi.getPlaylist(referer, animeId, "playlist", dleHash);
     }
 
     public Single<CommentsResponse> getCommentsForAnime(int page, int animeId) {

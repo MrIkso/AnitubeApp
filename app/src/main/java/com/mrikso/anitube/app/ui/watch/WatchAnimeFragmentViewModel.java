@@ -75,14 +75,11 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
     private void loadData(boolean isHavePlaylistsAjax, int animeId, String url) {
         if (isHavePlaylistsAjax) {
             Disposable disposable = repository
-                    .getPlaylist(animeId, PreferencesHelper.getInstance().getDleHash())
+                    .getPlaylist(url, animeId, PreferencesHelper.getInstance().getDleHash())
                     .subscribeOn(Schedulers.io())
-                    .doOnSubscribe(new Consumer<Disposable>() {
-                        @Override
-                        public void accept(Disposable disposable) throws Throwable {
-                            loadSate.postValue(LoadState.LOADING);
-                            //Log.d(TAG, "start loading");
-                        }
+                    .doOnSubscribe(disposable1 -> {
+                        loadSate.postValue(LoadState.LOADING);
+                        //Log.d(TAG, "start loading");
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
