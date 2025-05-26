@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.collections;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +14,6 @@ import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.appbar.AppBarLayout;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
@@ -29,6 +24,7 @@ import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.ui.search_result.SearchResultViewModel;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.ViewUtils;
@@ -100,7 +96,7 @@ public class CollectionDetailsFragment extends Fragment {
         binding.collectionsRv.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), GlideLoadUtils.getGlide(requireContext()));
         animePpagingAdapter.setOnItemClickListener(link -> {
             openDetailsFragment(link);
         });
@@ -211,11 +207,6 @@ public class CollectionDetailsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         viewModel = null;
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     private void loadData() {

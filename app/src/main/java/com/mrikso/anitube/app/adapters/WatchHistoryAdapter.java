@@ -80,7 +80,7 @@ public class WatchHistoryAdapter extends ListAdapter<HistoryEnity, WatchHistoryA
                     new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
             glide.load(ParserUtils.normaliseImageUrl(model.getPosterUrl()))
                     .transition(DrawableTransitionOptions.withCrossFade(factory))
-                    .listener(new RequestListener<Drawable>() {
+                    .listener(new RequestListener<>() {
                         @Override
                         public boolean onLoadFailed(
                                 @Nullable GlideException e,

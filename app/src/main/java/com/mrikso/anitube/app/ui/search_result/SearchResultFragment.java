@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.search_result;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,16 +14,13 @@ import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.FragmentSearchResultBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -67,7 +63,7 @@ public class SearchResultFragment extends Fragment {
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-        animePagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        animePagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), GlideLoadUtils.getGlide(requireContext()));
         animePagingAdapter.setOnItemClickListener(this::openDetailsFragment);
         animePagingAdapter.addLoadStateListener(combinedLoadStates -> {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
@@ -154,11 +150,6 @@ public class SearchResultFragment extends Fragment {
         super.onDestroyView();
         animePagingAdapter = null;
         binding = null;
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     private void loadData() {

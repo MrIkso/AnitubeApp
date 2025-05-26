@@ -1,5 +1,4 @@
 import com.android.build.api.dsl.ApplicationBaseFlavor
-import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import java.io.FileInputStream
@@ -216,6 +215,8 @@ dependencies {
     implementation(project(":bottomsheetMenu"))
     implementation(project(":doubletapplayerview"))
     implementation(project(":expandabletextviewlibrary"))
+
+    implementation(libs.okhttp3.integration)
 }
 
 fun Project.loadProperties(file: String) = if (file(file).exists()) {

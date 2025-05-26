@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.history;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.WatchHistoryAdapter;
 import com.mrikso.anitube.app.databinding.FragmentWatchHistoryBinding;
 import com.mrikso.anitube.app.ui.library.LibraryFragmentDirections;
 import com.mrikso.anitube.app.utils.DialogUtils;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -61,7 +57,7 @@ public class WatchHistoryFragment extends Fragment {
     }
 
     private void initViews() {
-        historyAdapter = new WatchHistoryAdapter(getGlide(requireContext()));
+        historyAdapter = new WatchHistoryAdapter(GlideLoadUtils.getGlide(requireContext()));
         historyAdapter.setOnItemClickListener((link) -> {
             openDetailsFragment(link);
         });
@@ -156,10 +152,5 @@ public class WatchHistoryFragment extends Fragment {
         LibraryFragmentDirections.ActionNavLibraryToNavDetails action =
                 LibraryFragmentDirections.actionNavLibraryToNavDetails(link);
         Navigation.findNavController(requireView()).navigate(action);
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 }

@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.library;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +13,13 @@ import androidx.navigation.Navigation;
 import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.FragmentLibaryContentBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import retrofit2.HttpException;
@@ -71,7 +67,7 @@ public class LibaryContentFragment extends Fragment {
     }
 
     private void initViews() {
-        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), GlideLoadUtils.getGlide(requireContext()));
         animePpagingAdapter.setOnItemClickListener(this::openDetailsFragment);
         animePpagingAdapter.addLoadStateListener(combinedLoadStates -> {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
@@ -197,10 +193,5 @@ public class LibaryContentFragment extends Fragment {
         super.onDestroyView();
         animePpagingAdapter = null;
         binding = null;
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 }

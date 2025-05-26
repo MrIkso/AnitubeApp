@@ -17,6 +17,7 @@ material = "1.12.0"
 constraintlayout = "2.2.1"
 newpipeextractor = "v0.24.0"
 nextlib = "v0.8.2"
+okhttp3Integration = "4.11.0"
 paging = "3.3.6"
 media3Exoplayer = "1.7.1"
 preferenceKtx = "1.2.1"
@@ -80,6 +81,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 newpipeextractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version.ref = "newpipeextractor" }
 nextlib-media3ext = { module = "com.github.anilbeesetti.nextlib:nextlib-media3ext", version.ref = "nextlib" }
+okhttp3-integration = { module = "com.github.bumptech.glide:okhttp3-integration", version.ref = "okhttp3Integration" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rxjava3-retrofit-adapter = { module = "com.github.akarnokd:rxjava3-retrofit-adapter", version.ref = "rxjava3RetrofitAdapter" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }

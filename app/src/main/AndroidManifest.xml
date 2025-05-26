@@ -76,6 +76,11 @@
             android:supportsPictureInPicture="true"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.FullScreenTheme" />
+
+        <meta-data
+            android:name="com.mrikso.anitube.app.di.MyAppGlideModule"
+            android:value="GlideModule" />
+
     </application>
 
 </manifest>

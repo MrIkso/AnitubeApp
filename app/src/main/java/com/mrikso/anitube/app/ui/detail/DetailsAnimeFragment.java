@@ -45,6 +45,7 @@ import com.mrikso.anitube.app.ui.dialogs.ChangeAnimeStatusDialog;
 import com.mrikso.anitube.app.ui.dialogs.TorrentSelectionDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.DownloadUtils;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -168,7 +169,7 @@ public class DetailsAnimeFragment extends Fragment
         });
         binding.loadStateLayout.repeat.setOnClickListener(v -> reloadPage());
 
-        screenshotsAdapter = new ScreenshotsAdapter();
+        screenshotsAdapter = new ScreenshotsAdapter(GlideLoadUtils.getGlide(requireContext()));
         screenshotsAdapter.setOnItemClickListener(this);
         binding.layoutScreenshots.recyclerViewScreenshots.setAdapter(screenshotsAdapter);
 
@@ -240,7 +241,7 @@ public class DetailsAnimeFragment extends Fragment
         if (screenshotsList != null && !screenshotsList.isEmpty()) {
             binding.layoutScreenshots.llSreenshots.setVisibility(View.VISIBLE);
             requireActivity().runOnUiThread(() -> {
-                screenshotsAdapter.setResults(screenshotsList);
+                screenshotsAdapter.submitList(screenshotsList);
             });
         }
 

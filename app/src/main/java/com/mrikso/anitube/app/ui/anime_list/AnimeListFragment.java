@@ -1,6 +1,5 @@
 package com.mrikso.anitube.app.ui.anime_list;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,6 @@ import androidx.navigation.Navigation;
 import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
@@ -25,6 +20,7 @@ import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.FragmentAnimeListBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.UserModel;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
@@ -63,7 +59,7 @@ public class AnimeListFragment extends Fragment {
     }
 
     private void initViews() {
-        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        animePpagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), GlideLoadUtils.getGlide(requireContext()));
         animePpagingAdapter.setOnItemClickListener(link -> {
             openDetailsFragment(link);
         });
@@ -177,11 +173,6 @@ public class AnimeListFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         animePpagingAdapter = null;
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     private void openSearchFragment() {

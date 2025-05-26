@@ -1,7 +1,6 @@
 package com.mrikso.anitube.app.ui.search;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,10 +19,6 @@ import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.internal.TextWatcherAdapter;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
@@ -32,6 +27,7 @@ import com.mrikso.anitube.app.adapters.SuggestionAdapter;
 import com.mrikso.anitube.app.comparator.AnimeReleaseComparator;
 import com.mrikso.anitube.app.databinding.FragmentSearchBinding;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.utils.GlideLoadUtils;
 import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
 
@@ -159,7 +155,7 @@ public class SearchFragment extends Fragment
         binding.recyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-        pagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), getGlide(requireContext()));
+        pagingAdapter = new AnimePagingAdapter(new AnimeReleaseComparator(), GlideLoadUtils.getGlide(requireContext()));
         pagingAdapter.setOnItemClickListener(this::openDetailsFragment);
         suggestionAdapter = new SuggestionAdapter(requireContext(), 0);
         suggestionAdapter.setOnClickListener(this);
@@ -284,11 +280,6 @@ public class SearchFragment extends Fragment
     private void showResults(final PagingData<AnimeReleaseModel> results) {
         pagingAdapter.submitData(getLifecycle(), results);
         viewModel.showSearchResultAdapter();
-    }
-
-    public RequestManager getGlide(Context context) {
-        return Glide.with(context)
-                .applyDefaultRequestOptions(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL));
     }
 
     @Override
