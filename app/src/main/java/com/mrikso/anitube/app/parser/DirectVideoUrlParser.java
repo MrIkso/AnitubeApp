@@ -80,7 +80,7 @@ public class DirectVideoUrlParser {
                 extracror = new MP4UploadExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("moonanime.art")) {
                 extracror = new MoonAnimeArtExtractor(iframeUrl, client);
-            } else if (iframeDomain.contains("monstro.site")) {
+            } else if (iframeDomain.contains("monstro.site") || iframeDomain.contains("alllvideo.monster")) {
                 //плеєр монстр
                 extracror = new csstExtractor(iframeUrl);
             } else if (iframeDomain.contains("veoh.com")) {

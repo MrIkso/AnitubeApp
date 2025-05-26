@@ -27,10 +27,9 @@ android {
         targetSdk = 35
         versionCode = 6
         versionName = "1.0.5"
-        resourceConfigurations += listOf("en", "ua")
         ndk {
             //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+            //  abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
         loadConfig("secret.properties")
     }
@@ -153,6 +152,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.room.rxjava3)
+    //implementation(libs.navigation.fragment.ktx)
+    // implementation(libs.navigation.ui.ktx)
     ksp(libs.androidx.room.compiler)
 
     // Retrofit

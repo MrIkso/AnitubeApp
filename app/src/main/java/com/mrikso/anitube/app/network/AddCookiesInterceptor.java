@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.network;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -24,7 +22,7 @@ public class AddCookiesInterceptor implements Interceptor {
             Set<String> preferences = PreferencesHelper.getInstance().getCooikes();
             for (String cookie : preferences) {
                 builder.addHeader("Cookie", cookie);
-                Log.v("OkHttp", "Adding Header: " + cookie); // This is done so I know which headers are being added;
+                //Log.v("OkHttp", "Adding Header: " + cookie); // This is done so I know which headers are being added;
                 // this
                 // interceptor is used after the normal logging of OkHttp
             }

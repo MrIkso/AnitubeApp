@@ -13,7 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.util.Pair;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -21,6 +25,7 @@ import androidx.navigation.Navigation;
 import com.blankj.utilcode.util.EncodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.BaseAnimeAdapter;
@@ -73,6 +78,9 @@ public class DetailsAnimeFragmemt extends Fragment
     private int animeId;
     private int tableRowIndex = 0;
 
+    private int initialFabMarginStart = -1;
+    private int initialFabMarginTop = -1;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,22 +93,13 @@ public class DetailsAnimeFragmemt extends Fragment
     public View onCreateView(
             @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentDetailsAnimeBinding.inflate(inflater, container, false);
-        /*
-            Window window = getActivity().getWindow();
-               window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        window.setStatusBarColor(Color.TRANSPARENT);
-               window.setNavigationBarColor(Color.TRANSPARENT);
-               window.setNavigationBarContrastEnforced(false);
-               window.setDecorFitsSystemWindows(false);
-               window.getDecorView().setSystemUiVisibility(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-               binding.getRoot().setFitsSystemWindows(false);
-            */
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
         super.onViewCreated(view, bundle);
+        setupWindowInsetsListener();
         initObservers();
         initViews();
     }
@@ -532,5 +531,68 @@ public class DetailsAnimeFragmemt extends Fragment
 
             binding.layoutReleaseAction.watchStatusText.setText(R.string.release_action_add_to_list);
         }
+    }
+
+    private void setupWindowInsetsListener() {
+        // Переконайтеся, що binding не null
+        if (binding == null) return;
+
+        NestedScrollView nestedScrollView = binding.nestedScrollView;
+        FloatingActionButton fabBack = binding.fabBack;
+
+        // Зберігаємо початкові відступи кнопки, якщо ще не збережені
+        // Це важливо, щоб кожен раз при виклику listener'а ми додавали
+        // inset до *оригінального* відступу, а не до вже зміненого.
+        if (initialFabMarginStart == -1) {
+            ViewGroup.MarginLayoutParams fabLayoutParams = (ViewGroup.MarginLayoutParams) fabBack.getLayoutParams();
+            initialFabMarginStart = fabLayoutParams.leftMargin; // Або використовуйте startMargin
+            initialFabMarginTop = fabLayoutParams.topMargin;
+        }
+
+        // Встановлюємо слухач на кореневий елемент фрагмента (або інший, що охоплює і FAB, і ScrollView)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            // Отримуємо системні відступи (статус-бар, навігація, вирізи)
+            Insets systemBarInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            // Отримуємо відступи для вирізів окремо (якщо потрібно для специфічного позиціонування)
+            Insets cutoutInsets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
+
+            android.util.Log.d("InsetsDebug", "Applying insets: top=" + systemBarInsets.top + ", bottom=" + systemBarInsets.bottom + ", left=" + systemBarInsets.left + ", right=" + systemBarInsets.right);
+
+
+            // --- Обробка кнопки "Назад" (fab_back) ---
+            ViewGroup.MarginLayoutParams fabLayoutParams = (ViewGroup.MarginLayoutParams) fabBack.getLayoutParams();
+            // Додаємо ВЕРХНІЙ відступ = висота статус-бару + початковий відступ
+            fabLayoutParams.topMargin = systemBarInsets.top + initialFabMarginTop;
+            // Додаємо ЛІВИЙ відступ = системний лівий відступ (для країв/вирізів) + початковий відступ
+            // Якщо використовуєте layout_marginStart, то fabLayoutParams.setMarginStart(...)
+            fabLayoutParams.leftMargin = systemBarInsets.left + cutoutInsets.left + initialFabMarginStart;
+            fabBack.setLayoutParams(fabLayoutParams); // Застосовуємо зміни
+
+
+            // --- Обробка NestedScrollView ---
+            // Важливо: Ми НЕ додаємо systemBarInsets.top до paddingTop самого ScrollView,
+            // бо хочемо, щоб poster_bg малювався ПІД статус-баром.
+            // Ми додаємо відступи зліва/справа/знизу, щоб контент *всередині*
+            // ScrollView не заходив під краї екрану або навігаційну панель.
+            nestedScrollView.setPadding(
+                    // Якщо у вас вже є якийсь початковий paddingLeft, додайте його:
+                    // v.getPaddingLeft() + systemBarInsets.left + cutoutInsets.left,
+                    systemBarInsets.left + cutoutInsets.left, // Додаємо ліві системні відступи
+                    nestedScrollView.getPaddingTop(), // Верхній НЕ чіпаємо (залишаємо як є в XML)
+                    // v.getPaddingRight() + systemBarInsets.right + cutoutInsets.right,
+                    systemBarInsets.right + cutoutInsets.right, // Додаємо праві системні відступи
+                    // v.getPaddingBottom() + systemBarInsets.bottom
+                    systemBarInsets.bottom // Додаємо нижній відступ для навігаційної панелі
+            );
+
+            // Вказуємо системі, що ми обробили ці відступи.
+            // Це запобігає тому, щоб батьківські або дочірні елементи
+            // намагалися застосувати ці ж самі відступи ще раз.
+            // return WindowInsetsCompat.CONSUMED; // Зазвичай це правильно
+
+            // АБО, якщо ви хочете, щоб дочірні елементи всередині ScrollView
+            // теж могли отримати ці інсети (малоймовірно потрібно тут):
+            return windowInsets;
+        });
     }
 }
