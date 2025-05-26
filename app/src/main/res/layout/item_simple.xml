@@ -21,13 +21,12 @@
 		android:textAppearance="?attr/textAppearanceBody1"
 		tools:text="Назва елементу списку" />
 
-	<!-- Для Material Design кнопок краще використовувати MaterialButton замість стандартної Button -->
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/read_more"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		style="?attr/materialIconButtonStyle"
 		app:icon="@drawable/ic_read_more"
-		android:contentDescription="@null" />
+		android:contentDescription="@string/read_more_details" />
 
 </LinearLayout>

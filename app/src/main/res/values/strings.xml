@@ -175,4 +175,5 @@
     <string name="hikka_login_succes">Ви успішно авторизувались в hikka.io!</string>
     <string name="hikka_login">Увійти на hikka.io для сихронізації ваших переглядів на сайт</string>
     <string name="hikka_loggined">Вітаємо %s! \nНатисніть щоб вийти</string>
+    <string name="read_more_details">Детальніше</string>
 </resources>
