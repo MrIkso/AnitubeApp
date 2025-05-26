@@ -64,9 +64,9 @@ import java.util.stream.Collectors;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class DetailsAnimeFragmemt extends Fragment
+public class DetailsAnimeFragment extends Fragment
         implements BaseAnimeAdapter.OnItemClickListener, ScreenshotsAdapter.OnItemClickListener {
-    public static final String TAG = "DetailsAnimeFragmemt";
+    public static final String TAG = "DetailsAnimeFragment";
 
     private DetailsAnimeFragmemtViewModel viewModel;
     private FragmentDetailsAnimeBinding binding;
@@ -99,7 +99,7 @@ public class DetailsAnimeFragmemt extends Fragment
     @Override
     public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
         super.onViewCreated(view, bundle);
-        setupWindowInsetsListener();
+        //setupWindowInsetsListener();
         initObservers();
         initViews();
     }
@@ -267,8 +267,7 @@ public class DetailsAnimeFragmemt extends Fragment
     }
 
     private void loadPage() {
-
-        DetailsAnimeFragmemtArgs args = DetailsAnimeFragmemtArgs.fromBundle(getArguments());
+        DetailsAnimeFragmentArgs args = DetailsAnimeFragmentArgs.fromBundle(getArguments());
         String url = args.getUrl();
         viewModel.loadData(url);
     }
@@ -276,7 +275,7 @@ public class DetailsAnimeFragmemt extends Fragment
     private void reloadPage() {
         tableRowIndex = 0;
         binding.layoutInfo.tableLayout.removeAllViews();
-        String url = DetailsAnimeFragmemtArgs.fromBundle(getArguments()).getUrl();
+        String url = DetailsAnimeFragmentArgs.fromBundle(getArguments()).getUrl();
         viewModel.loadAnime(url);
     }
 
@@ -380,14 +379,14 @@ public class DetailsAnimeFragmemt extends Fragment
             addTableRow(R.string.anime_last_update_status, lastUpdateTime);
         }
 
-        showVoicers(animeDetails.getVoicers());
+        showVoices(animeDetails.getVoicers());
         showDubbers(animeDetails.getDubbersTeamList());
         showGenresGroup(animeDetails.getGenres());
     }
 
-    private void showVoicers(List<SimpleModel> voicers) {
-        if (voicers != null && !voicers.isEmpty()) {
-            String dubbersString = voicers.stream().map(SimpleModel::getText).collect(Collectors.joining(", ")).trim();
+    private void showVoices(List<SimpleModel> voices) {
+        if (voices != null && !voices.isEmpty()) {
+            String dubbersString = voices.stream().map(SimpleModel::getText).collect(Collectors.joining(", ")).trim();
             addTableRow(R.string.dubbers, dubbersString);
         }
     }
@@ -452,34 +451,34 @@ public class DetailsAnimeFragmemt extends Fragment
     }
 
     private void openDetailsFragment(final String url) {
-        DetailsAnimeFragmemtDirections.ActinNavDetailsAnimeInfoToNavDetailsAnimeInfo action =
-                DetailsAnimeFragmemtDirections.actinNavDetailsAnimeInfoToNavDetailsAnimeInfo(url);
+        DetailsAnimeFragmentDirections.ActinNavDetailsAnimeInfoToNavDetailsAnimeInfo action =
+                DetailsAnimeFragmentDirections.actinNavDetailsAnimeInfoToNavDetailsAnimeInfo(url);
         Navigation.findNavController(requireView()).navigate(action);
     }
 
     private void openWatchFragment(int id, String title, String posterUrl, String url, boolean isHavePlaylistsAjax) {
-        DetailsAnimeFragmemtDirections.ActinNavDetailsAnimeInfoToNavWatch action =
-                DetailsAnimeFragmemtDirections.actinNavDetailsAnimeInfoToNavWatch(
+        DetailsAnimeFragmentDirections.ActinNavDetailsAnimeInfoToNavWatch action =
+                DetailsAnimeFragmentDirections.actinNavDetailsAnimeInfoToNavWatch(
                         id, title, posterUrl, url, isHavePlaylistsAjax);
         Navigation.findNavController(requireView()).navigate(action);
     }
 
     private void openSearchFragment(String title, String url) {
-        DetailsAnimeFragmemtDirections.ActionNavDetailsAnimeToNavSearchResult action =
-                DetailsAnimeFragmemtDirections.actionNavDetailsAnimeToNavSearchResult(title, url);
+        DetailsAnimeFragmentDirections.ActionNavDetailsAnimeToNavSearchResult action =
+                DetailsAnimeFragmentDirections.actionNavDetailsAnimeToNavSearchResult(title, url);
         Navigation.findNavController(requireView()).navigate(action);
     }
 
     private void openCommentsFragment(int animeId) {
-        DetailsAnimeFragmemtDirections.ActinNavDetailsAnimeInfoNavComments action =
-                DetailsAnimeFragmemtDirections.actinNavDetailsAnimeInfoNavComments(animeId);
+        DetailsAnimeFragmentDirections.ActinNavDetailsAnimeInfoNavComments action =
+                DetailsAnimeFragmentDirections.actinNavDetailsAnimeInfoNavComments(animeId);
         Navigation.findNavController(requireView()).navigate(action);
     }
 
     @Override
     public void onScreenshotItemSelected(int position) {
-        DetailsAnimeFragmemtDirections.ActionNavDetailsAnimeToNavScreenshots action =
-                DetailsAnimeFragmemtDirections.actionNavDetailsAnimeToNavScreenshots(
+        DetailsAnimeFragmentDirections.ActionNavDetailsAnimeToNavScreenshots action =
+                DetailsAnimeFragmentDirections.actionNavDetailsAnimeToNavScreenshots(
                         position, new ArrayList<>(screenshotsList));
         Navigation.findNavController(requireView()).navigate(action);
     }

@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	 xmlns:app="http://schemas.android.com/apk/res-auto"
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 android:layout_height="50dp"
-	 android:layout_width="match_parent"
-	 android:background="?attr/selectableItemBackground"
-	 android:clickable="true"
-	 android:paddingVertical="@dimen/list_vertical_padding"
-	 android:orientation="horizontal"
-	 android:gravity="center_vertical"
-	 android:paddingHorizontal="@dimen/list_horizontal_padding"
-	 android:focusable="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="@dimen/list_item_height"
+	android:background="?attr/selectableItemBackground"
+	android:clickable="true"
+	android:focusable="true"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingHorizontal="@dimen/list_horizontal_padding"
+	android:paddingVertical="@dimen/list_vertical_padding">
 
 	<TextView
-		 android:layout_height="wrap_content"
-		 android:layout_width="0dp"
-		 android:textAllCaps="true"
-		 android:layout_weight="1"
-		 android:id="@+id/tv_name" />
+		android:id="@+id/tv_name"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:textAllCaps="true"
+		android:textAppearance="?attr/textAppearanceBody1"
+		tools:text="Назва елементу списку" />
 
-	<Button
-		 android:layout_height="48dp"
-		 android:layout_width="wrap_content"
-		 app:icon="@drawable/ic_read_more"
-		 style="?attr/materialIconButtonStyle"
-		 android:id="@+id/read_more" />
+	<!-- Для Material Design кнопок краще використовувати MaterialButton замість стандартної Button -->
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/read_more"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		style="?attr/materialIconButtonStyle"
+		app:icon="@drawable/ic_read_more"
+		android:contentDescription="@null" />
 
 </LinearLayout>

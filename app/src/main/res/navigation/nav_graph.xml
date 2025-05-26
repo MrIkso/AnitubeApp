@@ -102,7 +102,7 @@
 
     <fragment
         android:id="@+id/nav_details_anime_info"
-        android:name="com.mrikso.anitube.app.ui.detail.DetailsAnimeFragmemt"
+        android:name="com.mrikso.anitube.app.ui.detail.DetailsAnimeFragment"
         android:label="anime_info"
         tools:layout="@layout/fragment_details_anime">
         <deepLink
