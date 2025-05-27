@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class CookieParser {
 
-    private final HashMap<String, String> cookiesMap;
+    private final Map<String, String> cookiesMap;
 
     public CookieParser(List<String> cookies) {
         cookiesMap = new HashMap<>();
@@ -46,7 +46,7 @@ public class CookieParser {
         return res.substring(0, res.length() - 2);
     }
 
-    public HashMap<String, String> getCookiesMap() {
+    public Map<String, String> getCookiesMap() {
         return this.cookiesMap;
     }
 }

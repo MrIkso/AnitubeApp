@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/carousel_main_card"
-	style="?attr/materialCardViewFilledStyle"
-	android:layout_width="match_parent"
-	android:layout_height="170dp"
-	app:cardCornerRadius="30dp"
-	app:cardElevation="0dp"
-	
-	android:clickable="true"
-	android:focusable="true"
-	android:layout_margin="16dp">
-	<androidx.appcompat.widget.AppCompatImageView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:scaleType="centerCrop"
-		android:id="@+id/carousel_bg" />
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/carousel_main_card"
+    style="?attr/materialCardViewFilledStyle"
+    android:layout_width="match_parent"
+    android:layout_height="170dp"
+    android:layout_margin="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="0dp">
 
-	<androidx.appcompat.widget.AppCompatImageView
-		android:id="@+id/carousel_imageView"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:scaleType="centerCrop"
-	 />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/carousel_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/carousel_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 </com.google.android.material.card.MaterialCardView>

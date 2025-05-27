@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -30,11 +29,9 @@ public class ScreenshotsAdapter extends ListAdapter<ScreenshotModel, Screenshots
 
     private static final String TAG = "ScreenshotsAdapter";
     private OnItemClickListener listener;
-    private final RequestManager glide;
 
-    public ScreenshotsAdapter(RequestManager glide) {
+    public ScreenshotsAdapter() {
         super(new ScreenshotsDiffCallback());
-        this.glide = glide;
     }
 
     @NonNull
