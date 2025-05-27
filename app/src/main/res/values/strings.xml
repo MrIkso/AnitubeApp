@@ -47,6 +47,7 @@
     <string name="set_video_speed">Швидкість відео</string>
     <string name="episode_number">Серія %d</string>
     <string name="loading_episode">Заватаження відео...</string>
+    <string name="searching_anime_on_hikka">Шукаємо аніме на hikka.io...</string>
     <string name="error_dialog_title">Помилка</string>
     <string name="error_dialog_message_unsupport_video_source">Невдалося отримати посилання на відео з даного плеєру. Відкрити в браузері?</string>
     <string name="login_error">Помилка входу</string>
@@ -81,6 +82,7 @@
     <string name="anime_favorites_list">Мої закладки</string>
     <string name="anime_all_list">Весь список</string>
     <string name="action_share">Поділитися</string>
+    <string name="action_open_on_hikka">Відкрити на hikka.io</string>
     <string name="action_copy_url">Копіювати посилання</string>
     <string name="action_set_unwatch_status">Не переглянуто</string>
     <string name="action_set_watch_status">Переглянуто</string>

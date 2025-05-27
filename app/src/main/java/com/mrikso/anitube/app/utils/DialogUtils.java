@@ -13,15 +13,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mrikso.anitube.app.R;
 
 public class DialogUtils {
-    public static AlertDialog getProDialog(Context activity, @StringRes int id) {
+    public static AlertDialog getProDialog(Context context, @StringRes int id) {
         AlertDialog alertDialog;
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(activity);
-        View view = LayoutInflater.from(activity).inflate(R.layout.dialog_proress, null);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_proress, null);
         RelativeLayout root = view.findViewById(R.id.root);
         TextView msg = view.findViewById(R.id.msg);
         // root.setBackgroundColor(activity.getResources().getColor(R.color.window_bg));
         // msg.setTextColor(activity.getResources().getColor(R.color.text_color_primary));
-        msg.setText(activity.getString(id));
+        msg.setText(context.getString(id));
         builder.setCancelable(false);
         alertDialog = builder.setView(view).create();
         alertDialog.show();

@@ -11,6 +11,7 @@ import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
 import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
 import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.parser.DetailsAnimeParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.repository.HikkaRepository;
@@ -41,10 +42,13 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
     private final AnitubeRepository anitubeRepository;
     private final HikkaRepository hikkaRepository;
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
-    private MutableLiveData<AnimeDetailsModel> detailsModel ;
+    private MutableLiveData<AnimeDetailsModel> detailsModel;
     private final MutableLiveData<AnimeMobileDetailsModel> mobileDetailsModelMutableLiveData = new MutableLiveData<>(new AnimeMobileDetailsModel());
+    private final MutableLiveData<String> hikkaAnimeUrl = new MutableLiveData<>(null);
+
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
     private final PreferencesHelper preferencesHelper;
+
     @Inject
     public DetailsAnimeFragmentViewModel(AnitubeRepository repository, HikkaRepository hikkaRepository, PreferencesHelper preferencesHelper) {
         this.anitubeRepository = repository;
@@ -104,12 +108,12 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
         }
     }
 
-    private void loadMobileAnimeDetails(String url){
+    private void loadMobileAnimeDetails(String url) {
         compositeDisposable.add(anitubeRepository
                 .getMobilePage(url)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(v -> {
-                   // loadSate.setValue(new Pair<>(LoadState.LOADING, null));
+                    // loadSate.setValue(new Pair<>(LoadState.LOADING, null));
                     Log.d(TAG, "start mobile loading");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -133,8 +137,12 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
         return detailsModel;
     }
 
-    public LiveData<AnimeMobileDetailsModel> getMobileDetails(){
+    public LiveData<AnimeMobileDetailsModel> getMobileDetails() {
         return mobileDetailsModelMutableLiveData;
+    }
+
+    public LiveData<String> getHikkaAnimeUrl() {
+        return hikkaAnimeUrl;
     }
 
     public void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
@@ -184,6 +192,20 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                             // Обробка помилки
                             Log.e(TAG, ("Error: " + throwable.getMessage()));
                         }));
+    }
+
+    public void openOnHikkaAnime(int anitubeId) {
+        compositeDisposable.add(hikkaRepository
+                .getAnimeFromHikka(anitubeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(v -> {
+                    String hikkaUrl = String.format("%s/%s/%s", ApiClient.HIKKA_URL, v.getDataType(), v.getSlug());
+                    hikkaAnimeUrl.postValue(hikkaUrl);
+                    Log.e(TAG, hikkaUrl);
+                }, throwable -> {
+                    Log.e(TAG, ("Error: " + throwable.getMessage()));
+                }));
     }
 
     public void parseAnimePage(Document document) {

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,6 +32,7 @@ import com.mrikso.anitube.app.adapters.ScreenshotsAdapter;
 import com.mrikso.anitube.app.databinding.FragmentDetailsAnimeBinding;
 import com.mrikso.anitube.app.databinding.ItemChipBinding;
 import com.mrikso.anitube.app.databinding.ItemDetailsInfoRowBinding;
+import com.mrikso.anitube.app.downloader.DownloadFile;
 import com.mrikso.anitube.app.interfaces.OnTorrentClickListener;
 import com.mrikso.anitube.app.model.ActionItem;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
@@ -78,6 +80,7 @@ public class DetailsAnimeFragment extends Fragment
     private AnimeDetailsModel currentAnimeDetails;
     private int tableRowIndex = 0;
     private ActionsAdapter actionsAdapter;
+    private AlertDialog progressDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,6 +157,13 @@ public class DetailsAnimeFragment extends Fragment
                 showMobileDetails(results);
             } else {
                 // binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewModel.getHikkaAnimeUrl().observe(getViewLifecycleOwner(), url -> {
+            DialogUtils.cancelDialog(progressDialog);
+            if (!StringUtil.isBlank(url)) {
+                DownloadFile.openInBrowser(requireContext(), url);
             }
         });
     }
@@ -341,6 +351,13 @@ public class DetailsAnimeFragment extends Fragment
                     true
             ));
         }
+
+        newActions.add(new ActionItem(
+                ActionItem.ID.OPEN_ON_HIKKA,
+                R.drawable.ic_hikka,
+                R.string.action_open_on_hikka,
+                true
+        ));
 
         newActions.add(new ActionItem(
                 ActionItem.ID.COMMENT,
@@ -573,6 +590,11 @@ public class DetailsAnimeFragment extends Fragment
         dialog.show(getParentFragmentManager(), TorrentSelectionDialog.TAG);
     }
 
+    private void handleOpenOnHikka() {
+        progressDialog = DialogUtils.getProDialog(requireContext(), R.string.searching_anime_on_hikka);
+        viewModel.openOnHikkaAnime(animeId);
+    }
+
     @Override
     public void onItemClick(ActionItem item) {
         switch (item.getId()) {
@@ -590,6 +612,9 @@ public class DetailsAnimeFragment extends Fragment
                 break;
             case COMMENT:
                 openCommentsFragment(animeId);
+                break;
+            case OPEN_ON_HIKKA:
+                handleOpenOnHikka();
                 break;
         }
     }

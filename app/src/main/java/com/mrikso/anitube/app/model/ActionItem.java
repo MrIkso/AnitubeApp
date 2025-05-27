@@ -24,7 +24,8 @@ public class ActionItem {
         STATUS,
         SHARE,
         TORRENT,
-        COMMENT
+        COMMENT,
+        OPEN_ON_HIKKA
     }
 
     public ActionItem(ID id, @DrawableRes int defaultIconResId, @StringRes int defaultTextResId, boolean isVisible) {

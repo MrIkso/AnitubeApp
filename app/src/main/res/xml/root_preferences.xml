@@ -75,11 +75,11 @@
             app:summary="@string/load_additional_anime_information_summary"
             app:title="@string/load_additional_anime_information_title" />
 
-        <Preference
-            app:icon="@drawable/ic_code"
-            app:key="pref_key_hikka_login"
-            app:summary="@string/hikka_login"
-            app:title="Hikka"></Preference>
+        <!-- <Preference
+             app:icon="@drawable/ic_hikka"
+             app:key="pref_key_hikka_login"
+             app:summary="@string/hikka_login"
+             app:title="Hikka"/>-->
 
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/about">
