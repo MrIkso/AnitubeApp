@@ -19,6 +19,7 @@ import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.google.android.material.internal.TextWatcherAdapter;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
@@ -68,7 +69,10 @@ public class SearchFragment extends Fragment
 
     protected void initializeListeners() {
         binding.back.setOnClickListener(
-                v -> Navigation.findNavController(requireView()).popBackStack());
+                v -> {
+                    KeyboardUtils.hideSoftInput(requireActivity());
+                    Navigation.findNavController(requireView()).popBackStack();
+                });
 
         AppCompatAutoCompleteTextView searchEdit = getAppCompatAutoCompleteTextView();
 
@@ -107,12 +111,19 @@ public class SearchFragment extends Fragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        viewModel.setHideKeyboard();
+        KeyboardUtils.hideSoftInput(requireActivity());
         recentSearchAdapter = null;
         suggestionAdapter = null;
         binding = null;
     }
 
     protected void observeEvents() {
+        viewModel.getShowKeyboard().observe(getViewLifecycleOwner(), show -> {
+            if (show) {
+                KeyboardUtils.showSoftInput(binding.etSearch);
+            }
+        });
         viewModel.getSearchHistoryData().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
                 recentSearchAdapter.submitList(results);
@@ -180,6 +191,8 @@ public class SearchFragment extends Fragment
     }
 
     private void performSearch(String query, boolean addToHistory) {
+        KeyboardUtils.hideSoftInput(binding.etSearch);
+        viewModel.setHideKeyboard();
         if (!TextUtils.isEmpty(query) && query.length() >= 3) {
             if (addToHistory) {
                 viewModel.addRecentSearch(query);

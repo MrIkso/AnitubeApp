@@ -11,19 +11,17 @@ import com.mrikso.anitube.app.data.search.RecentSearch;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.SimpleModel;
 
-import dagger.hilt.android.lifecycle.HiltViewModel;
+import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import kotlinx.coroutines.CoroutineScope;
 
 @HiltViewModel
@@ -35,6 +33,7 @@ public class SearchFragmentViewModel extends ViewModel {
     private final MutableLiveData<List<SimpleModel>> quickSearchResult = new MutableLiveData<>();
     private final MutableLiveData<Boolean> _showSearchResultAdapter = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> _showRecentSearchResultScreen = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> _showKeyboard = new MutableLiveData<>(true);
     private final MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private final SearchRepository searchRepository;
 
@@ -106,6 +105,14 @@ public class SearchFragmentViewModel extends ViewModel {
 
     public LiveData<Boolean> isShowRecentSearchResultScreen() {
         return _showRecentSearchResultScreen;
+    }
+
+    public LiveData<Boolean> getShowKeyboard() {
+        return _showKeyboard;
+    }
+
+    public void setHideKeyboard() {
+        _showKeyboard.postValue(false);
     }
 
     public LiveData<PagingData<AnimeReleaseModel>> getAnimePagingData() {
