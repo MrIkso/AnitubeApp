@@ -1,5 +1,6 @@
 package com.mrikso.anitube.app.ui.detail;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -58,16 +59,22 @@ import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @AndroidEntryPoint
 public class DetailsAnimeFragment extends Fragment
         implements BaseAnimeAdapter.OnItemClickListener, ScreenshotsAdapter.OnItemClickListener,
         ActionsAdapter.OnItemClickListener {
     public static final String TAG = "DetailsAnimeFragment";
-
+    private final CompositeDisposable disposables = new CompositeDisposable();
     private DetailsAnimeFragmentViewModel viewModel;
     private FragmentDetailsAnimeBinding binding;
     private ScreenshotsAdapter screenshotsAdapter;
@@ -80,7 +87,6 @@ public class DetailsAnimeFragment extends Fragment
     private AnimeDetailsModel currentAnimeDetails;
     private int tableRowIndex = 0;
     private ActionsAdapter actionsAdapter;
-    private AlertDialog progressDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +120,12 @@ public class DetailsAnimeFragment extends Fragment
         screenshotsList = null;
         franchisesAdapter = null;
         tableRowIndex = 0;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disposables.dispose();
     }
 
     private void initObservers() {
@@ -157,13 +169,6 @@ public class DetailsAnimeFragment extends Fragment
                 showMobileDetails(results);
             } else {
                 // binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
-            }
-        });
-
-        viewModel.getHikkaAnimeUrl().observe(getViewLifecycleOwner(), url -> {
-            DialogUtils.cancelDialog(progressDialog);
-            if (!StringUtil.isBlank(url)) {
-                DownloadFile.openInBrowser(requireContext(), url);
             }
         });
     }
@@ -590,9 +595,31 @@ public class DetailsAnimeFragment extends Fragment
         dialog.show(getParentFragmentManager(), TorrentSelectionDialog.TAG);
     }
 
+    @SuppressLint("CheckResult")
     private void handleOpenOnHikka() {
-        progressDialog = DialogUtils.getProDialog(requireContext(), R.string.searching_anime_on_hikka);
-        viewModel.openOnHikkaAnime(animeId);
+        final AtomicReference<AlertDialog> progressDialogRef = new AtomicReference<>();
+        Disposable disposable = viewModel.openOnHikkaAnime(animeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> {
+                    AlertDialog dialog = DialogUtils.getProDialog(requireContext(), R.string.searching_anime_on_hikka);
+                    progressDialogRef.set(dialog);
+                })
+                .doFinally(() -> DialogUtils.cancelDialog(progressDialogRef.get()))
+                .subscribeWith(new DisposableSingleObserver<String>() {
+                    @Override
+                    public void onSuccess(@NonNull String url) {
+                        if (!StringUtil.isBlank(url)) {
+                            DownloadFile.openInBrowser(requireContext(), url);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                });
+        disposables.add(disposable);
     }
 
     @Override

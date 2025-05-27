@@ -29,6 +29,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
@@ -44,8 +45,6 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
     private MutableLiveData<AnimeDetailsModel> detailsModel;
     private final MutableLiveData<AnimeMobileDetailsModel> mobileDetailsModelMutableLiveData = new MutableLiveData<>(new AnimeMobileDetailsModel());
-    private final MutableLiveData<String> hikkaAnimeUrl = new MutableLiveData<>(null);
-
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
     private final PreferencesHelper preferencesHelper;
 
@@ -141,10 +140,6 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
         return mobileDetailsModelMutableLiveData;
     }
 
-    public LiveData<String> getHikkaAnimeUrl() {
-        return hikkaAnimeUrl;
-    }
-
     public void addOrRemoveFromFavorites(int animeId, boolean isAdd) {
 
         compositeDisposable.add(anitubeRepository
@@ -194,18 +189,15 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                         }));
     }
 
-    public void openOnHikkaAnime(int anitubeId) {
-        compositeDisposable.add(hikkaRepository
+    public Single<String> openOnHikkaAnime(int anitubeId) {
+        return hikkaRepository
                 .getAnimeFromHikka(anitubeId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(v -> {
-                    String hikkaUrl = String.format("%s/%s/%s", ApiClient.HIKKA_URL, v.getDataType(), v.getSlug());
-                    hikkaAnimeUrl.postValue(hikkaUrl);
-                    Log.e(TAG, hikkaUrl);
-                }, throwable -> {
-                    Log.e(TAG, ("Error: " + throwable.getMessage()));
-                }));
+                .map(v -> String.format("%s/%s/%s", ApiClient.HIKKA_URL, v.getDataType(), v.getSlug()))
+                .doOnError(throwable -> {
+                    Log.e(TAG, "Error generating Hikka URL: " + throwable.getMessage(), throwable);
+                });
     }
 
     public void parseAnimePage(Document document) {
