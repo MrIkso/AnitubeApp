@@ -180,4 +180,5 @@
     <string name="read_more_details">Детальніше</string>
     <string name="error_loading_torrents">Не вдалося завантажити торренти. Спробуйте пізніше.</string>
     <string name="anime_not_found_on_hikka">Аніме не було знайдено на hikka.io</string>
+    <string name="message_error_short_query">Пошуковий запит має бути не менше 3 символів</string>
 </resources>

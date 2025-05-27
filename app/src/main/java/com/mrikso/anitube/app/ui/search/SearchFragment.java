@@ -31,6 +31,7 @@ import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.utils.GlideLoadUtils;
 import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -199,6 +200,8 @@ public class SearchFragment extends Fragment
             }
             preSearch();
             viewModel.getSearchResult(query);
+        } else {
+            ViewUtils.showSnackbar(requireActivity(), R.string.message_error_short_query);
         }
     }
 
