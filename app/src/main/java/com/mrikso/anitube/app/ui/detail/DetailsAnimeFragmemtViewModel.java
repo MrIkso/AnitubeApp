@@ -19,20 +19,19 @@ import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
 public class DetailsAnimeFragmemtViewModel extends ViewModel {
@@ -188,11 +187,9 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     }
 
     public void parseAnimePage(Document document) {
-
         compositeDisposable.add(
                 parser.getDetailsModel(document).subscribeOn(Schedulers.io()).subscribe(v -> {
                     detailsModel.postValue(v);
-                    changeAnimeStatusOnHikka(v.getAnimeId(), 0);
                     loadSate.postValue(LoadState.DONE);
                 }));
     }
