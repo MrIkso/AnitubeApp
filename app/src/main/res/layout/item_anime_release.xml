@@ -85,46 +85,12 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
+                android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/roboto_medium"
                 android:maxLines="2"
-                android:textSize="16.0sp"
+                android:textSize="16sp"
                 tools:text="Бліч" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/episodes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textSize="14.0sp"
-                tools:text="111" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="•"
-                android:textSize="14.0sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/year"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14.0sp"
-                tools:text="2025" />
 
         </LinearLayout>
 
@@ -132,7 +98,8 @@
             android:id="@+id/ll_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="visible">
@@ -154,8 +121,54 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
                 tools:text="10/10" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/year_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <TextView
+                style="@style/TextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/year" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textSize="14sp"
+                tools:text="2025" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/episodes_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/series" />
+
+            <TextView
+                android:id="@+id/episodes"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                tools:text="1111" />
 
         </LinearLayout>
 
@@ -165,10 +178,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:ellipsize="end"
-            android:lineSpacingExtra="2.0sp"
+            android:lineSpacingExtra="2sp"
             android:maxLines="3"
             android:textSize="12.5sp"
-            tools:text="Бліч" />
+            tools:text="@tools:sample/lorem/random" />
 
     </LinearLayout>
 
