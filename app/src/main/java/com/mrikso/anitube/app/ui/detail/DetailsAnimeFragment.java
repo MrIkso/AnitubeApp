@@ -66,7 +66,7 @@ public class DetailsAnimeFragment extends Fragment
         ActionsAdapter.OnItemClickListener {
     public static final String TAG = "DetailsAnimeFragment";
 
-    private DetailsAnimeFragmemtViewModel viewModel;
+    private DetailsAnimeFragmentViewModel viewModel;
     private FragmentDetailsAnimeBinding binding;
     private ScreenshotsAdapter screenshotsAdapter;
     private BaseAnimeAdapter similarAnimeAdapter;
@@ -82,7 +82,7 @@ public class DetailsAnimeFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(DetailsAnimeFragmemtViewModel.class);
+        viewModel = new ViewModelProvider(this).get(DetailsAnimeFragmentViewModel.class);
         loadPage();
     }
 

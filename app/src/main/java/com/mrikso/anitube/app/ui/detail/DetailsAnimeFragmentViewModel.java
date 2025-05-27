@@ -34,8 +34,8 @@ import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
-public class DetailsAnimeFragmemtViewModel extends ViewModel {
-    private final String TAG = "DetailsAnimeFragmemtViewModel";
+public class DetailsAnimeFragmentViewModel extends ViewModel {
+    private final String TAG = "DetailsAnimeFragmentViewModel";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final AnitubeRepository anitubeRepository;
@@ -46,7 +46,7 @@ public class DetailsAnimeFragmemtViewModel extends ViewModel {
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
     private final PreferencesHelper preferencesHelper;
     @Inject
-    public DetailsAnimeFragmemtViewModel(AnitubeRepository repository, HikkaRepository hikkaRepository, PreferencesHelper preferencesHelper) {
+    public DetailsAnimeFragmentViewModel(AnitubeRepository repository, HikkaRepository hikkaRepository, PreferencesHelper preferencesHelper) {
         this.anitubeRepository = repository;
         this.hikkaRepository = hikkaRepository;
         this.preferencesHelper = preferencesHelper;

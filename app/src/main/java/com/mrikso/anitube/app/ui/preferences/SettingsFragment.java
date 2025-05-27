@@ -3,12 +3,9 @@ package com.mrikso.anitube.app.ui.preferences;
 import static com.mrikso.anitube.app.utils.PreferenceKeys.PREF_KEY_DYNAMIC_COLORS;
 import static com.mrikso.anitube.app.utils.PreferenceKeys.PREF_KEY_THEME;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,29 +13,21 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.color.DynamicColors;
-import com.google.android.material.color.DynamicColorsOptions;
-import com.google.android.material.color.HarmonizedColors;
-import com.google.android.material.color.HarmonizedColorsOptions;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.ui.base.BasePreferenceFragment;
-import com.mrikso.anitube.app.ui.detail.DetailsAnimeFragmemtViewModel;
-import com.mrikso.anitube.app.ui.main.MainActivity;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
-
-import org.apache.commons.lang3.StringUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import okhttp3.HttpUrl;
