@@ -22,6 +22,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -135,6 +136,18 @@ public class ViewUtils {
      */
     public static void showSnackbar(@NonNull Activity activity, @NonNull String message) {
         View view = activity.findViewById(android.R.id.content);
+        if (view == null) {
+            return;
+        }
+        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static void showSnackbar(@NonNull Fragment fragment, @StringRes int message) {
+        showSnackbar(fragment, fragment.getString(message));
+    }
+
+    public static void showSnackbar(@NonNull Fragment fragment, @NonNull String message) {
+        View view = fragment.requireActivity().findViewById(android.R.id.content);
         if (view == null) {
             return;
         }

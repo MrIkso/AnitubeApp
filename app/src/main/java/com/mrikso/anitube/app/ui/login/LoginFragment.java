@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +24,7 @@ import com.mrikso.anitube.app.databinding.FragmentLoginBinding;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -104,8 +104,7 @@ public class LoginFragment extends Fragment {
                     case ERROR:
                         binding.loginBtn.setIcon(null);
                         binding.loginBtn.setEnabled(true);
-                        Toast.makeText(getContext(), getText(R.string.login_error), Toast.LENGTH_LONG)
-                                .show();
+                        ViewUtils.showSnackbar(this, R.string.login_error);
                         break;
                     case LOADING:
                         createLoadingIndicator();
@@ -134,8 +133,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void openLoginFragment(UserModel userData) {
-        Toast.makeText(requireContext(), getText(R.string.login_successful_login), Toast.LENGTH_SHORT)
-                .show();
+        ViewUtils.showSnackbar(this, R.string.login_successful_login);
 
         LoginFragmentDirections.ActionNavLoginToNavProfile action =
                 LoginFragmentDirections.actionNavLoginToNavProfile(userData.getUserUrl());

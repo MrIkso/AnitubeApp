@@ -2,12 +2,10 @@ package com.mrikso.anitube.app.ui.main;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,14 +21,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.color.DynamicColors;
-import com.google.android.material.color.MaterialColors;
-import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.ActivityMainBinding;
 import com.mrikso.anitube.app.utils.ParserUtils;
-import com.mrikso.anitube.app.utils.PreferenceUtils;
-import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -125,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     private void initObservers() {
         viewModel.hikkaLogin().observe(this, result -> {
             if (result) {
-                Toast.makeText(this, getString(R.string.hikka_login_succes), Toast.LENGTH_LONG).show();
+                ViewUtils.showSnackbar(this, R.string.hikka_login_succes);
             }
         });
     }
@@ -221,8 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("url", uriLink);
                 navController.navigate(R.id.nav_details_anime_info, bundle);
             } else {
-                Toast.makeText(this, "This url not supported", Toast.LENGTH_SHORT)
-                        .show();
+                ViewUtils.showSnackbar(this, "This url not supported");
             }
         }
     }

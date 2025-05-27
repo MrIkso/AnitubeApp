@@ -1,168 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 xmlns:app="http://schemas.android.com/apk/res-auto"
-	 android:layout_height="wrap_content"
-	 android:layout_width="fill_parent"
-	 android:background="?attr/selectableItemBackground"
-	 android:clickable="true"
-	 android:padding="10dp"
-	 android:orientation="horizontal"
-	 android:baselineAligned="false"
-	 android:focusable="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:baselineAligned="false"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
-	<com.google.android.material.card.MaterialCardView
-		 android:layout_height="158dp"
-		 android:layout_width="114dp"
-		 android:layout_margin="6dp"
-		 app:cardElevation="0dp"
-		 style="?attr/materialCardViewFilledStyle"
-		 app:cardCornerRadius="8dp"
-		 android:id="@+id/card_view">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view"
+        style="?attr/materialCardViewFilledStyle"
+        android:layout_width="114dp"
+        android:layout_height="158dp"
+        android:layout_margin="6dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp">
 
-		<RelativeLayout
-			 android:layout_height="match_parent"
-			 android:layout_width="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-			<com.google.android.material.imageview.ShapeableImageView
-				 android:layout_height="match_parent"
-				 android:layout_width="match_parent"
-				 android:scaleType="centerCrop"
-				 app:shapeAppearanceOverlay="@style/CardViewShapeableImageView"
-				 android:layout_alignParentLeft="true"
-				 android:layout_alignParentStart="true"
-				 android:layout_alignParentTop="true"
-				 android:id="@+id/poster" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/poster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/CardViewShapeableImageView" />
 
-			<com.google.android.material.progressindicator.CircularProgressIndicator
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:layout_centerInParent="true"
-				 android:indeterminate="true"
-				 app:indicatorSize="40dp"
-				 app:trackThickness="20dp"
-				 android:id="@+id/progress_indicator" />
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                app:indicatorSize="40dp"
+                app:trackThickness="20dp" />
 
-			<RelativeLayout
-				 android:layout_height="20dp"
-				 android:layout_width="wrap_content"
-				 android:visibility="gone"
-				 android:gravity="center"
-				 android:background="@color/anime_status_plan_to_watch"
-				 android:layout_alignLeft="@+id/poster"
-				 android:id="@+id/status_layout">
+            <RelativeLayout
+                android:id="@+id/status_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_alignLeft="@+id/poster"
+                android:background="@color/anime_status_plan_to_watch"
+                android:gravity="center"
+                android:visibility="gone">
 
-				<TextView
-					 android:layout_height="wrap_content"
-					 android:layout_width="wrap_content"
-					 android:gravity="center"
-					 android:paddingRight="5dp"
-					 android:ellipsize="end"
-					 android:textSize="12sp"
-					 android:paddingLeft="5dp"
-					 android:textColor="@color/white"
-					 android:maxLines="1"
-					 android:text="@string/anime_status_will"
-					 android:id="@+id/status" />
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/anime_status_will"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
 
-			</RelativeLayout>
+            </RelativeLayout>
 
-		</RelativeLayout>
+        </RelativeLayout>
 
-	</com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
 
-	<LinearLayout
-		 android:layout_height="wrap_content"
-		 android:layout_width="fill_parent"
-		 android:orientation="vertical"
-		 android:layout_marginStart="10dp">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
 
-		<LinearLayout
-			 android:layout_height="wrap_content"
-			 android:layout_width="fill_parent">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-			<TextView
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:ellipsize="end"
-				 android:textSize="16.0sp"
-				 android:fontFamily="@font/roboto_medium"
-				 android:maxLines="2"
-				 android:layout_weight="1.0"
-				 android:id="@+id/title" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:ellipsize="end"
+                android:fontFamily="@font/roboto_medium"
+                android:maxLines="2"
+                android:textSize="16.0sp"
+                tools:text="Бліч" />
 
-		</LinearLayout>
+        </LinearLayout>
 
-		<LinearLayout
-			 android:layout_height="wrap_content"
-			 android:layout_width="wrap_content"
-			 android:gravity="center_vertical"
-			 android:orientation="horizontal"
-			 android:layout_marginTop="2dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-			<TextView
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:ellipsize="end"
-				 android:textSize="14.0sp"
-				 android:maxLines="2"
-				 android:id="@+id/episodes" />
+            <TextView
+                android:id="@+id/episodes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="14.0sp"
+                tools:text="111" />
 
-			<TextView
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:paddingRight="8dp"
-				 android:textSize="14.0sp"
-				 android:paddingLeft="8dp"
-				 android:textStyle="bold"
-				 android:text="•" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="•"
+                android:textSize="14.0sp"
+                android:textStyle="bold" />
 
-			<TextView
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:textSize="14.0sp"
-				 android:id="@+id/year" />
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14.0sp"
+                tools:text="2025" />
 
-		</LinearLayout>
+        </LinearLayout>
 
-		<LinearLayout
-			 android:layout_height="wrap_content"
-			 android:layout_width="wrap_content"
-			 android:visibility="gone"
-			 android:orientation="horizontal"
-			 android:layout_marginTop="8dp"
-			 android:id="@+id/ll_score">
+        <LinearLayout
+            android:id="@+id/ll_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-			<RatingBar
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:progressBackgroundTint="?attr/colorSurfaceVariant"
-				 android:progressTint="@color/material_yellow"
-				 style="@style/Widget.AppCompat.RatingBar.Small"
-				 android:isIndicator="true"
-				 android:numStars="5"
-				 android:id="@+id/rating" />
+            <RatingBar
+                android:id="@+id/rating"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressBackgroundTint="?attr/colorSurfaceVariant"
+                android:progressTint="@color/material_yellow"
+                tools:rating="5" />
 
-			<TextView
-				 android:layout_height="wrap_content"
-				 android:layout_width="wrap_content"
-				 android:paddingLeft="8dp"
-				 android:includeFontPadding="false"
-				 style="@style/TextLabel"
-				 android:id="@+id/tv_score" />
+            <TextView
+                android:id="@+id/tv_score"
+                style="@style/TextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:paddingLeft="8dp"
+                tools:text="10/10" />
 
-		</LinearLayout>
+        </LinearLayout>
 
-		<TextView
-			 android:layout_height="wrap_content"
-			 android:layout_width="fill_parent"
-			 android:ellipsize="end"
-			 android:textSize="12.5sp"
-			 android:layout_marginTop="2dp"
-			 android:maxLines="3"
-			 android:lineSpacingExtra="2.0sp"
-			 android:id="@+id/description" />
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2.0sp"
+            android:maxLines="3"
+            android:textSize="12.5sp"
+            tools:text="Бліч" />
 
-	</LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

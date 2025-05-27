@@ -56,11 +56,11 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
     }
 
     public void loadData(String url) {
-        Log.d(TAG, "loadData called");
+        //Log.d(TAG, "loadData called");
         if (detailsModel == null) {
             detailsModel = new MutableLiveData<>();
             loadAnime(url);
-            Log.d(TAG, "loadAnime called");
+            //Log.d(TAG, "loadAnime called");
         }
     }
 
@@ -179,7 +179,7 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(v -> {
-                            Log.d(TAG, v.toString());
+                            //Log.d(TAG, v.toString());
                             //   Toast.makeText(App.getApplication(), v.getMessage(), Toast.LENGTH_SHORT)
                             //        .show();
                         },
@@ -196,7 +196,6 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(v -> String.format("%s/%s/%s", ApiClient.HIKKA_URL, v.getDataType(), v.getSlug()))
                 .doOnError(throwable -> {
-                    Log.e(TAG, "Error generating Hikka URL: " + throwable.getMessage(), throwable);
                 });
     }
 

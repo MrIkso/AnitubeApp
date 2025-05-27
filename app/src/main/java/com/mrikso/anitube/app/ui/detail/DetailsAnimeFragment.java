@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -562,7 +562,7 @@ public class DetailsAnimeFragment extends Fragment
         clearDetailsTable();
         viewModel.addOrRemoveFromFavorites(animeId, isAdding);
         updateReleaseActions(currentAnimeDetails);
-        Toast.makeText(requireContext(), isAdding ? "Додано до закладок!" : "Видалено з закладок!", Toast.LENGTH_SHORT).show();
+        ViewUtils.showSnackbar(requireActivity(), isAdding ? "Додано до закладок!" : "Видалено з закладок!");
     }
 
     private void handleChangeStatusClick() {
@@ -615,8 +615,9 @@ public class DetailsAnimeFragment extends Fragment
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable e) {
-
+                    public void onError(@NonNull Throwable throwable) {
+                        ViewUtils.showSnackbar(requireActivity(), R.string.anime_not_found_on_hikka);
+                        Log.e(TAG, "Error generating Hikka URL: " + throwable.getMessage(), throwable);
                     }
                 });
         disposables.add(disposable);

@@ -2,52 +2,39 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="144dp"
+    style="?attr/materialCardViewFilledStyle"
     android:layout_width="250dp"
-    android:minHeight="144dp"
+    android:layout_height="144dp"
+    android:layout_gravity="center_horizontal"
     android:clickable="true"
     android:focusable="true"
-    android:layout_gravity="center_horizontal"
+    android:minHeight="144dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="0dp"
-    app:cardUseCompatPadding="true"
-    style="?attr/materialCardViewFilledStyle">
+    app:cardUseCompatPadding="true">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
         <ImageView
             android:id="@+id/trailer_preview"
-            android:layout_height="fill_parent"
             android:layout_width="fill_parent"
-            android:scaleType="centerCrop"
+            android:layout_height="fill_parent"
             android:contentDescription="@null"
+            android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars" />
 
-        <!-- <View
-             android:layout_width="match_parent"
-             android:layout_height="200dp"
-             android:layout_gravity="bottom" />-->
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_play_arrow"
+            app:tint="@color/white" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="20dp">
 
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_play_triangle"
-                app:tint="@color/white" />
-
-        </LinearLayout>
-
-    </FrameLayout>
+    </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

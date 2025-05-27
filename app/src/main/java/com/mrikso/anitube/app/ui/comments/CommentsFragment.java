@@ -1,14 +1,11 @@
 package com.mrikso.anitube.app.ui.comments;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,10 +16,6 @@ import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.internal.TextWatcherAdapter;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
@@ -31,6 +24,7 @@ import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.databinding.FragmentCommentsBinding;
 import com.mrikso.anitube.app.model.CommentModel;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -177,8 +171,7 @@ public class CommentsFragment extends Fragment {
                    case ERROR:
                        binding.sendMsgPanel.sendProgress.setVisibility(View.GONE);
                        binding.sendMsgPanel.send.setVisibility(View.VISIBLE);
-                       Toast.makeText(requireContext(), results.second, Toast.LENGTH_LONG).show();
-
+                       ViewUtils.showSnackbar(this, String.valueOf(results.second));
                        break;
                    case LOADING:
                        binding.sendMsgPanel.sendProgress.setVisibility(View.VISIBLE);

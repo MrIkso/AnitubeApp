@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -67,6 +66,7 @@ import com.mrikso.anitube.app.ui.dialogs.UnsupportedVideoSourceDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ReadableTime;
+import com.mrikso.anitube.app.utils.ViewUtils;
 import com.mrikso.anitube.app.view.CustomAutoCompleteTextView;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 import com.mrikso.player.CustomPlayerView;
@@ -800,8 +800,7 @@ public class PlayerActivity extends AppCompatActivity {
             playerView.setHaveMedia(true);
             exoPlayer.seekTo(currentPosition);
         } else {
-            Toast.makeText(this, R.string.message_error_video_has_empty_stream_lisnks, Toast.LENGTH_LONG)
-                    .show();
+            ViewUtils.showSnackbar(this, R.string.message_error_video_has_empty_stream_lisnks);
             finish();
         }
     }
@@ -1047,8 +1046,7 @@ public class PlayerActivity extends AppCompatActivity {
                 exoPlayer.seekToDefaultPosition();
                 exoPlayer.prepare();
             } else {
-                Toast.makeText(PlayerActivity.this, "error: " + error.getMessage(), Toast.LENGTH_LONG)
-                        .show();
+                ViewUtils.showSnackbar(PlayerActivity.this, "error: " + error.getMessage());
                 finish();
             }
         }

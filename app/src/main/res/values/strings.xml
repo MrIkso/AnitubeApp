@@ -179,4 +179,5 @@
     <string name="hikka_loggined">Вітаємо %s! \nНатисніть щоб вийти</string>
     <string name="read_more_details">Детальніше</string>
     <string name="error_loading_torrents">Не вдалося завантажити торренти. Спробуйте пізніше.</string>
+    <string name="anime_not_found_on_hikka">Аніме не було знайдено на hikka.io</string>
 </resources>

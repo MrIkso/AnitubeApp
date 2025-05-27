@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,12 +32,13 @@ import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
+import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.ui.dialogs.UnsupportedVideoSourceDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 import com.mrikso.anitube.app.view.TreeViewGroup;
-import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.viewmodel.SharedViewModel;
 import com.mrikso.bottomsheetmenulib.MenuBottomSheet;
 import com.mrikso.treeview.TreeItem;
@@ -472,7 +472,7 @@ public class WatchAnimeFragment extends Fragment
         } else if (!Strings.isNullOrEmpty(model.getSingleDirectUrl())) {
             downloadVideo(model.getSingleDirectUrl(), model.getHeaders());
         } else {
-            Toast.makeText(requireContext(), R.string.message_error_video_has_empty_stream_lisnks, Toast.LENGTH_LONG).show();
+            ViewUtils.showSnackbar(this, R.string.message_error_video_has_empty_stream_lisnks);
         }
     }
 
