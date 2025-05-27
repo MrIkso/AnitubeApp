@@ -20,12 +20,7 @@
 		android:id="@+id/new_anime_recycler_view"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		android:orientation="vertical"
+		tools:itemCount="2"
 		tools:listitem="@layout/item_anime_release"/>
 
-	<View
-		android:layout_height="0.5dp"
-		android:layout_width="wrap_content"
-		android:layout_marginEnd="16dp"
-		android:layout_marginTop="16dp"
-		android:layout_marginStart="16dp" />
 </LinearLayout>

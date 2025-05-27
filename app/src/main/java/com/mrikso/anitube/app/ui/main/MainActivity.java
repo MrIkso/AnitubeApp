@@ -1,22 +1,12 @@
 package com.mrikso.anitube.app.ui.main;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.Window;
 
-import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
@@ -33,21 +23,15 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavController navController;
-    // private MenuItem selectedItem;
     private SharedViewModel viewModel = null;
-
-    private @ColorInt int defaultStatusBarColor; // Зберігаємо стандартний колір
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Inflate and get instance of binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         // set content view to binding's root
         setContentView(binding.getRoot());
-
-        saveDefaultStatusBarSettings();
 
         initViewModel();
         initObservers();
@@ -58,34 +42,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.bttomNav, navController);
 
         navController.addOnDestinationChangedListener((nav, destination, bundle) -> {
-            updateStatusBarAppearance(destination);
-            if (destination.getId() == R.id.nav_screenshots || destination.getId() == R.id.nav_settings) {
+            if (destination.getId() == R.id.nav_screenshots
+                    || destination.getId() == R.id.nav_settings
+                    || destination.getId() == R.id.nav_comments) {
                 hideBottomNavigation();
             } else {
                 showBottomNavigation();
             }
         });
 
-        // Додаємо обробку відступів для BottomNavigationView
-        applyInsetsToBottomNavigationView();
-
         binding.bttomNav.setOnItemSelectedListener(item -> {
-            //  selectedItem = item;
             int selectedItemId = item.getItemId();
             handleBottomNavItemSelections(binding.bttomNav, selectedItemId);
-            //                    if (selectedItemId == R.id.nav_home) {
-            //                        navController.navigate(R.id.nav_home);
-            //                    } else if (selectedItemId == R.id.nav_anime_list) {
-            //                        navController.navigate(R.id.nav_anime_list);
-            //                    } else if (selectedItemId == R.id.nav_search) {
-            //                        navController.navigate(R.id.nav_anime_list);
-            //                    } else if (selectedItemId == R.id.nav_profile) {
-            //                        navController.navigate(R.id.nav_profile);
-            //                    }
-            //  if (selectedItemId != binding.bttomNav.getSelectedItemId()) {
-
             NavigationUI.onNavDestinationSelected(item, navController);
-            //   }
             return true;
         });
 
@@ -139,66 +108,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
-    }
-
-    // Метод для збереження стандартних налаштувань
-    private void saveDefaultStatusBarSettings() {
-        // --- НАЛАШТОВУЄМО EDGE-TO-EDGE ОДИН РАЗ ---
-        Window window = getWindow();
-        WindowCompat.setDecorFitsSystemWindows(window, false);
-        // -----------------------------------------
-
-        // Зберігаємо стандартний колір статус-бару з теми
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(android.R.attr.statusBarColor, typedValue, true);
-        defaultStatusBarColor = typedValue.data;
-    }
-
-    // Метод, що викликається при зміні екрану
-    private void updateStatusBarAppearance(NavDestination destination) {
-        Window window = getWindow();
-        WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(window, binding.getRoot());
-
-        if (destination.getId() == R.id.nav_details_anime_info) {
-            // Екран деталей: Прозорий фон, світлі іконки (для темного постера)
-            window.setStatusBarColor(Color.TRANSPARENT);
-            if (insetsController != null) {
-                insetsController.setAppearanceLightStatusBars(false);
-            }
-        } else {
-            // Інші екрани: Стандартний колір з теми, стандартний вигляд іконок
-            window.setStatusBarColor(defaultStatusBarColor);
-            if (insetsController != null) {
-                // Отримуємо стандартний вигляд іконок з теми
-                boolean defaultLightStatusBar;
-                TypedValue lightValue = new TypedValue();
-                getTheme().resolveAttribute(android.R.attr.windowLightStatusBar, lightValue, true);
-                defaultLightStatusBar = lightValue.data != 0;
-                insetsController.setAppearanceLightStatusBars(defaultLightStatusBar);
-            }
-        }
-    }
-
-    private void applyInsetsToBottomNavigationView() {
-        final int initialPaddingLeft = binding.bttomNav.getPaddingLeft();
-        final int initialPaddingTop = binding.bttomNav.getPaddingTop();
-        final int initialPaddingRight = binding.bttomNav.getPaddingRight();
-        final int initialPaddingBottom = binding.bttomNav.getPaddingBottom();
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bttomNav, (v, windowInsets) -> {
-            Insets navBars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            // Додаємо нижній відступ до початкового
-            v.setPadding(
-                    initialPaddingLeft,
-                    initialPaddingTop,
-                    initialPaddingRight,
-                    initialPaddingBottom + navBars.bottom
-            );
-            // Повертаємо інсети, не поглинаючи їх
-            return windowInsets;
-        });
-        // Запит на застосування інсетів після встановлення слухача
-        ViewCompat.requestApplyInsets(binding.bttomNav);
     }
 
     void handleIntent(Intent intent) {
