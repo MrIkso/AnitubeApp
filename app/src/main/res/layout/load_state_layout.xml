@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
     android:id="@+id/state_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_centerInParent="true"
     android:layout_gravity="center">
 
     <LinearLayout
-        android:layout_height="fill_parent"
+        android:id="@+id/error_layout"
         android:layout_width="fill_parent"
-        android:visibility="gone"
+        android:layout_height="fill_parent"
         android:gravity="center"
-        android:padding="16dp"
         android:orientation="vertical"
-        android:id="@+id/error_layout">
+        android:padding="16dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -23,48 +22,48 @@
             android:src="@drawable/image_error" />
 
         <TextView
-		android:layout_marginTop="24dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textSize="16sp"
-            android:fontFamily="@font/roboto_medium"
             android:id="@+id/error_message_title"
-            android:text="@string/oh_something_went_wrong" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/oh_something_went_wrong"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/error_message"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:text="@string/error_load"
-            android:textSize="14sp"
-            android:fontFamily="@font/roboto_regular" />
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/button_ll"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textAllCaps="false"
-                android:layout_gravity="center_horizontal"
                 android:id="@+id/repeat"
-                android:text="@string/repeat" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/repeat"
+                android:textAllCaps="false" />
 
         </LinearLayout>
 
     </LinearLayout>
 
     <ProgressBar
-        android:layout_height="52dp"
+        android:id="@+id/progress_bar"
         android:layout_width="52dp"
-        android:visibility="visible"
-        android:gravity="center"
+        android:layout_height="52dp"
         android:layout_gravity="center"
-        android:id="@+id/progress_bar" />
+        android:gravity="center"
+        android:visibility="visible" />
 
 </FrameLayout>

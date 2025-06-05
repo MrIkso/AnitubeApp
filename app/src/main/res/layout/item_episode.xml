@@ -49,8 +49,8 @@
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="12.0sp"
                     android:visibility="gone"
-                    tools:visibility="visible"
-                    tools:text="Переглянуто до 24:00" />
+                    tools:text="Переглянуто до 24:00"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 

@@ -2,7 +2,6 @@
 
 <com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/menu_action_chip"
     style="@style/Widget.Material3.Chip.Assist.Elevated"
     android:layout_width="wrap_content"

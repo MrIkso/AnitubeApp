@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:elevation="0dp">
+        android:elevation="0dp"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:title="@string/login_title"
-            app:navigationIcon="@drawable/ic_back" />
+            app:navigationIcon="@drawable/ic_back"
+            app:title="@string/login_title" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_below="@id/appbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/appbar"
         android:scrollbars="none">
 
         <RelativeLayout
@@ -52,94 +51,94 @@
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp">
 -->
-                <RelativeLayout
+            <RelativeLayout
 
-                    android:layout_below="@+id/image_view_logo"
-                    android:id="@+id/cardview"
-                    android:layout_margin="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/edit_text_username_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="true"
-                        android:hint="@string/login_username"
-                        app:startIconDrawable="@drawable/baseline_person_outline_24">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_text_username"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textEmailAddress"
-                            android:autofillHints="username"
-                            android:maxLines="1" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/edit_text_password_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/edit_text_username_layout"
-                        android:layout_marginTop="16dp"
-                        android:hint="@string/login_password"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="true"
-                        app:passwordToggleEnabled="true"
-                        app:startIconDrawable="@drawable/baseline_password_24">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_text_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:autofillHints="password"
-                            android:imeOptions="actionGo"
-                            android:inputType="textPassword"
-                            android:maxLines="1" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/login_btn"
-                        style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/edit_text_password_layout"
-                        android:layout_marginTop="32dp"
-                        android:text="@string/login_text" />
-
-                </RelativeLayout>
-           <!-- </com.google.android.material.card.MaterialCardView>
--->
-            <Button
-                style="@style/Widget.Material3.Button.TextButton"
-                android:id="@+id/forgot_password_btn"
+                android:id="@+id/cardview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_below="@+id/image_view_logo"
+                android:layout_margin="8dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edit_text_username_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_username"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:startIconDrawable="@drawable/baseline_person_outline_24">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_text_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="username"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edit_text_password_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_text_username_layout"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/login_password"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:passwordToggleEnabled="true"
+                    app:startIconDrawable="@drawable/baseline_password_24">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_text_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="password"
+                        android:imeOptions="actionGo"
+                        android:inputType="textPassword"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/login_btn"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_text_password_layout"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/login_text" />
+
+            </RelativeLayout>
+            <!-- </com.google.android.material.card.MaterialCardView>
+ -->
+            <Button
+                android:id="@+id/forgot_password_btn"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/cardview"
                 android:layout_centerHorizontal="true"
-                android:textColor="?colorOnSurfaceVariant"
-                android:text="@string/login_forget_password" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
+                android:gravity="center"
+                android:text="@string/login_forget_password"
+                android:textColor="?colorOnSurfaceVariant" />
 
             <Button
-                style="?attr/materialButtonOutlinedStyle"
                 android:id="@+id/create_new_account_btn"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:minWidth="128dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_below="@+id/forgot_password_btn"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
+                android:minWidth="128dp"
+                android:text="@string/sign_up"
                 android:textColor="?colorPrimary"
-                android:textStyle="bold"
-                android:text="@string/sign_up" />
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

@@ -1,74 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
+    android:id="@+id/search_bar_root"
     android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:id="@+id/search_bar_root">
+    android:orientation="horizontal">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/search_cardView"
         style="@style/Widget.Material3.CardView.Outlined"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_weight="1.0"
         android:clickable="true"
         android:focusable="true"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="8dp"
-        app:cardElevation="1.5dp"
-        android:layout_marginStart="16dp"
         app:cardCornerRadius="24dp"
-        android:layout_weight="1.0"
-        android:id="@+id/search_cardView">
+        app:cardElevation="1.5dp">
 
         <LinearLayout
-            android:layout_height="48dp"
+            android:id="@+id/search_linearLayout"
             android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:id="@+id/search_linearLayout">
+            android:layout_height="48dp"
+            android:orientation="horizontal">
 
             <ImageView
-                android:layout_height="fill_parent"
+                android:id="@+id/search_btn"
                 android:layout_width="wrap_content"
-                android:src="@drawable/ic_search"
-                android:scaleType="center"
+                android:layout_height="fill_parent"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
-                android:paddingStart="8dp"
                 android:minWidth="48dp"
-                android:id="@+id/search_btn" />
+                android:paddingStart="8dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_search" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginEnd="48dp"
-                android:textSize="16sp"
-                android:layout_marginStart="48dp"
-                android:layout_gravity="center_vertical"
                 android:id="@+id/search_tv"
-                android:text="@string/search_for_anime" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:text="@string/search_for_anime"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:layout_height="48dp"
+        android:id="@+id/profile_avatar"
         android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-		android:padding="5dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:scaleType="center"
         android:focusable="true"
-        android:layout_marginStart="8dp"
         android:minWidth="48dp"
-        android:id="@+id/profile_avatar"
-        app:srcCompat="@drawable/ic_person"
+        android:padding="5dp"
+        android:scaleType="center"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay"
-        app:strokeWidth="2dp"
+        app:srcCompat="@drawable/ic_person"
         app:strokeColor="?attr/colorPrimary"
-    />
+        app:strokeWidth="2dp" />
 
 </LinearLayout>

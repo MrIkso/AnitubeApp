@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:orientation="vertical"
-	android:id="@+id/ll_similar"
-	android:visibility="gone"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
-	
-	<TextView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="10dp"
-		android:text="@string/recommendations"
-		android:fontFamily="@font/roboto_medium"
-		style="@style/LayoutHeader" />
-	<androidx.recyclerview.widget.RecyclerView
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:overScrollMode="never"
-		android:clipToPadding="false"
-		android:orientation="horizontal"
-		android:id="@+id/recycler_view_similar"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_similar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <TextView
+        style="@style/LayoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="10dp"
+        android:text="@string/recommendations" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_similar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_best_anime" />
 </LinearLayout>

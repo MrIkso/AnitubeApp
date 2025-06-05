@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-	<TextView
-		android:layout_height="wrap_content"
-		android:layout_width="match_parent"
-		android:padding="10dp"
-		style="@style/LayoutHeader"
-		android:layout_marginTop="0dp"
-		android:text="@string/home_new_anime" />
+    <TextView
+        style="@style/LayoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:padding="10dp"
+        android:text="@string/home_new_anime" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:id="@+id/new_anime_recycler_view"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		android:orientation="vertical"
-		tools:itemCount="2"
-		tools:listitem="@layout/item_anime_release"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/new_anime_recycler_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_anime_release" />
 
 </LinearLayout>

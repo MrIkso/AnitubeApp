@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:id="@+id/ll_franchise"
-    android:visibility="gone"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="10dp"
         style="@style/LayoutHeader"
-        android:text="@string/anime_franchise"
-        android:fontFamily="@font/roboto_medium" />
-    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="10dp"
+        android:text="@string/anime_franchise" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_franchies"
         android:layout_width="fill_parent"
-        android:overScrollMode="never"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:id="@+id/recycler_view_franchies"
+        android:overScrollMode="never"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>

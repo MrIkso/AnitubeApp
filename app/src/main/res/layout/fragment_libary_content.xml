@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout
-        android:layout_height="wrap_content"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="wrap_content"
-        android:id="@+id/swipe_refresh_layout">
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_height="fill_parent"
+            android:id="@+id/content"
             android:layout_width="fill_parent"
-            android:visibility="gone"
+            android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:id="@+id/content">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_height="match_parent"
+                android:id="@+id/anime_list"
                 android:layout_width="fill_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:id="@+id/anime_list" />
+                tools:itemCount="5"
+                tools:listitem="@layout/item_anime_release" />
 
             <View
-                android:layout_height="0.5dp"
+                android:id="@+id/spacer"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
-                android:id="@+id/spacer" />
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp" />
 
         </LinearLayout>
 
@@ -37,6 +41,7 @@
 
     <include
         android:id="@+id/load_state_layout"
-        layout="@layout/load_state_layout" />
+        layout="@layout/load_state_layout"
+        tools:visibility="gone" />
 
 </FrameLayout>

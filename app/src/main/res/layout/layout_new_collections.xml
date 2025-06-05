@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:orientation="vertical">
-	
-	<LinearLayout
-		android:gravity="center_vertical"
-		android:orientation="horizontal"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:paddingEnd="10dp"
-		android:paddingStart="10dp"
-		android:layout_marginTop="0dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-		<TextView
-			android:layout_height="wrap_content"
-			android:layout_width="0dp"
-			android:layout_weight="1.0"
-			style="@style/LayoutHeader"
-			android:text="@string/home_new_collections" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
-		<Button
-			style="?attr/materialIconButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/view_all_collection"
-			app:icon="@drawable/ic_read_more" />
-	</LinearLayout>
+        <TextView
+            style="@style/LayoutHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="@string/home_new_collections" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:id="@+id/collections_recycler_view"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		android:orientation="horizontal"
-		tools:listitem="@layout/item_collection"/>
+        <Button
+            android:id="@+id/view_all_collection"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_read_more" />
+    </LinearLayout>
 
-	<View
-		android:layout_height="0.5dp"
-		android:layout_width="wrap_content"
-		android:layout_marginEnd="16dp"
-		android:layout_marginTop="16dp"
-		android:layout_marginStart="16dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collections_recycler_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_collection" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp" />
 </LinearLayout>

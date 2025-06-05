@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	android:gravity="center_vertical"
-	android:orientation="horizontal"
-	android:paddingTop="16dp"
-	android:paddingBottom="8dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
 	android:paddingStart="16dp"
+	android:paddingTop="16dp"
 	android:paddingEnd="16dp"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	android:paddingBottom="8dp">
+
 	<TextView
-		android:textSize="12sp"
 		android:id="@+id/desc"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:text="@string/search_history"
 		android:layout_weight="1.0"
-		android:textAllCaps="true"
 		android:fontFamily="@font/roboto_medium"
-		android:letterSpacing="0.05" />
+		android:letterSpacing="0.05"
+		android:text="@string/search_history"
+		android:textAllCaps="true"
+		android:textSize="12sp" />
+
 	<Button
-		style="@style/Widget.Material3.Button.TextButton"
 		android:id="@+id/clear_history"
+		style="@style/Widget.Material3.Button.TextButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:fontFamily="@font/roboto_medium"
 		android:text="@string/clear_history"
-		android:textAllCaps="false"
-		android:fontFamily="@font/roboto_medium" />
+		android:textAllCaps="false" />
 </LinearLayout>

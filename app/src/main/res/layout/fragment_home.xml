@@ -1,40 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_frame">
+    android:id="@+id/home_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
-            android:fillViewport="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:fillViewport="true">
 
             <LinearLayout
-                tools:visibility="visible"
                 android:id="@+id/home_content"
-                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="8dp"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:visibility="gone"
+                tools:visibility="visible">
+
                 <include
                     android:id="@+id/layout_toolbar"
                     layout="@layout/layout_toolbar" />
+
                 <include
                     android:id="@+id/interesting_layout"
                     layout="@layout/layout_home_interesting" />
+
                 <include
                     android:id="@+id/best_anime_layout"
                     layout="@layout/layout_home_best" />
+
                 <include
                     android:id="@+id/layout_home_anime_list"
                     layout="@layout/layout_home_anime_list" />
+
                 <include
                     android:id="@+id/new_anime_layout"
                     layout="@layout/layout_home_new" />
@@ -45,8 +51,9 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </com.mrikso.anitube.app.view.CustomSwipeRefreshLayout>
+
     <include
-        tools:visibility="gone"
         android:id="@+id/load_state_layout"
-        layout="@layout/load_state_layout" />
+        layout="@layout/load_state_layout"
+        tools:visibility="gone" />
 </FrameLayout>

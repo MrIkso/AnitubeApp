@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
@@ -21,13 +23,16 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:statusBarScrim="?colorSurface"
             app:toolbarId="@id/toolbar">
+
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp">
+
                     <ImageView
                         android:id="@+id/img"
                         android:layout_width="match_parent"
@@ -40,41 +45,42 @@
                 </RelativeLayout>
 
                 <TextView
-                    android:paddingBottom="@dimen/layout_padding_small"
-                    android:paddingLeft="@dimen/layout_padding"
-                    android:paddingRight="@dimen/layout_padding"
-                    android:paddingTop="@dimen/layout_padding_small"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/title"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:singleLine="true"
-                    android:scrollHorizontally="true"
-                    android:ellipsize="marquee"
                     android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingLeft="@dimen/layout_padding"
+                    android:paddingTop="@dimen/layout_padding_small"
+                    android:paddingRight="@dimen/layout_padding"
+                    android:paddingBottom="@dimen/layout_padding_small"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    tools:text="Article\ntitle"
-                    android:id="@+id/title" />
+                    tools:text="Article\ntitle" />
 
                 <TextView
-                    android:layout_height="wrap_content"
+                    android:id="@+id/count_anime"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/layout_padding"
                     android:paddingRight="@dimen/layout_padding"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="?attr/colorPrimary"
-                    tools:text="99"
-                    android:id="@+id/count_anime" />
+                    tools:text="99" />
 
                 <TextView
-                    android:layout_height="wrap_content"
+                    android:id="@+id/author"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
+                    android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    tools:text="me"
-                    android:id="@+id/author" />
+                    android:visibility="gone"
+                    tools:text="me" />
 
             </LinearLayout>
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -86,32 +92,34 @@
 
     <com.mrikso.anitube.app.view.CustomSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
-        android:layout_height="match_parent"
         android:layout_width="fill_parent"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:id="@+id/content"
-            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="8dp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_height="match_parent"
+                android:id="@+id/collections_rv"
                 android:layout_width="fill_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:id="@+id/collections_rv" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <View
                 android:id="@+id/spacer"
-                android:layout_height="0.5dp"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp" />
+                android:layout_marginEnd="16dp" />
         </LinearLayout>
+
         <include
             android:id="@+id/load_state_layout"
             layout="@layout/load_state_layout" />

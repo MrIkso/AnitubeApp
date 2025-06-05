@@ -6,63 +6,74 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:animateLayoutChanges="true">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             app:elevation="0dp">
+
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 app:contentInsetStart="0dp">
+
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/back"
-                        android:background="@drawable/transparent_circle_background"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginStart="8dp"
+                        android:background="@drawable/transparent_circle_background"
                         app:srcCompat="@drawable/ic_back" />
+
                     <TextView
-                        android:textSize="18.0sp"
-                        android:textColor="@color/text"
-                        android:ellipsize="end"
-                        android:gravity="start|center"
                         android:id="@+id/tv_search_title"
-                        android:background="@null"
                         android:layout_width="0dp"
                         android:layout_height="56dp"
-                        android:maxLines="1"
-                        android:includeFontPadding="false"
                         android:layout_weight="1.0"
                         android:alpha="0.9"
-                        android:fontFamily="@font/roboto_medium" />
+                        android:background="@null"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="start|center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/text"
+                        android:textSize="18.0sp"
+                        tools:text="Меха" />
                 </LinearLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
         <RelativeLayout
             android:id="@+id/content"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="visible">
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
+                android:layout_height="fill_parent"
+                tools:listitem="@layout/item_anime_release" />
         </RelativeLayout>
+
         <include
-            tools:visibility="gone"
             android:id="@+id/load_state_layout"
-            layout="@layout/load_state_layout" />
+            layout="@layout/load_state_layout"
+            tools:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </FrameLayout>

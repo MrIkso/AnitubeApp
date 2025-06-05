@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_height="fill_parent"
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_list"
             android:layout_width="fill_parent"
-            android:visibility="gone"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/content"
-            tools:visibility="visible">
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_watch_history" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_height="match_parent"
-                android:layout_width="fill_parent"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:id="@+id/history_list" />
+        <View
+            android:id="@+id/spacer"
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
 
-            <View
-                android:layout_height="0.5dp"
-                android:layout_width="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:id="@+id/spacer" />
-
-        </LinearLayout>
+    </LinearLayout>
 
 
     <include
-        tools:visibility="gone"
         android:id="@+id/load_state_layout"
-        layout="@layout/load_state_layout" />
+        layout="@layout/load_state_layout"
+        tools:visibility="gone" />
 
 </FrameLayout>

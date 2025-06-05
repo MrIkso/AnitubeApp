@@ -1,7 +1,6 @@
 package com.mrikso.anitube.app.ui.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,9 @@ import com.mrikso.anitube.app.adapters.SimpleAdapter;
 import com.mrikso.anitube.app.databinding.FragmentSearchResultBinding;
 import com.mrikso.anitube.app.model.SimpleModel;
 
-import dagger.hilt.android.AndroidEntryPoint;
-
 import java.util.List;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class SimpleListFragment extends Fragment {
@@ -31,7 +30,7 @@ public class SimpleListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(getActivity()).get(HomeFragmentViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(HomeFragmentViewModel.class);
     }
 
     @Nullable
@@ -43,7 +42,7 @@ public class SimpleListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@Nullable View view, @Nullable Bundle bundle) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle bundle) {
         super.onViewCreated(view, bundle);
         loadData();
         initViews();
@@ -88,9 +87,7 @@ public class SimpleListFragment extends Fragment {
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
         adapter = new SimpleAdapter();
-        adapter.setOnItemClickListener((name, link) -> {
-            openDetailsFragment(name, link);
-        });
+        adapter.setOnItemClickListener(this::openDetailsFragment);
 
         binding.recyclerView.setAdapter(adapter);
     }

@@ -75,6 +75,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
+            android:background="@drawable/transparent_circle_background"
+            android:clickable="true"
+            android:focusable="true"
             app:boxCornerRadiusBottomEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
@@ -83,10 +86,7 @@
             app:boxStrokeWidth="0dp"
             app:endIconTint="@color/white"
             app:startIconDrawable="@drawable/ic_high_quality"
-            app:startIconTint="@color/white"
-			android:background="@drawable/transparent_circle_background"
-			android:clickable="true"
-			android:focusable="true">
+            app:startIconTint="@color/white">
 
             <com.mrikso.anitube.app.view.CustomAutoCompleteTextView
                 android:id="@+id/exo_quality"

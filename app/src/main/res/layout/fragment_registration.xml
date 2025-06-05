@@ -65,9 +65,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:hint="@string/login_password"
-                app:startIconDrawable="@drawable/baseline_password_24"
                 app:passwordToggleContentDescription="string/password_toggle"
-                app:passwordToggleEnabled="true">
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/baseline_password_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password_et"

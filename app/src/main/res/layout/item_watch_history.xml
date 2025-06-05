@@ -1,69 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
     android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:padding="10dp"
-    android:orientation="horizontal"
     android:baselineAligned="false"
-    android:focusable="true">
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_height="158dp"
-        android:layout_width="114dp"
-        android:layout_margin="6dp"
-        app:cardElevation="0dp"
+        android:id="@+id/card_view"
         style="?attr/materialCardViewFilledStyle"
+        android:layout_width="114dp"
+        android:layout_height="158dp"
+        android:layout_margin="6dp"
         app:cardCornerRadius="8dp"
-        android:id="@+id/card_view">
+        app:cardElevation="0dp">
 
         <RelativeLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_height="match_parent"
+                android:id="@+id/poster"
                 android:layout_width="match_parent"
-                android:scaleType="centerCrop"
-                app:shapeAppearanceOverlay="@style/CardViewShapeableImageView"
-                android:layout_alignParentLeft="true"
+                android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:id="@+id/poster" />
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/CardViewShapeableImageView" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:layout_height="wrap_content"
+                android:id="@+id/progress_indicator"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:indeterminate="true"
                 app:indicatorSize="40dp"
-                app:trackThickness="20dp"
-                android:id="@+id/progress_indicator" />
+                app:trackThickness="20dp" />
 
             <RelativeLayout
-                android:layout_height="20dp"
+                android:id="@+id/status_layout"
                 android:layout_width="wrap_content"
-                android:visibility="gone"
-                android:gravity="center"
-                android:background="@color/anime_status_plan_to_watch"
+                android:layout_height="20dp"
                 android:layout_alignLeft="@+id/poster"
-                android:id="@+id/status_layout">
+                android:background="@color/anime_status_plan_to_watch"
+                android:gravity="center"
+                android:visibility="gone">
 
                 <TextView
-                    android:layout_height="wrap_content"
+                    android:id="@+id/status"
                     android:layout_width="wrap_content"
-                    android:gravity="center"
-                    android:paddingRight="5dp"
+                    android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:textSize="12sp"
-                    android:paddingLeft="5dp"
-                    android:textColor="@color/white"
+                    android:gravity="center"
                     android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:text="@string/anime_status_will"
-                    android:id="@+id/status" />
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
 
             </RelativeLayout>
 
@@ -72,109 +71,118 @@
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
-        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent">
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:layout_height="wrap_content"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
                 android:ellipsize="end"
-                android:textSize="16sp"
                 android:fontFamily="@font/roboto_medium"
                 android:maxLines="2"
-                android:layout_weight="1.0"
-                android:id="@+id/title" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 app:srcCompat="@drawable/ic_task_alt"
                 app:tint="?attr/colorPrimary" />
+
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:textSize="13sp"
                     android:id="@+id/episode"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_marginLeft="8dp" />
+                    android:layout_marginLeft="8dp"
+                    android:textSize="13sp" />
 
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 app:srcCompat="@drawable/ic_source"
                 app:tint="?attr/colorPrimary" />
+
             <TextView
-                android:textSize="13sp"
                 android:id="@+id/source"
-                android:ellipsize="middle"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp" />
+                android:layout_marginLeft="8dp"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 app:srcCompat="@drawable/ic_timer"
                 app:tint="?attr/colorPrimary" />
+
             <TextView
-                android:textSize="13sp"
                 android:id="@+id/wath_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp" />
+                android:layout_marginLeft="8dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 app:srcCompat="@drawable/ic_time"
                 app:tint="?attr/colorPrimary" />
+
             <TextView
-                android:textSize="13sp"
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp" />
+                android:layout_marginLeft="8dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
     </LinearLayout>

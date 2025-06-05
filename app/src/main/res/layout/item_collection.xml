@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,32 +12,33 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_height="180dp"
+                android:id="@+id/image"
                 android:layout_width="match_parent"
-                android:scaleType="centerCrop"
+                android:layout_height="180dp"
                 android:foreground="@drawable/image_cover"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayMedium"
-                android:id="@+id/image" />
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <RelativeLayout
-                android:layout_above="@id/title"
-                android:layout_alignEnd="@id/image"
-                android:layout_alignRight="@id/image"
                 android:id="@+id/container_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_above="@id/title"
+                android:layout_alignEnd="@id/image"
+                android:layout_alignRight="@id/image"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:padding="4dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true">
+                android:orientation="horizontal"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/count_anime"
@@ -52,13 +52,13 @@
 
                 <TextView
                     android:id="@+id/author"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@android:color/darker_gray"
+                    android:visibility="gone"
                     tools:text="me" />
 
             </RelativeLayout>

@@ -41,6 +41,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                tools:itemCount="4"
                 tools:listitem="@layout/item_comment" />
         </RelativeLayout>
 
@@ -52,5 +53,5 @@
 
     <include
         android:id="@id/sendMsgPanel"
-        layout="@layout/layout_bottom_send_comment"/>
+        layout="@layout/layout_bottom_send_comment" />
 </RelativeLayout>

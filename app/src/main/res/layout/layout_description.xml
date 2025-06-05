@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:orientation="vertical"
-	android:visibility="gone"
-	tools:visibility="visible"
-	android:id="@+id/ll_description">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_description"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible">
 
-	<TextView
-		android:layout_height="wrap_content"
-		android:layout_width="match_parent"
-		android:padding="10dp"
-		style="@style/LayoutHeader"
-		android:text="@string/description" />
+    <TextView
+        style="@style/LayoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/description" />
 
-	<com.ctetin.expandabletextviewlibrary.ExpandableTextView
-		android:gravity="start"
-		android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp"
-		android:id="@+id/tv_description"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:lineSpacingExtra="6dp"
-		android:alpha="0.9"
-		style="@style/TextLabel"
-		app:ep_need_link="true"
-		app:ep_need_mention="false"
-		app:ep_need_self="true"
-		app:ep_max_line="4"
-		app:ep_contract_text="@string/action_read_less"
-		app:ep_expand_text="@string/action_read_more"
-		app:ep_need_contract="true"
-		app:ep_need_animation="true"
-		app:ep_expand_color="?attr/colorAccent"
-		tools:text="У Суспільстві Душ спокій та мирне існування раптово дещо порушує. Тамтешні мешканці почали дедалі частіше зникати без жодного сліду і не відомо, хто за цим стоїть. А між тим чорна тінь підкрадається все ближче до Ічіґо та його друзів..." />
+    <com.ctetin.expandabletextviewlibrary.ExpandableTextView
+        android:id="@+id/tv_description"
+        style="@style/TextLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:alpha="0.9"
+        android:gravity="start"
+        android:lineSpacingExtra="6dp"
+        app:ep_contract_text="@string/action_read_less"
+        app:ep_expand_color="?attr/colorAccent"
+        app:ep_expand_text="@string/action_read_more"
+        app:ep_max_line="4"
+        app:ep_need_animation="true"
+        app:ep_need_contract="true"
+        app:ep_need_link="true"
+        app:ep_need_mention="false"
+        app:ep_need_self="true"
+        tools:text="У Суспільстві Душ спокій та мирне існування раптово дещо порушує. Тамтешні мешканці почали дедалі частіше зникати без жодного сліду і не відомо, хто за цим стоїть. А між тим чорна тінь підкрадається все ближче до Ічіґо та його друзів..." />
 
 </LinearLayout>

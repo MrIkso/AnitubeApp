@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,10 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
-            app:show_subtitle_button="true"
             app:controller_layout_id="@layout/custom_controller"
-            app:dtpv_controller="@id/youtube_overlay" />
-            
+            app:dtpv_controller="@id/youtube_overlay"
+            app:show_subtitle_button="true" />
+
         <com.mrikso.player.dtpv.youtube.YouTubeOverlay
             android:id="@+id/youtube_overlay"
             android:layout_width="match_parent"

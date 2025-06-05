@@ -1,80 +1,79 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
 
     <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_profile"
-                android:layout_height="60dp"
                 android:layout_width="60dp"
+                android:layout_height="60dp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay"
-                tools:src="@drawable/image_no_data"/>
+                tools:src="@drawable/image_no_data" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/iv_profile"
-                android:layout_width="wrap_content"
-                android:paddingStart="5dp"
                 android:fontFamily="@font/roboto_medium"
-                android:textColor="?attr/textColorSecondary"
+                android:paddingStart="5dp"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/textColorSecondary"
                 android:textStyle="bold"
-                tools:text="User"/>
+                tools:text="User" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_usergroup"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_toEndOf="@id/iv_profile"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/tv_username"
-                android:paddingStart="5dp"
-                android:textColor="?android:attr/textColorSecondary"
+                android:layout_toEndOf="@id/iv_profile"
                 android:fontFamily="@font/roboto_medium"
+                android:paddingStart="5dp"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                tools:text="Admins"/>
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="Admins" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_time"
-                android:layout_alignParentEnd="true"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_toEndOf="@id/iv_profile"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/tv_usergroup"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/iv_profile"
                 android:paddingStart="5dp"
-                android:textColor="?android:attr/textColorSecondary"
                 android:textAppearance="?attr/textAppearanceBodySmall"
-                tools:text="20/10/2023 12:00"/>
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="20/10/2023 12:00" />
         </RelativeLayout>
-
 
 
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <com.google.android.material.textview.MaterialTextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-			android:paddingTop="8dp"
-			android:paddingBottom="8dp"
             android:id="@+id/tv_comment"
-            tools:text="A comment"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            tools:text="A comment" />
 
     </LinearLayout>
 

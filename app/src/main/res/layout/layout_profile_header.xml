@@ -1,62 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
     android:layout_width="fill_parent"
-    android:paddingEnd="16dp"
-    android:paddingBottom="6dp"
+    android:layout_height="wrap_content"
     android:paddingStart="16dp"
-    android:paddingTop="6dp">
+    android:paddingTop="6dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="6dp">
 
     <LinearLayout
-        android:layout_height="fill_parent"
         android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_height="142dp"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="142dp">
 
             <androidx.cardview.widget.CardView
-                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/main_radius">
+                android:layout_height="match_parent"
+                app:cardCornerRadius="@dimen/main_radius"
+                app:cardElevation="0dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_height="match_parent"
+                    android:id="@+id/avatar_bg"
                     android:layout_width="match_parent"
-                    android:scaleType="centerCrop"
-                    android:id="@+id/avatar_bg" />
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
 
                 <View
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    android:background="@color/black"
-                    android:alpha="0.5" />
+                    android:alpha="0.5"
+                    android:background="@color/black" />
+
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="8dp"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="5dp">
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="8dp">
+
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/avatar"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            app:srcCompat="@drawable/ic_person"
+                            android:padding="2dp"
                             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay"
-                            app:strokeWidth="2dp"
+                            app:srcCompat="@drawable/ic_person"
                             app:strokeColor="?attr/colorPrimary"
-                            android:padding="2dp" />
+                            app:strokeWidth="2dp" />
 
                         <ImageView
                             android:id="@+id/online"
@@ -70,42 +71,41 @@
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:layout_height="wrap_content"
+                        android:id="@+id/profile_info_layout"
                         android:layout_width="fill_parent"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="8dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:id="@+id/profile_info_layout">
+                        android:layout_marginLeft="8dp"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="match_parent"
-                            android:singleLine="true"
-                            android:fontFamily="@font/roboto_bold"
-                            android:textSize="20sp"
-                            android:textColor="@color/white"
                             android:id="@+id/user_nickname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:singleLine="true"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
                             tools:text="Anonymous" />
 
                         <LinearLayout
-                            android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:orientation="horizontal"
-                        >
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
-                                android:textColor="@color/md_grey_300"
-                                android:text="@string/profile_group" />
+                                android:text="@string/profile_group"
+                                android:textColor="@color/md_grey_300" />
 
                             <TextView
-                                android:layout_height="wrap_content"
+                                android:id="@+id/user_group_tv"
                                 android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
-                                android:textColor="@color/md_grey_300"
-                                android:id="@+id/user_group_tv" />
+                                android:textColor="@color/md_grey_300" />
 
                         </LinearLayout>
 
@@ -117,34 +117,34 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_height="wrap_content"
+            android:id="@+id/lay_buttons"
             android:layout_width="fill_parent"
-            android:layout_marginBottom="12dp"
-            android:layout_marginEnd="32dp"
-            android:gravity="center"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:id="@+id/lay_buttons">
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
                 android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_weight="1.0">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="20sp"
                     android:id="@+id/comments"
-                    tools:text="999"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    tools:text="999" />
 
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textSize="13sp"
-                    android:text="@string/profile_comments" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_comments"
+                    android:textSize="13sp" />
 
             </LinearLayout>
 

@@ -29,7 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/CardViewShapeableImageView" />
@@ -47,7 +46,7 @@
                 android:id="@+id/status_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:layout_alignLeft="@+id/poster"
+                android:layout_alignStart="@+id/poster"
                 android:background="@color/anime_status_plan_to_watch"
                 android:gravity="center"
                 android:visibility="gone">
@@ -83,7 +82,7 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
