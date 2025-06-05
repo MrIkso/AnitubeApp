@@ -5,24 +5,26 @@
     android:id="@+id/carousel_main_card"
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_height="160dp"
     android:layout_margin="16dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="30dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="0dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/carousel_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/carousel_imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 </com.google.android.material.card.MaterialCardView>
