@@ -5,7 +5,7 @@
     android:id="@+id/carousel_main_card"
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="@dimen/interesting_anime_card_height"
     android:layout_margin="16dp"
     android:clickable="true"
     android:focusable="true"
