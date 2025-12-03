@@ -1,7 +1,5 @@
 package com.mrikso.anitube.app.parser;
 
-import android.util.Log;
-
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
 import com.mrikso.anitube.app.model.BaseAnimeModel;
 import com.mrikso.anitube.app.model.CollectionModel;
@@ -110,7 +108,7 @@ public class HomePageParser {
                 // body > div.content > div.box.lcol > div:nth-child(2) > div.news_2_c >
                 // div.news_2_c_l > a > span
                 Element news_2_c_l = newAmime.selectFirst("div.news_2_c_l");
-                String urlPoster = news_2_c_l.getElementsByTag("img").first().attr("src");
+                String urlPoster = news_2_c_l.getElementsByTag("img").first().attr("data-src");
 
                 AnimeReleaseModel animeRelease = new AnimeReleaseModel(animeId, animeTitle, urlPoster, animeUrl);
                 Element statusAnimeElement = news_2_c_l.selectFirst("a > span");
