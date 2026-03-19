@@ -68,7 +68,7 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
         // Log.i(TAG, "start parse playlist");
         // Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
-            String newUri = playerJs.getFile().replace("playlist.m3u8", variant.uri().replaceFirst("./", ""));
+            String newUri = variant.uri();
 
             Optional<Resolution> resolutionOptional = variant.resolution();
             if (resolutionOptional.isPresent()) {
