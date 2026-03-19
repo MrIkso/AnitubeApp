@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.ApplicationBaseFlavor
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
@@ -66,7 +68,7 @@ android {
             }
         }
     }
-    /*  applicationVariants.configureEach {
+    applicationVariants.configureEach {
           // rename the output APK file
           outputs.configureEach {
               (this as? ApkVariantOutputImpl)?.outputFileName =
@@ -86,8 +88,8 @@ android {
                   )
               finalBundleFile.set(finalFile)
           }
-      }
-     */
+    }
+
     buildFeatures {
         buildConfig = true
         viewBinding = true
