@@ -777,18 +777,19 @@ public class PlayerActivity extends AppCompatActivity {
 
             if (Strings.isNullOrEmpty(currentQuality) && !qualitiesMap.containsKey(currentQuality)) {
                 // load default player quality
-                var defaultQuality = model.getDefaultQuality();
+                /*var defaultQuality = model.getDefaultQuality();
                 if (!Strings.isNullOrEmpty(defaultQuality) && qualitiesMap.containsKey(defaultQuality)) {
                     currentQuality = defaultQuality;
                 } else {
-                    currentQuality = qualitiesMap.keySet().stream().findFirst().get();
-                }
+
+                 */
+                currentQuality = qualitiesMap.keySet().stream().findFirst().get();
+                //}
             }
 
             // qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
             String playUrl = qualitiesMap.get(currentQuality);
-
-            //  Log.i("PlayerActivity", "playUrl: " + playUrl);
+            // Log.i("PlayerActivity", "playUrl: " + playUrl);
             updateQualityArray();
             mediaSource = mediaSourceHelper.getMediaSource(playUrl, model.getHeaders(), true);
 
