@@ -1,17 +1,16 @@
 package com.mrikso.anitube.app.extractors;
 
-import android.util.Log;
+import android.util.Base64;
 
 import androidx.core.util.Pair;
 
-import com.google.gson.Gson;
-import com.mrikso.anitube.app.extractors.model.PlayerJsResponse;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,9 +93,10 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
             // Gson gson = new Gson();
             //  String jsCode = getDocument().selectFirst("script").data();
             //  Log.i(TAG, " " + getDocument().bo());
-            String masterPlaylistUrl = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
-            // Log.i(TAG, "masterPlaylistUrl: " + masterPlaylistUrl);
+            String masterPlaylistUrlEnc = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
+            //Log.i(TAG, "masterPlaylistUrl: " + masterPlaylistUrlEnc);
             //  PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
+            String masterPlaylistUrl = decryptUrl(masterPlaylistUrlEnc);
 
             String masterPlaylist = client.newCall(
                             new Request.Builder().url(masterPlaylistUrl).get().build())
@@ -114,5 +114,17 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(v -> new Pair<>(LoadState.DONE, getModel(v.first, v.second)));
+    }
+
+    private static String decryptUrl(String base64Input) {
+        if (base64Input == null || base64Input.isEmpty()) return "";
+        if (base64Input.endsWith("==")) {
+            base64Input = base64Input.replaceAll("==", "");
+        }
+
+        byte[] bytes = Base64.decode(base64Input,
+                Base64.NO_WRAP | Base64.NO_PADDING);
+        String s = new String(bytes, StandardCharsets.UTF_8);
+        return new StringBuilder(s).reverse().toString();
     }
 }
