@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.lindstrom.m3u8.model.MasterPlaylist;
+import io.lindstrom.m3u8.model.MultivariantPlaylist;
 import io.lindstrom.m3u8.model.Variant;
-import io.lindstrom.m3u8.parser.MasterPlaylistParser;
+import io.lindstrom.m3u8.parser.MultivariantPlaylistParser;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -30,7 +30,7 @@ import okhttp3.Request;
 public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "AhsdiVideosExtractor";
     private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
-    private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
+    private final MultivariantPlaylistParser masterPlaylistParser = new MultivariantPlaylistParser();
 	
     public AhsdiVideosExtractor(String url, OkHttpClient client) {
         super(url, client);
@@ -39,7 +39,7 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
     private VideoLinksModel getModel(String masterU3u8, PlayerJsResponse playerJs) throws IOException {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
-        MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
+        MultivariantPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
         //Log.i(TAG, "start parse playlist");
         Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {

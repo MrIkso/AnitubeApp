@@ -12,6 +12,11 @@ class CustomSwipeRefreshLayout : SwipeRefreshLayout {
 
     init {
         setProgressBackgroundColorSchemeColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurface))
-        setColorSchemeColors(MaterialColors.getColor(this, com.google.android.material.R.attr.colorControlNormal))
+        setColorSchemeColors(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorSecondary
+            )
+        )
     }
 }

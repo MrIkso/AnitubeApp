@@ -16,20 +16,19 @@ import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
 
-import io.lindstrom.m3u8.model.MasterPlaylist;
-import io.lindstrom.m3u8.model.Variant;
-import io.lindstrom.m3u8.parser.MasterPlaylistParser;
-import io.reactivex.rxjava3.core.Single;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import io.lindstrom.m3u8.model.MultivariantPlaylist;
+import io.lindstrom.m3u8.model.Variant;
+import io.lindstrom.m3u8.parser.MultivariantPlaylistParser;
+import io.reactivex.rxjava3.core.Single;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class StreamSBExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "StreamSBExtractor";
@@ -37,7 +36,7 @@ public class StreamSBExtractor extends BaseVideoLinkExtracror {
             "https://raw.githubusercontent.com/Claudemirovsky/streamsb-endpoint/master/endpoint.txt";
     private final String PREF_ENDPOINT_DEFAULT = "/sources16";
 
-    private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
+    private final MultivariantPlaylistParser masterPlaylistParser = new MultivariantPlaylistParser();
 
     // https://github.com/jmir1/aniyomi-extensions/blob/0c031d7bc2f38949097c3f1db7f8248d71d190dd/lib/streamsb-extractor/src/main/java/eu/kanade/tachiyomi/lib/streamsbextractor/StreamSBExtractor.kt
     public StreamSBExtractor(String ifRame, OkHttpClient client) {
@@ -159,7 +158,7 @@ public class StreamSBExtractor extends BaseVideoLinkExtracror {
     private VideoLinksModel buildModel(String masterU3u8, Headers headers) throws IOException {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(getUrl());
-        MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
+        MultivariantPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
         Log.i(TAG, "start parse playlist");
         Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {

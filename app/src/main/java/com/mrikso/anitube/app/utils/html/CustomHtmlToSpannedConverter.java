@@ -97,7 +97,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
         mTagHandler = tagHandler;
         mReader = parser;
         mBaseUri = baseUri;
-        titleQuoteColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorPrimary, null);
+        titleQuoteColor = MaterialColors.getColor(context, androidx.appcompat.R.attr.colorPrimary, null);
         quoteColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorTertiary, null);
         quoteBackgroundColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceVariant, null);
     }

@@ -36,7 +36,7 @@ public class AvatarViewWithOnline extends FrameLayout {
 
     public void init() {
         avatarView = new CircleImageView(getContext());
-        avatarView.setBorderColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary));
+        avatarView.setBorderColor(MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary));
         avatarView.setBorderWidth(ConvertUtils.dp2px(2f));
 
         addView(avatarView);

@@ -1,40 +1,41 @@
 [versions]
-android-gradle-plugin = "8.9.3"
-commonsText = "1.13.1"
-kotlin = "2.1.10"
-ksp = "2.1.10-1.0.30"
-appcompat = "1.7.0"
+android-gradle-plugin = "9.1.0"
+commonsText = "1.15.0"
+kotlin = "2.3.20"
+ksp = "2.3.6"
+appcompat = "1.7.1"
 circleimageview = "3.1.0"
-glide = "4.16.0"
-coreSplashscreen = "1.0.1"
-gson = "2.13.1"
-hiltAndroid = "2.51.1"
-jsoup = "1.18.3"
-lifecycleViewmodel = "2.9.0"
-loggingInterceptor = "4.12.0"
-m3u8Parser = "0.28"
-material = "1.12.0"
+glide = "5.0.5"
+coreSplashscreen = "1.2.0"
+gson = "2.13.2"
+hiltAndroid = "2.59.2"
+jsoup = "1.22.1"
+lifecycleViewmodel = "2.10.0"
+loggingInterceptor = "5.3.2"
+m3u8Parser = "0.30"
+material = "1.13.0"
 constraintlayout = "2.2.1"
 newpipeextractor = "v0.24.0"
-nextlib = "v0.8.2"
-okhttp3Integration = "4.11.0"
-paging = "3.3.6"
-media3Exoplayer = "1.7.1"
+nextlib = "1.9.1-0.11.0"
+okhttp3Integration = "5.0.5"
+paging = "3.4.2"
+media3Exoplayer = "1.9.3"
 preferenceKtx = "1.2.1"
 recyclerview = "1.4.0"
-retrofit = "2.11.0"
-roomRuntime = "2.7.1"
-rxjava = "3.1.10"
+retrofit = "3.0.0"
+roomRuntime = "2.8.4"
+rxjava = "3.1.12"
 rxandroid = "3.0.2"
 rxjava3RetrofitAdapter = "3.0.0"
-swiperefreshlayout = "1.1.0"
-navigation = "2.9.0"
+swiperefreshlayout = "1.2.0"
+navigation = "2.9.7"
 tagsoup = "1.2.1"
 subsamplingScaleImageViewAndroidx = "3.10.0"
 utilcodex = "1.31.1"
 annotationJvm = "1.9.1"
 navigationFragmentKtx = "2.9.0"
 navigationUiKtx = "2.9.0"
+coreKtx = "1.18.0"
 
 [libraries]
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
@@ -80,7 +81,7 @@ m3u8-parser = { module = "io.lindstrom:m3u8-parser", version.ref = "m3u8Parser" 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 newpipeextractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version.ref = "newpipeextractor" }
-nextlib-media3ext = { module = "com.github.anilbeesetti.nextlib:nextlib-media3ext", version.ref = "nextlib" }
+nextlib-media3ext = { module = "io.github.anilbeesetti:nextlib-media3ext", version.ref = "nextlib" }
 okhttp3-integration = { module = "com.github.bumptech.glide:okhttp3-integration", version.ref = "okhttp3Integration" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rxjava3-retrofit-adapter = { module = "com.github.akarnokd:rxjava3-retrofit-adapter", version.ref = "rxjava3RetrofitAdapter" }
@@ -90,6 +91,7 @@ tagsoup = { module = "org.ccil.cowan.tagsoup:tagsoup", version.ref = "tagsoup" }
 subsampling-scale-image-view = { module = "com.davemorrissey.labs:subsampling-scale-image-view-androidx", version.ref = "subsamplingScaleImageViewAndroidx" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

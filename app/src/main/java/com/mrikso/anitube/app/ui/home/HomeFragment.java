@@ -99,8 +99,8 @@ public class HomeFragment extends Fragment
 
         final int radius = getResources().getDimensionPixelSize(R.dimen.dots_radius);
         final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.dots_height);
-        final int color = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorPrimary, null);
-        final int colorInactive = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorAccent, null);
+        final int color = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorPrimary, null);
+        final int colorInactive = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorAccent, null);
         mNowShowingRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, radius * 2, dotsHeight, colorInactive, color));
 
 

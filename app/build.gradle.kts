@@ -1,13 +1,10 @@
 import com.android.build.api.dsl.ApplicationBaseFlavor
-import com.android.build.gradle.internal.api.ApkVariantOutputImpl
-import org.gradle.kotlin.dsl.support.uppercaseFirstChar
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.navigation.safeargs)
@@ -18,17 +15,18 @@ val keystorePropertiesFile: File = File(rootProject.rootDir, "keystore.propertie
 
 android {
     namespace = "com.mrikso.anitube.app"
-    compileSdk = 35
+    compileSdk = 36
+    enableKotlin = true
 
     defaultConfig {
         applicationId = "com.mrikso.anitube.app"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 8
         versionName = "1.0.7"
         ndk {
             //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
         }
         loadConfig("secret.properties")
     }
@@ -68,39 +66,44 @@ android {
             }
         }
     }
-    applicationVariants.configureEach {
-        // rename the output APK file
-        outputs.configureEach {
-            (this as? ApkVariantOutputImpl)?.outputFileName =
-                "${rootProject.name}_${versionName}(${versionCode})_${buildType.name}.apk"
-        }
+    /*  applicationVariants.configureEach {
+          // rename the output APK file
+          outputs.configureEach {
+              (this as? ApkVariantOutputImpl)?.outputFileName =
+                  "${rootProject.name}_${versionName}(${versionCode})_${buildType.name}.apk"
+          }
 
-        // rename the output AAB file
-        tasks.named(
-            "sign${flavorName.uppercaseFirstChar()}${buildType.name.uppercaseFirstChar()}Bundle",
-            com.android.build.gradle.internal.tasks.FinalizeBundleTask::class.java
-        ) {
-            val file = finalBundleFile.asFile.get()
-            val finalFile =
-                File(
-                    file.parentFile,
-                    "${rootProject.name}_$versionName($versionCode)_${buildType.name}.aab"
-                )
-            finalBundleFile.set(finalFile)
-        }
-    }
+          // rename the output AAB file
+          tasks.named(
+              "sign${flavorName.uppercaseFirstChar()}${buildType.name.uppercaseFirstChar()}Bundle",
+              com.android.build.gradle.internal.tasks.FinalizeBundleTask::class.java
+          ) {
+              val file = finalBundleFile.asFile.get()
+              val finalFile =
+                  File(
+                      file.parentFile,
+                      "${rootProject.name}_$versionName($versionCode)_${buildType.name}.aab"
+                  )
+              finalBundleFile.set(finalFile)
+          }
+      }
+     */
     buildFeatures {
         buildConfig = true
         viewBinding = true
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    //noinspection WrongGradleMethod
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget("17")
+        }
     }
+
     /*androidResources {
         generateLocaleConfig = true
     }*/
@@ -114,6 +117,7 @@ android {
         }
         jniLibs.useLegacyPackaging = true
     }
+
 }
 
 fun ApplicationBaseFlavor.loadConfig(file: String) {
@@ -151,6 +155,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.room.rxjava3)
+    implementation(libs.androidx.core.ktx)
     //implementation(libs.navigation.fragment.ktx)
     // implementation(libs.navigation.ui.ktx)
     ksp(libs.androidx.room.compiler)
@@ -217,6 +222,11 @@ dependencies {
     implementation(project(":expandabletextviewlibrary"))
 
     implementation(libs.okhttp3.integration)
+
+    configurations.all {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
+
 }
 
 fun Project.loadProperties(file: String) = if (file(file).exists()) {

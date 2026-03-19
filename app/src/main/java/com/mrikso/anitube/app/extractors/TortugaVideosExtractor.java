@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.lindstrom.m3u8.model.MasterPlaylist;
+import io.lindstrom.m3u8.model.MultivariantPlaylist;
 import io.lindstrom.m3u8.model.Variant;
-import io.lindstrom.m3u8.parser.MasterPlaylistParser;
+import io.lindstrom.m3u8.parser.MultivariantPlaylistParser;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -29,7 +29,7 @@ import okhttp3.Request;
 public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "TortugaVideosExtractor";
     private final String PLAYER_JS_PATTERN = "file:\\s*\"([^\"]*|\\d+|\\{[^}]*\\})\"";
-    private final MasterPlaylistParser masterPlaylistParser = new MasterPlaylistParser();
+    private final MultivariantPlaylistParser masterPlaylistParser = new MultivariantPlaylistParser();
 
     public TortugaVideosExtractor(String url, OkHttpClient client) {
         super(url, client);
@@ -38,7 +38,7 @@ public class TortugaVideosExtractor extends BaseVideoLinkExtracror {
     private VideoLinksModel getModel(String masterU3u8, String masterPlayListUrl) throws IOException {
         Map<String, String> qualitiesMap = new HashMap<>();
         VideoLinksModel model = new VideoLinksModel(masterPlayListUrl);
-        MasterPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
+        MultivariantPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
         //Log.i(TAG, "start parse playlist");
         //Log.i(TAG, masterPlayList.toString());
         for (Variant variant : masterPlayList.variants()) {
