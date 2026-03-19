@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mrikso.anitube.app.comparator.InteresingDiffCallback;
 import com.mrikso.anitube.app.databinding.ItemInteresingAnimeBinding;
 import com.mrikso.anitube.app.model.InteresingModel;
-import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.ViewUtils;
 
@@ -48,7 +47,7 @@ public class AnimeCarouselAdapter extends ListAdapter<InteresingModel, AnimeCaro
 
         public void bind(InteresingModel model) {
             ViewUtils.loadImage(binding.carouselImageView, ParserUtils.normaliseImageUrl(model.getPosterUrl()));
-            ViewUtils.loadImage(binding.carouselBg, ApiClient.ANIME_CAROUSEL_BG_URL);
+            // ViewUtils.loadImage(binding.carouselBg, ApiClient.ANIME_CAROUSEL_BG_URL);
             if (listener != null) {
                 binding.getRoot().setOnClickListener(v -> listener.onCarouselItemSelected(model.getAnimeUrl()));
             }
