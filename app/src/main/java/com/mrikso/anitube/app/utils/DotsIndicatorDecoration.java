@@ -8,7 +8,6 @@ import android.view.View;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,52 +47,41 @@ public class DotsIndicatorDecoration extends RecyclerView.ItemDecoration {
         super.onDrawOver(c, parent, state);
 
         final RecyclerView.Adapter adapter = parent.getAdapter();
-
-        if (adapter == null) {
+        if (adapter == null)
             return;
-        }
 
-        int itemCount = adapter.getItemCount();
+        int totalItemCount = adapter.getItemCount();
+        if (totalItemCount == 0)
+            return;
 
-        // center horizontally, calculate width and subtract half from center
-        float totalLength = this.radius * 2 * itemCount;
-        float paddingBetweenItems = Math.max(0, itemCount - 1) * indicatorItemPadding;
+        int realItemCount = (totalItemCount > 1) ? totalItemCount / 3 : totalItemCount;
+
+        float totalLength = this.radius * 2 * realItemCount;
+        float paddingBetweenItems = Math.max(0, realItemCount - 1) * indicatorItemPadding;
         float indicatorTotalWidth = totalLength + paddingBetweenItems;
         float indicatorStartX = (parent.getWidth() - indicatorTotalWidth) / 2.0f;
 
-        // center vertically in the allotted space
         float indicatorPosY = parent.getHeight() - indicatorHeight / 1.0f;
 
-        drawInactiveDots(c, indicatorStartX, indicatorPosY, itemCount);
+        drawInactiveDots(c, indicatorStartX, indicatorPosY, realItemCount);
 
-        final int activePosition;
-
-        if (parent.getLayoutManager() instanceof GridLayoutManager) {
-            activePosition = ((GridLayoutManager) parent.getLayoutManager()).findFirstVisibleItemPosition();
-        } else if (parent.getLayoutManager() instanceof LinearLayoutManager) {
+        int activePosition;
+        if (parent.getLayoutManager() instanceof LinearLayoutManager) {
             activePosition = ((LinearLayoutManager) parent.getLayoutManager()).findFirstVisibleItemPosition();
         } else {
-            // not supported layout manager
             return;
         }
 
-        if (activePosition == RecyclerView.NO_POSITION) {
+        if (activePosition == RecyclerView.NO_POSITION)
             return;
-        }
 
-        // find offset of active page if the user is scrolling
-        final View activeChild = parent.getLayoutManager().findViewByPosition(activePosition);
-        if (activeChild == null) {
-            return;
-        }
+        int highlightPosition = activePosition % realItemCount;
 
-        drawActiveDot(c, indicatorStartX, indicatorPosY, activePosition);
+        drawActiveDot(c, indicatorStartX, indicatorPosY, highlightPosition);
     }
 
     private void drawInactiveDots(Canvas c, float indicatorStartX, float indicatorPosY, int itemCount) {
-        // width of item indicator including padding
         final float itemWidth = this.radius * 2 + indicatorItemPadding;
-
         float start = indicatorStartX + radius;
         for (int i = 0; i < itemCount; i++) {
             c.drawCircle(start, indicatorPosY, radius, inactivePaint);
@@ -101,11 +89,9 @@ public class DotsIndicatorDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private void drawActiveDot(Canvas c, float indicatorStartX, float indicatorPosY,
-                               int highlightPosition) {
-        // width of item indicator including padding
+    private void drawActiveDot(Canvas c, float indicatorStartX, float indicatorPosY, int highlightPosition) {
         final float itemWidth = this.radius * 2 + indicatorItemPadding;
-        float highlightStart = indicatorStartX + radius + itemWidth * highlightPosition;
+        float highlightStart = indicatorStartX + radius + (itemWidth * highlightPosition);
         c.drawCircle(highlightStart, indicatorPosY, radius, activePaint);
     }
 

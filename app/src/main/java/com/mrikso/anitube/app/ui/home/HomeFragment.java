@@ -210,7 +210,9 @@ public class HomeFragment extends Fragment
 
         viewModel.getInteresingAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
-                carouselAdapter.submitList(results);
+                carouselAdapter.submitList(results, () -> {
+                    binding.interestingLayout.carouselRecyclerView.scrollToPosition(results.size());
+                });
             }
         });
 
@@ -336,6 +338,7 @@ public class HomeFragment extends Fragment
         if (autoScrollHelper != null) {
             autoScrollHelper.stopAutoScroll();
         }
+        binding.interestingLayout.carouselRecyclerView.setAdapter(null);
         binding = null;
         releaseAnimeAdapter = null;
         carouselAdapter = null;

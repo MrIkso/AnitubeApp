@@ -21,6 +21,25 @@ public class AnimeCarouselAdapter extends ListAdapter<InteresingModel, AnimeCaro
         super(new InteresingDiffCallback());
     }
 
+    @Override
+    public int getItemCount() {
+        int actualCount = super.getItemCount();
+        return actualCount > 1 ? actualCount * 3 : actualCount;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        int actualCount = super.getItemCount();
+        if (actualCount == 0) return;
+
+        // Отримуємо реальний індекс через залишок від ділення
+        int realPosition = position % actualCount;
+        InteresingModel item = getItem(realPosition);
+        if (item != null) {
+            holder.bind(item);
+        }
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,13 +48,6 @@ public class AnimeCarouselAdapter extends ListAdapter<InteresingModel, AnimeCaro
         return new ViewHolder(binding);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        InteresingModel item = getItem(position);
-        if(item!=null) {
-            holder.bind(item);
-        }
-    }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private final ItemInteresingAnimeBinding binding;
