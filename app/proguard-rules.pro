@@ -29,3 +29,5 @@
 -dontwarn org.immutables.value.Value$Default
 -dontwarn org.immutables.value.Value$Immutable
 -dontwarn org.jspecify.annotations.NullMarked
+-dontwarn com.google.re2j.Matcher
+-dontwarn com.google.re2j.Pattern
