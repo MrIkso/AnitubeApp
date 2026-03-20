@@ -12,7 +12,7 @@ public class TreeItem<T> implements Serializable {
     private boolean expanded;
     private boolean expandable;
     private boolean selected;
-    protected TreeItem<T> parent;
+    protected transient TreeItem<T> parent;
 
     public TreeItem() {
         this(null);
@@ -56,6 +56,12 @@ public class TreeItem<T> implements Serializable {
         this.children.add(child);
     }
 
+    public void restoreParentLinks(@Nullable TreeItem<T> parent) {
+        this.parent = parent;
+        for (TreeItem<T> child : children) {
+            child.restoreParentLinks(this);
+        }
+    }
     public int getDepth() {
         if (parent == null) return 0;
         return parent.getDepth() + 1;

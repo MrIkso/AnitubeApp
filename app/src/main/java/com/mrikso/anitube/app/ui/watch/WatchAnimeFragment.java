@@ -160,7 +160,7 @@ public class WatchAnimeFragment extends Fragment
     }
 
     private void showTreeData(final TreeItem<PlayerModel> root) {
-        binding.treeView.setRoot(root, true);
+        binding.treeView.setRoot(root);
     }
 
     private Chip createChip(String name, ViewGroup group, View.OnClickListener listener) {
