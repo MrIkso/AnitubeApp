@@ -24,11 +24,14 @@ android {
         applicationId = "com.mrikso.anitube.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.0.7"
+        versionCode = 9
+        versionName = "1.0.8"
         ndk {
             //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a" /*"x86_64"*/)
+        }
+        androidResources {
+            localeFilters += listOf("uk", "en")
         }
         loadConfig("secret.properties")
     }
@@ -69,25 +72,25 @@ android {
         }
     }
     applicationVariants.configureEach {
-          // rename the output APK file
-          outputs.configureEach {
-              (this as? ApkVariantOutputImpl)?.outputFileName =
-                  "${rootProject.name}_${versionName}(${versionCode})_${buildType.name}.apk"
-          }
+        // rename the output APK file
+        outputs.configureEach {
+            (this as? ApkVariantOutputImpl)?.outputFileName =
+                "${rootProject.name}_${versionName}(${versionCode})_${buildType.name}.apk"
+        }
 
-          // rename the output AAB file
-          tasks.named(
-              "sign${flavorName.uppercaseFirstChar()}${buildType.name.uppercaseFirstChar()}Bundle",
-              com.android.build.gradle.internal.tasks.FinalizeBundleTask::class.java
-          ) {
-              val file = finalBundleFile.asFile.get()
-              val finalFile =
-                  File(
-                      file.parentFile,
-                      "${rootProject.name}_$versionName($versionCode)_${buildType.name}.aab"
-                  )
-              finalBundleFile.set(finalFile)
-          }
+        // rename the output AAB file
+        tasks.named(
+            "sign${flavorName.uppercaseFirstChar()}${buildType.name.uppercaseFirstChar()}Bundle",
+            com.android.build.gradle.internal.tasks.FinalizeBundleTask::class.java
+        ) {
+            val file = finalBundleFile.asFile.get()
+            val finalFile =
+                File(
+                    file.parentFile,
+                    "${rootProject.name}_$versionName($versionCode)_${buildType.name}.aab"
+                )
+            finalBundleFile.set(finalFile)
+        }
     }
 
     buildFeatures {
