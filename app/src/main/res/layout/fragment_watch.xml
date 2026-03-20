@@ -2,59 +2,58 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:background="?android:attr/colorBackground"
+        app:liftOnScroll="true">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="?actionBarSize">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStart="0dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                app:contentInsetStart="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
+                <ImageButton
+                    android:id="@+id/ib_back"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/transparent_circle_background"
+                    android:contentDescription="@string/back"
+                    app:srcCompat="@drawable/ic_back"
+                    app:tint="?android:attr/textColorPrimary" />
+
+                <TextView
+                    android:id="@+id/tv_anime_title"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/ib_back"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/transparent_circle_background"
-                        app:srcCompat="@drawable/ic_back" />
-
-                    <TextView
-                        android:id="@+id/tv_anime_title"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1.0"
-                        android:background="@null"
-                        android:ellipsize="end"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="start|center"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:textColor="@color/text"
-                        android:textSize="18sp"
-                        tools:text="Title" />
-                </LinearLayout>
-            </androidx.appcompat.widget.Toolbar>
-
-        </RelativeLayout>
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_medium"
+                    android:maxLines="1"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="18sp"
+                    tools:text="Anime Title" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -67,21 +66,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
             <com.mrikso.anitube.app.view.TreeViewGroup
                 android:id="@+id/tree_view"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:id="@+id/title_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="56dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:baselineAligned="false"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:visibility="gone"
@@ -90,14 +89,14 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="fill_parent"
+                        android:id="@+id/tv_episodes_label"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
-                        android:includeFontPadding="false"
                         android:text="@string/episode_list"
                         android:textColor="?android:attr/textColorPrimary"
                         android:textSize="16sp" />
@@ -105,49 +104,45 @@
                     <TextView
                         android:id="@+id/summary"
                         android:layout_width="wrap_content"
-
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:fontFamily="@font/roboto_medium"
-                        android:lineSpacingExtra="2dp"
                         android:textColor="?android:attr/textColorSecondary"
                         android:textSize="12sp"
-                        tools:text="епізодів 10" />
-
+                        tools:text="Епізодів: 10 • Сезон 1" />
                 </LinearLayout>
 
-                <RelativeLayout
+                <FrameLayout
                     android:id="@+id/ib_sort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
                     android:background="@drawable/transparent_circle_background"
                     android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:padding="8dp">
+                    android:focusable="true">
 
                     <ImageView
                         android:id="@+id/sort"
-
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+                        android:layout_gravity="center"
                         app:srcCompat="@drawable/ic_up" />
-
-                </RelativeLayout>
+                </FrameLayout>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_episodes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:clipToPadding="false"
-                android:orientation="vertical"
+                android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_episode" />
+
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/load_state_layout"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/apk/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
@@ -10,87 +10,64 @@
     android:gravity="center_vertical"
     android:minHeight="56dp"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/list_horizontal_padding"
-    android:paddingVertical="@dimen/list_vertical_padding">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="14sp"
+            tools:text="Епізод 1" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textColor="?android:attr/textColorPrimary"
-                    tools:text="Епізод 1" />
-
-                <TextView
-                    android:id="@+id/summary"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:lineSpacingExtra="2dp"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="12.0sp"
-                    android:visibility="gone"
-                    tools:text="Переглянуто до 24:00"
-                    tools:visibility="visible" />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/watched_layout"
-                android:layout_width="38dp"
-                android:layout_height="fill_parent"
-                android:gravity="center"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/watched"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:clickable="true"
-                    android:src="@drawable/ic_task_alt" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="Переглянуто до 24:00"
+            tools:visibility="visible" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/download"
-        android:layout_width="38dp"
-        android:layout_height="fill_parent"
-        android:background="?selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:visibility="visible"
+    <FrameLayout
+        android:id="@+id/watched_layout"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="gone"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
+            android:id="@+id/watched"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_download_for_offline" />
+            android:layout_gravity="center"
+            android:src="@drawable/ic_task_alt" />
+    </FrameLayout>
 
-    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/download"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/transparent_circle_background"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_download_for_offline" />
+    </FrameLayout>
 
 </LinearLayout>
