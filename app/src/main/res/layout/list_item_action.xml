@@ -1,30 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="75dp"
-    android:layout_height="75dp"
-    android:layout_margin="8dp"
-    android:background="@drawable/transparent_circle_background"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"> <!-- Ефект натискання на всю область -->
 
-    <ImageView
-        android:id="@+id/action_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        tools:ignore="ContentDescription"
-        tools:srcCompat="@drawable/ic_add" />
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/transparent_circle_background"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/action_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:tint="?attr/colorPrimary"
+            tools:srcCompat="@drawable/ic_add"
+            tools:ignore="UseAppTint" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/action_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxLines="2"
+        android:minLines="2"
+        android:lineSpacingExtra="2dp"
+        android:includeFontPadding="false"
         android:textAppearance="?attr/textAppearanceLabelSmall"
-        tools:text="Add to List" />
+        android:textSize="11sp"
+        tools:text="Довгий текст назви" />
 
 </LinearLayout>
