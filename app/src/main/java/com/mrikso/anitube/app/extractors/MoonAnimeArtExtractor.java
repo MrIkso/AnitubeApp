@@ -168,17 +168,32 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
         });
     }
 
-    public static String decryptPlayerJsScript(String base64Input) {
-        byte[] base64Bytes = Base64.decode(base64Input, Base64.DEFAULT);
-        byte[] keyBytes = new byte[32];
-        System.arraycopy(base64Bytes, 0, keyBytes, 0, 32);
+    private String decryptPlayerJsScript(String base64Input) {
+        try {
+            byte[] decodeBytes = Base64.decode(base64Input, Base64.DEFAULT);
+            if (decodeBytes.length <= 33) {
+                return "";
+            }
 
-        byte[] resultBytes = new byte[base64Bytes.length - 32];
-        for (int i = 0; i < resultBytes.length; i++) {
-            resultBytes[i] = (byte) (base64Bytes[i + 32] ^ keyBytes[i % 32]);
+            int accumulator = decodeBytes[0] & 0xFF;
+
+            byte[] keyBytes = new byte[32];
+            System.arraycopy(decodeBytes, 1, keyBytes, 0, 32);
+
+            byte[] resultBytes = new byte[decodeBytes.length - 33];
+
+            for (int i = 0; i < resultBytes.length; i++) {
+                int cipherByte = decodeBytes[i + 33] & 0xFF;
+                int keyByte = keyBytes[i % 32] & 0xFF;
+                resultBytes[i] = (byte) (cipherByte ^ keyByte ^ accumulator);
+                accumulator = (cipherByte + keyByte) & 0xFF;
+            }
+
+            return new String(resultBytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Log.e(TAG, "Error on decrypting dynamic script code", e);
+            return "";
         }
-
-        return new String(resultBytes, StandardCharsets.UTF_8);
     }
 
     public static String decryptLinks(String base64Input, String key) {
