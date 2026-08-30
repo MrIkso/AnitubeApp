@@ -45,7 +45,8 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
 
     private final Map<String, String> HEADERS = Map.of("User-Agent", ApiClient.DESKTOP_USER_AGENT,
             "Accept", "*/*",
-            "accept-language", "uk,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            "accept-language", "uk;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Referer", "https://moonanime.art",
             "origin", "https://moonanime.art");
 
     public MoonAnimeArtExtractor(String url, OkHttpClient client) {
@@ -100,8 +101,18 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
             // Log.d(TAG, responseBody);
             // find player js script
             Element bodyElement = Jsoup.parse(responseBody).body();
-            Element scriptElement = bodyElement.getElementsByTag("script").first();
-            String jsTextCode = scriptElement.html();
+            Element targetScript = null;
+            for (Element script : bodyElement.getElementsByTag("script")) {
+                if (script.html().contains("atob(")) {
+                    targetScript = script;
+                    break;
+                }
+            }
+            if (targetScript == null) {
+                emitter.onError(new Exception("Encrypted script not found"));
+                return;
+            }
+            String jsTextCode = targetScript.html();
             // Log.d(TAG, jsTextCode);
             // find encrypted text on this script
             String regex = "atob\\([\"']([A-Za-z0-9+/=]+)[\"']\\)";
