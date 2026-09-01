@@ -66,7 +66,7 @@ public class CollectionsPagingAdapter extends PagingDataAdapter<CollectionModel,
                     .getContext()
                     .getString(R.string.collection_anine_count, collection.getCountAnime()));
 
-            ViewUtils.loadImage(binding.image, ParserUtils.normaliseImageUrl(collection.getPosterUrl()));
+            ViewUtils.loadImage(binding.image, ParserUtils.normalizeUrl(collection.getPosterUrl()));
             if (listener != null) {
                 binding.container.setOnClickListener(v -> listener.onReleaseItemSelected(collection));
             }

@@ -58,7 +58,7 @@ public class AnimeCarouselAdapter extends ListAdapter<InteresingModel, AnimeCaro
         }
 
         public void bind(InteresingModel model) {
-            ViewUtils.loadImage(binding.carouselImageView, ParserUtils.normaliseImageUrl(model.getPosterUrl()));
+            ViewUtils.loadImage(binding.carouselImageView, ParserUtils.normalizeUrl(model.getPosterUrl()));
             // ViewUtils.loadImage(binding.carouselBg, ApiClient.ANIME_CAROUSEL_BG_URL);
             if (listener != null) {
                 binding.getRoot().setOnClickListener(v -> listener.onCarouselItemSelected(model.getAnimeUrl()));

@@ -73,7 +73,11 @@ public class CommentsFragment extends Fragment {
 
         commentsAdapter = new CommentsPagingAdapter();
         commentsAdapter.setOnItemClickListener(link -> {
-            openProfileFragment(link);
+            if (PreferencesHelper.getInstance().isLogin()) {
+                openProfileFragment(link);
+            } else {
+                ViewUtils.showSnackbar(this, R.string.need_logined_for_view_profile);
+            }
         });
         commentsAdapter.addLoadStateListener(combinedLoadStates -> {
             LoadState refreshLoadState = combinedLoadStates.getRefresh();

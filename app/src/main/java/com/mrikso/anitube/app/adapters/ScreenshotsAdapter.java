@@ -59,7 +59,7 @@ public class ScreenshotsAdapter extends ListAdapter<ScreenshotModel, Screenshots
         public void bind(ScreenshotModel model, int position) {
             binding.progressIndicator.setVisibility(View.VISIBLE);
 
-            String imageUrl = ParserUtils.normaliseImageUrl(model.getPreviewUrl());
+            String imageUrl = ParserUtils.normalizeUrl(model.getPreviewUrl());
 
             DrawableCrossFadeFactory factory =
                     new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();

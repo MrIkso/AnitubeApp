@@ -57,7 +57,7 @@ public class CommentsPagingAdapter extends PagingDataAdapter<CommentModel, Comme
             binding.tvUsergroup.setText(comment.getUserGroup());
             binding.tvTime.setText(comment.getTime());
             binding.tvComment.setText(HtmlTextSpanner.formatContent(comment.getContent(), binding.tvComment.getContext()));
-            ViewUtils.loadImage(binding.ivProfile, ParserUtils.normaliseImageUrl(comment.getUserAvarar()));
+            ViewUtils.loadImage(binding.ivProfile, ParserUtils.normalizeUrl(comment.getUserAvarar()));
 
             if (listener != null) {
                 binding.ivProfile.setOnClickListener(v -> listener.onProfileClicked(comment.getUserLink()));

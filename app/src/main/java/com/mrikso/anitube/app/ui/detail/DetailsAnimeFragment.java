@@ -284,7 +284,7 @@ public class DetailsAnimeFragment extends Fragment
     }
 
     private void loadPosterImage(String posterUrl) {
-        String posterUrlNormal = ParserUtils.normaliseImageUrl(posterUrl);
+        String posterUrlNormal = ParserUtils.normalizeUrl(posterUrl);
         ViewUtils.loadImage(binding.poster, posterUrlNormal);
         ViewUtils.loadBluredImage(binding.posterBg, posterUrlNormal);
     }

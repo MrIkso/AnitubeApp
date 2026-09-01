@@ -214,7 +214,7 @@ public class CollectionDetailsFragment extends Fragment {
         binding.title.setText(collection.getNameCollection());
         binding.title.setSelected(true);
         binding.countAnime.setText(getString(R.string.collection_anine_count, collection.getCountAnime()));
-        ViewUtils.loadImage(binding.img, ParserUtils.normaliseImageUrl(collection.getPosterUrl()));
+        ViewUtils.loadImage(binding.img, ParserUtils.normalizeUrl(collection.getPosterUrl()));
 
         viewModel.searchByLink(ApiClient.BASE_URL + collection.getCollectionUrl() + "/");
     }

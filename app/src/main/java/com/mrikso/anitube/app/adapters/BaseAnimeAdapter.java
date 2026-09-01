@@ -59,7 +59,7 @@ public class BaseAnimeAdapter extends ListAdapter<BaseAnimeModel, BaseAnimeAdapt
                     new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
 
             Glide.with(binding.getRoot().getContext())
-                    .load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
+                    .load(ParserUtils.normalizeUrl(episode.getPosterUrl()))
                     .transition(DrawableTransitionOptions.withCrossFade(factory))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(new RequestListener<>() {

@@ -182,4 +182,5 @@
     <string name="anime_not_found_on_hikka">Аніме не було знайдено на hikka.io</string>
     <string name="message_error_short_query">Пошуковий запит має бути не менше 3 символів</string>
     <string name="back">Назад</string>
+    <string name="need_logined_for_view_profile">Необхідно авторизуватись, щоб переглянути профіль</string>
 </resources>

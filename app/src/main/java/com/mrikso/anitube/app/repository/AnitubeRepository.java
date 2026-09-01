@@ -6,6 +6,7 @@ import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.network.ApiClient;
+import com.mrikso.anitube.app.utils.ParserUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,11 +35,12 @@ public class AnitubeRepository {
     }
 
     public Single<Document> getMobilePage(String url) {
-        Log.d("AnitubeRepository", "load page " + url);
+        String newUrl = ParserUtils.normalizeUrl(url);
+        Log.d("AnitubeRepository", "load page " + newUrl);
         return Single.create(emitter -> {
             OkHttpClient client = new OkHttpClient();
             Request request1 = new Request.Builder()
-                    .url(url)
+                    .url(newUrl)
                     .header("User-Agent", ApiClient.MOBILE_USER_AGENT)
                     .build();
 

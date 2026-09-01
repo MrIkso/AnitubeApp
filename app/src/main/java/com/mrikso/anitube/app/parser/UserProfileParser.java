@@ -27,7 +27,7 @@ public class UserProfileParser {
             model.setProfileBackground(ApiClient.PROFILE_BG_URL);
         } else {
             String profileCardBg = ParserUtils.getMatcherResult("background:url\\((.+)\\)", profileCardStyle, 1);
-            model.setProfileBackground(Strings.isNullOrEmpty(profileCardBg) ? ApiClient.PROFILE_BG_URL : ParserUtils.normaliseImageUrl(profileCardBg));
+            model.setProfileBackground(Strings.isNullOrEmpty(profileCardBg) ? ApiClient.PROFILE_BG_URL : ParserUtils.normalizeUrl(profileCardBg));
         }
 
         String username = userinfoElenment.selectFirst("h1 span").text().trim();

@@ -48,7 +48,7 @@ public class FranchisesAdapter extends ListAdapter<FranchiseModel, FranchisesAda
             binding.tvTitle.setText(release.getTitle());
             binding.tvYear.setText(release.getReleaseYear());
             binding.tvEpisodes.setText(release.getEpisodes());
-            ViewUtils.loadImage(binding.poster, ParserUtils.normaliseImageUrl(release.getPosterUrl()));
+            ViewUtils.loadImage(binding.poster, ParserUtils.normalizeUrl(release.getPosterUrl()));
             if (release.isCurrent()) {
                 binding.getRoot().setEnabled(false);
                 binding.getRoot().setBackgroundColor(

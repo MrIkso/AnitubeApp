@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -23,7 +21,6 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.FragmentProfileBinding;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserProfileModel;
-import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -158,7 +155,7 @@ public class ProfileFragment extends Fragment {
         // https://anitube.in.ua/templates/smartphone/images/profile_bg.jpg
 
         ViewUtils.loadImage(
-                binding.layoutProfileHeader.avatar, ParserUtils.normaliseImageUrl(ParserUtils.loadSmartphoneNoAvatar(model.getUserAvatarUrl())));
+                binding.layoutProfileHeader.avatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(model.getUserAvatarUrl())));
 
         boolean isOnline = model.getUserOnline().equalsIgnoreCase("онлайн");
         binding.layoutProfileHeader.online.setImageResource(

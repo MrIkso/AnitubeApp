@@ -328,7 +328,7 @@ public class HomeFragment extends Fragment
 
     private void setUserData(UserModel data) {
         profileLink = data.getUserUrl();
-        ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normaliseImageUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
+        ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
     }
 
     @Override

@@ -103,7 +103,7 @@ public class AnimePagingAdapter extends PagingDataAdapter<AnimeReleaseModel, Ani
 
             DrawableCrossFadeFactory factory =
                     new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
-            glide.load(ParserUtils.normaliseImageUrl(episode.getPosterUrl()))
+            glide.load(ParserUtils.normalizeUrl(episode.getPosterUrl()))
                     .transition(DrawableTransitionOptions.withCrossFade(factory))
                     .listener(new RequestListener<>() {
                         @Override
