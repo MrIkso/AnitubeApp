@@ -93,8 +93,13 @@ public class SimpleListFragment extends Fragment {
     }
 
     private void openDetailsFragment(final String name, final String link) {
+        // на сайті розділ Субтитри вже має бите посилання, змінюється на посилання із розширеного пошуку
+        String newLink = link;
+        if (name.contains("Субтитри")) {
+            newLink = "https://anitube.in.ua/filter/ne-chpati=SUB/sort=date/order=desc/";
+        }
         SimpleListFragmentDirections.ActionNavSimpleListToNavSearchResult action =
-                SimpleListFragmentDirections.actionNavSimpleListToNavSearchResult(name, link);
+                SimpleListFragmentDirections.actionNavSimpleListToNavSearchResult(name, newLink);
         Navigation.findNavController(requireView()).navigate(action);
     }
 
