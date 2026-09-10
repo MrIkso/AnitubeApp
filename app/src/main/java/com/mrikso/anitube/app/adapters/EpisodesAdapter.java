@@ -15,9 +15,7 @@ import com.mrikso.anitube.app.databinding.ItemEpisodeBinding;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.utils.ListUtils;
 import com.mrikso.anitube.app.utils.ReadableTime;
-import com.mrikso.anitube.app.utils.RecyclerAdapterHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EpisodesAdapter extends ListAdapter<EpisodeModel, EpisodesAdapter.ViewHolder> {
@@ -76,13 +74,14 @@ public class EpisodesAdapter extends ListAdapter<EpisodeModel, EpisodesAdapter.V
             Context ctx = binding.getRoot().getContext();
             binding.watchedLayout.setVisibility(episode.isWatched() ? View.VISIBLE : View.GONE);
 
-            if (episode.getTotalEpisodeTime() != 0) binding.summary.setVisibility(View.VISIBLE);
-            binding.summary.setText(
-                    episode.getTotalWatchTime() == episode.getTotalEpisodeTime()
-                            ? ctx.getString(R.string.watching_time_full)
-                            : ctx.getString(
-                                    R.string.watching_time, ReadableTime.generateTime(episode.getTotalWatchTime())));
-
+            if (episode.getTotalEpisodeTime() != 0) {
+                binding.summary.setVisibility(View.VISIBLE);
+                binding.summary.setText(episode.getTotalWatchTime() == episode.getTotalEpisodeTime() ? ctx.getString(R.string.watching_time_full)
+                        : ctx.getString(
+                        R.string.watching_time, ReadableTime.generateTime(episode.getTotalWatchTime())));
+            } else {
+                binding.summary.setVisibility(View.GONE);
+            }
             if (listener != null) {
                 binding.getRoot()
                         .setOnClickListener(v -> listener.onEpisodeItemSelected(position, episode.getEpisodeUrl()));

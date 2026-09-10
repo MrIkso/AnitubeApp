@@ -14,6 +14,7 @@ import com.mrikso.anitube.app.parser.video.ParseVideosFromPage;
 import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.utils.FileCache;
 import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -34,6 +35,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -49,6 +51,7 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<TreeItem<PlayerModel>> playlistTree = new MutableLiveData<>();
     private boolean singleLoad = false;
+    private Disposable statusRefreshDisposable;
 
     @Inject
     public WatchAnimeFragmentViewModel(AnitubeRepository repository, WatchAnimeRepository watchAnimeRepository) {
@@ -181,6 +184,42 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
                     playlistTree.postValue(v);
                     loadSate.postValue(LoadState.DONE);
                 }));
+    }
+
+    public void refreshEpisodesWatchStatus(int animeId, List<EpisodeModel> episodes) {
+        if (statusRefreshDisposable != null && !statusRefreshDisposable.isDisposed()) {
+            statusRefreshDisposable.dispose();
+        }
+
+        statusRefreshDisposable = Observable.fromIterable(episodes)
+                .subscribeOn(Schedulers.io())
+                .map(episode -> {
+                    try {
+                        EpisodeModel newEpisode = (EpisodeModel) episode.clone();
+                        LastWatchedEpisodeEnity dbEpisode = watchAnimeRepository.getWatchedEpisode(animeId, newEpisode.getEpisodeUrl());
+                        if (dbEpisode != null) {
+                            newEpisode.setIsWatched(dbEpisode.isWatched());
+                            newEpisode.setTotalEpisodeTime(dbEpisode.getTotalEpisodeTime());
+                            newEpisode.setTotalWatchTime(dbEpisode.getTotalWatchTime());
+                        } else {
+                            newEpisode.setIsWatched(false);
+                            newEpisode.setTotalEpisodeTime(0L);
+                            newEpisode.setTotalWatchTime(0L);
+                        }
+                        return newEpisode;
+                    } catch (CloneNotSupportedException e) {
+                        return episode;
+                    }
+                })
+                .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(newEpisodes -> {
+                    ListRepository.getInstance().setEpisodes(newEpisodes);
+                }, throwable -> {
+                    throwable.printStackTrace();
+                });
+
+        compositeDisposable.add(statusRefreshDisposable);
     }
 
     @Override

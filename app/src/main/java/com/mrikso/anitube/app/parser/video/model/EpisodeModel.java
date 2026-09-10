@@ -57,19 +57,6 @@ public class EpisodeModel implements Serializable, Cloneable {
         this.isWatched = isWatched;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EpisodeModel that = (EpisodeModel) o;
-        return totalWatchTime == that.totalWatchTime && totalEpisodeTime == that.totalEpisodeTime && isWatched == that.isWatched && Objects.equal(playerId, that.playerId) && Objects.equal(episodeId, that.episodeId) && Objects.equal(name, that.name) && Objects.equal(episodeUrl, that.episodeUrl);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(playerId, episodeId, name, episodeUrl, totalWatchTime, totalEpisodeTime, isWatched);
-    }
-
     public String getPlayerId() {
         return this.playerId;
     }
@@ -106,5 +93,17 @@ public class EpisodeModel implements Serializable, Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        EpisodeModel that = (EpisodeModel) o;
+        return totalWatchTime == that.totalWatchTime && totalEpisodeTime == that.totalEpisodeTime && isWatched == that.isWatched && Objects.equal(playerId, that.playerId) && Objects.equal(episodeId, that.episodeId) && Objects.equal(name, that.name) && Objects.equal(episodeUrl, that.episodeUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(playerId, episodeId, name, episodeUrl, totalWatchTime, totalEpisodeTime, isWatched);
     }
 }

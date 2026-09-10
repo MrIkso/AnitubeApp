@@ -36,6 +36,7 @@ import com.mrikso.anitube.app.repository.ListRepository;
 import com.mrikso.anitube.app.ui.dialogs.UnsupportedVideoSourceDialog;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
+import com.mrikso.anitube.app.utils.ListUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.utils.ViewUtils;
 import com.mrikso.anitube.app.view.TreeViewGroup;
@@ -150,13 +151,12 @@ public class WatchAnimeFragment extends Fragment
 
         disposables.add(listRepo.getData()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         result -> {
                             if (result != null) {
-                                episodesAdapter.submitList(result);
-                                if (isReverse) {
-                                    episodesAdapter.reverseList();
-                                }
+                                List<EpisodeModel> listToSubmit = isReverse ? ListUtils.reverseList(result) : result;
+                                episodesAdapter.submitList(listToSubmit);
                             }
                         }, // OnNext
                         Throwable::printStackTrace, // OnError
@@ -209,7 +209,10 @@ public class WatchAnimeFragment extends Fragment
             isReverse = !isReverse;
             helper.setReverseEpisodeList(isReverse);
             showReverseButton(isReverse);
-            episodesAdapter.reverseList();
+            List<EpisodeModel> current = episodesAdapter.getCurrentList();
+            if (current != null && !current.isEmpty()) {
+                episodesAdapter.submitList(ListUtils.reverseList(current));
+            }
         });
     }
 
@@ -318,7 +321,7 @@ public class WatchAnimeFragment extends Fragment
         episodePath = binding.treeView.getPath(item);
         binding.summary.setText(String.format("%s, %s", episodeHint, episodePath));
 
-        listRepo.setEpisodes(episodes);
+        viewModel.refreshEpisodesWatchStatus(animeModel.getAnimeId(), episodes);
     }
 
     private void showNoDataScreen() {
