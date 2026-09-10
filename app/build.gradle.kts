@@ -17,13 +17,13 @@ val keystorePropertiesFile: File = File(rootProject.rootDir, "keystore.propertie
 
 android {
     namespace = "com.mrikso.anitube.app"
-    compileSdk = 36
+    compileSdk = 37
     enableKotlin = true
 
     defaultConfig {
         applicationId = "com.mrikso.anitube.app"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 10
         versionName = "1.0.9"
         ndk {

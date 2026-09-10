@@ -6,7 +6,7 @@ plugins {
 }
 android {
     namespace = "com.mrikso.bottomsheetmenulib"
-    compileSdk = 36
+    compileSdk = 37
     viewBinding {
         enable = true
     }
