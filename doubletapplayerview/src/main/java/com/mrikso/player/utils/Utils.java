@@ -1,5 +1,7 @@
 package com.mrikso.player.utils;
 
+import static android.content.Context.UI_MODE_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -50,8 +52,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static android.content.Context.UI_MODE_SERVICE;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -206,7 +206,7 @@ public class Utils {
         // if (loudnessEnhancer == null)
         // canBoost = false;
 
-        if (volume != volumeMax /*|| (boostLevel == 0 && !raise)*/) {
+        if (volume != volumeMax || !raise) {
             //     if (loudnessEnhancer != null)
             //    loudnessEnhancer.setEnabled(false);
             audioManager.adjustStreamVolume(
