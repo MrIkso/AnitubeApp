@@ -444,6 +444,7 @@ public class PlayerActivity extends AppCompatActivity {
             exoQuality.setOnItemClickListener((parent, view, position, id) -> {
                 currentQuality = (String) parent.getAdapter().getItem(position);
                 String qualityItem = episodeLinks.getLinksQuality().get(currentQuality);
+                if (Strings.isNullOrEmpty(qualityItem)) return;
                 currentPosition = Math.max(0, exoPlayer.getCurrentPosition());
 
                 MediaSource mediaSource = mediaSourceHelper.getMediaSource(qualityItem, true);
@@ -765,6 +766,10 @@ public class PlayerActivity extends AppCompatActivity {
 
 
     private void setMediaSourceByModel(VideoLinksModel model) {
+        if (model == null) {
+            finish();
+            return;
+        }
         if (model.isIgnoreSSL()) {
             Utils.bypassSSL();
         }
@@ -773,25 +778,20 @@ public class PlayerActivity extends AppCompatActivity {
         if (model.getLinksQuality() != null && !model.getLinksQuality().isEmpty()) {
             Map<String, String> qualitiesMap = model.getLinksQuality();
 
-            //currentQuality = model.getDefaultQuality();
-
-            if (Strings.isNullOrEmpty(currentQuality) && !qualitiesMap.containsKey(currentQuality)) {
-                // load default player quality
-                /*var defaultQuality = model.getDefaultQuality();
-                if (!Strings.isNullOrEmpty(defaultQuality) && qualitiesMap.containsKey(defaultQuality)) {
-                    currentQuality = defaultQuality;
-                } else {
-
-                 */
+            if (Strings.isNullOrEmpty(currentQuality) || !qualitiesMap.containsKey(currentQuality)) {
                 currentQuality = qualitiesMap.keySet().stream().findFirst().get();
-                //}
             }
 
-            // qualitiesMap.forEach((key, value) -> Log.i("tag", "currentQuality: " + currentQuality + " " + key + " " + value));
             String playUrl = qualitiesMap.get(currentQuality);
-            // Log.i("PlayerActivity", "playUrl: " + playUrl);
+            if (playUrl == null && !qualitiesMap.isEmpty()) {
+                currentQuality = qualitiesMap.keySet().iterator().next();
+                playUrl = qualitiesMap.get(currentQuality);
+            }
+
             updateQualityArray();
-            mediaSource = mediaSourceHelper.getMediaSource(playUrl, model.getHeaders(), true);
+            if (!Strings.isNullOrEmpty(playUrl)) {
+                mediaSource = mediaSourceHelper.getMediaSource(playUrl, model.getHeaders(), true);
+            }
 
         } else if (!Strings.isNullOrEmpty(model.getSingleDirectUrl())) {
             mediaSource = mediaSourceHelper.getMediaSource(model.getSingleDirectUrl(), model.getHeaders(), true);
