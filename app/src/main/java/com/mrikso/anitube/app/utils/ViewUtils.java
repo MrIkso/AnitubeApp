@@ -43,6 +43,14 @@ public class ViewUtils {
         return colors[new Random().nextInt(colors.length)];
     }
 
+    @ColorInt
+    public static int getMaterialColorAt(Context context, int index) {
+        int[] colors = context.getResources().getIntArray(R.array.material_colors);
+        if (colors.length == 0)
+            return 0;
+        return colors[Math.abs(index) % colors.length];
+    }
+
     public static void loadImage(ImageView view, String url) {
         DrawableCrossFadeFactory factory =
                 new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();

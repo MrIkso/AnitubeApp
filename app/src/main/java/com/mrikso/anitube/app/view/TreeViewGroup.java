@@ -37,8 +37,6 @@ public class TreeViewGroup extends LinearLayout {
     private OnTreeItemClickListener<PlayerModel> clickListener;
     private OnTreeRestoreListener restoreListener;
 
-    private Map<String, Integer> savedLevelColors = new HashMap<>();
-
     public TreeViewGroup(Context context) {
         super(context);
         init();
@@ -84,7 +82,6 @@ public class TreeViewGroup extends LinearLayout {
 
         this.model = root;
         this.chipGroups.clear();
-        this.savedLevelColors.clear();
         this.removeAllViews();
 
         renderRestoredTree(root);
@@ -94,7 +91,7 @@ public class TreeViewGroup extends LinearLayout {
         if (parent == null || parent.getChildren().isEmpty())
             return;
 
-        ChipGroup chipGroup = createChipGroup(parent, key);
+        ChipGroup chipGroup = createChipGroup(parent);
         chipGroups.put(key, new Pair<>(depth, chipGroup.getId()));
         addView(chipGroup);
     }
@@ -130,7 +127,7 @@ public class TreeViewGroup extends LinearLayout {
         this.restoreListener = listener;
     }
 
-    private ChipGroup createChipGroup(TreeItem<PlayerModel> parentItem, String key) {
+    private ChipGroup createChipGroup(TreeItem<PlayerModel> parentItem) {
         ItemChipGroupBinding binding = ItemChipGroupBinding.inflate(inflater, this, false);
         ChipGroup chipGroup = binding.getRoot();
         chipGroup.removeAllViews();
@@ -138,13 +135,8 @@ public class TreeViewGroup extends LinearLayout {
         chipGroup.setSelectionRequired(true);
         chipGroup.setId(View.generateViewId());
 
-        int bgColor;
-        if (savedLevelColors.containsKey(key)) {
-            bgColor = savedLevelColors.get(key);
-        } else {
-            bgColor = ViewUtils.getRandomMaterialColor(getContext());
-            savedLevelColors.put(key, bgColor);
-        }
+        int depth = parentItem.getDepth();
+        int bgColor = ViewUtils.getMaterialColorAt(getContext(), depth);
 
         for (TreeItem<PlayerModel> currentItem : parentItem.getChildren()) {
             Chip chip = createChip(currentItem.getValue().getName(), bgColor, v -> {
@@ -171,7 +163,7 @@ public class TreeViewGroup extends LinearLayout {
         return chipGroup;
     }
 
-    private Chip createChip(String name, @ColorInt int color, View.OnClickListener listener) {
+    private Chip createChip(String name, @ColorInt int color, OnClickListener listener) {
         Chip chip = new Chip(getContext(), null, R.style.Widget_Material3_Chip_Filter_Elevated);
         chip.setText(name);
         chip.setTextColor(ContextCompat.getColorStateList(getContext(), com.mrikso.anitube.app.R.color.text_200));
@@ -227,7 +219,7 @@ public class TreeViewGroup extends LinearLayout {
 
         String key = (parent.getParent() == null) ? "root" : parent.getValue().getId();
 
-        ChipGroup group = createChipGroup(parent, key);
+        ChipGroup group = createChipGroup(parent);
         chipGroups.put(key, new Pair<>(parent.getDepth(), group.getId()));
         addView(group);
 
@@ -257,7 +249,6 @@ public class TreeViewGroup extends LinearLayout {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
         ss.model = this.model;
-        ss.levelColors = this.savedLevelColors; // Зберігаємо кольори!
         return ss;
     }
 
@@ -271,7 +262,6 @@ public class TreeViewGroup extends LinearLayout {
         super.onRestoreInstanceState(ss.getSuperState());
 
         this.model = ss.model;
-        this.savedLevelColors = ss.levelColors != null ? ss.levelColors : new HashMap<>();
 
         if (this.model != null) {
             this.model.restoreParentLinks(null);
