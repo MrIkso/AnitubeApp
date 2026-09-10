@@ -7,17 +7,18 @@ import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.utils.InternetConnection;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import javax.inject.Inject;
-
 import kotlinx.coroutines.CoroutineScope;
 
 @HiltViewModel
@@ -27,6 +28,7 @@ public class SearchResultViewModel extends ViewModel {
     private SearchResultRepository repository;
     private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable;
+    private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
     private boolean singleLoad = false;
 
     @Inject
@@ -45,15 +47,23 @@ public class SearchResultViewModel extends ViewModel {
     }
 
     public void searchByLink(String link) {
-        if (!singleLoad) {
-            CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-            animePagingDataFlowable = PagingRx.cachedIn(repository.searchByLink(link), viewModelScope);
-
-            compositeDisposable.add(animePagingDataFlowable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(animePagingData::setValue));
-            singleLoad = true;
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.postValue(LoadState.NO_NETWORK);
+            return;
         }
+        loadSate.postValue(LoadState.LOADING);
+        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
+        animePagingDataFlowable = PagingRx.cachedIn(repository.searchByLink(link), viewModelScope);
+
+        compositeDisposable.add(animePagingDataFlowable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pagingData -> {
+                    animePagingData.setValue(pagingData);
+                }));
+    }
+
+    public LiveData<LoadState> getLoadState() {
+        return loadSate;
     }
 }

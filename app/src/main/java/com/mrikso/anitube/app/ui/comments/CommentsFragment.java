@@ -181,9 +181,27 @@ public class CommentsFragment extends Fragment {
                        binding.sendMsgPanel.sendProgress.setVisibility(View.VISIBLE);
                        binding.sendMsgPanel.send.setVisibility(View.GONE);
                        break;
+                   case NO_NETWORK:
+                       binding.sendMsgPanel.sendProgress.setVisibility(View.GONE);
+                       binding.sendMsgPanel.send.setVisibility(View.VISIBLE);
+                       showNoNetworkState();
+                       break;
                }
             }
         });
+    }
+
+    private void showNoNetworkState() {
+        if (binding != null) {
+            binding.content.setVisibility(View.GONE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.errorMessage.setText(R.string.error_load);
+            binding.loadStateLayout.repeat.setOnClickListener(v -> {
+                int animeId = CommentsFragmentArgs.fromBundle(getArguments()).getAnimeId();
+                viewModel.reloadComments(animeId);
+            });
+        }
     }
 
     private void showCommentList(final PagingData<CommentModel> results) {

@@ -7,19 +7,20 @@ import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.repository.UserProfileRepository;
+import com.mrikso.anitube.app.utils.InternetConnection;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import javax.inject.Inject;
-
 import kotlinx.coroutines.CoroutineScope;
 
 @HiltViewModel
@@ -32,18 +33,17 @@ public class AnimeListFragmentViewModel extends ViewModel {
 
     private final MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
     private final MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
+    private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
 
     @Inject
     public AnimeListFragmentViewModel(AnimeListRepository repository, UserProfileRepository  userProfileRepository) {
         this.repository = repository;
         this.userProfileRepository = userProfileRepository;
-        init();
+        initUserProfileSubscription();
+        loadData();
     }
 
-    private void init() {
-        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
-
+    private void initUserProfileSubscription() {
         compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,6 +52,16 @@ public class AnimeListFragmentViewModel extends ViewModel {
                         userData.postValue(results);
                     }
                 }));
+    }
+
+    public void loadData() {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.postValue(LoadState.NO_NETWORK);
+            return;
+        }
+        loadSate.postValue(LoadState.LOADING);
+        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
+        Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(), viewModelScope);
 
         compositeDisposable.add(animePagingDataFlowable
                 .subscribeOn(Schedulers.io())
@@ -71,5 +81,9 @@ public class AnimeListFragmentViewModel extends ViewModel {
 
     public LiveData<UserModel> getUserData() {
         return userData;
+    }
+
+    public LiveData<LoadState> getLoadState() {
+        return loadSate;
     }
 }

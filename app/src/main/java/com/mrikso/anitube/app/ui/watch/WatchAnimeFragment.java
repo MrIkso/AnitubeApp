@@ -126,6 +126,12 @@ public class WatchAnimeFragment extends Fragment
                     binding.loadStateLayout.progressBar.setVisibility(View.GONE);
                     binding.loadStateLayout.errorLayout.setVisibility(View.GONE);
                     break;
+                case NO_NETWORK:
+                    binding.nestedScrollView.setVisibility(View.GONE);
+                    binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+                    binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+                    binding.loadStateLayout.errorMessage.setText(R.string.message_error_no_internet);
+                    break;
             }
         });
         viewModel.getPlaylistTree().observe(getViewLifecycleOwner(), result -> {

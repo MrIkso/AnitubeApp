@@ -120,6 +120,11 @@ public class SearchFragment extends Fragment
     }
 
     protected void observeEvents() {
+        viewModel.getLoadState().observe(getViewLifecycleOwner(), state -> {
+            if (state == com.mrikso.anitube.app.model.LoadState.NO_NETWORK) {
+                showNoNetworkState();
+            }
+        });
         viewModel.getShowKeyboard().observe(getViewLifecycleOwner(), show -> {
             if (show) {
                 KeyboardUtils.showSoftInput(binding.etSearch);
@@ -284,6 +289,18 @@ public class SearchFragment extends Fragment
             binding.loadStateLayout.progressBar.setVisibility(View.GONE);
             binding.loadStateLayout.buttonLl.setVisibility(View.GONE);
             binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showNoNetworkState() {
+        if (binding != null) {
+            binding.content.setVisibility(View.GONE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.errorMessage.setText(R.string.error_load);
+            binding.loadStateLayout.repeat.setOnClickListener(v -> {
+                viewModel.getSearchResult(binding.etSearch.getText().toString());
+            });
         }
     }
 

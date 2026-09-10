@@ -112,6 +112,11 @@ public class LoginFragment extends Fragment {
                     case DONE:
                         openLoginFragment(result.second);
                         break;
+                    case NO_NETWORK:
+                        binding.loginBtn.setIcon(null);
+                        binding.loginBtn.setEnabled(true);
+                        ViewUtils.showSnackbar(this, R.string.message_error_no_internet);
+                        break;
                 }
             }
         });

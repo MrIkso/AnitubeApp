@@ -118,7 +118,25 @@ public class CollectionsFragment extends Fragment {
         binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
     }
 
+    private void showNoNetworkState() {
+        if (binding != null) {
+            binding.container.setVisibility(View.GONE);
+            binding.loadStateLayout.getRoot().setVisibility(View.VISIBLE);
+            binding.loadStateLayout.progressBar.setVisibility(View.GONE);
+            binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            binding.loadStateLayout.errorMessage.setText(R.string.error_load);
+            binding.loadStateLayout.repeat.setOnClickListener(v -> {
+                viewModel.loadData();
+            });
+        }
+    }
+
     private void initObservers() {
+        viewModel.getLoadState().observe(getViewLifecycleOwner(), state -> {
+            if (state == com.mrikso.anitube.app.model.LoadState.NO_NETWORK) {
+                showNoNetworkState();
+            }
+        });
         viewModel.getCollectionPagingData().observe(getViewLifecycleOwner(), results -> {
             if (binding != null) {
                 if (results != null) {

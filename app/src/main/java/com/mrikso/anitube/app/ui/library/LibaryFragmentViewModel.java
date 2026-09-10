@@ -7,17 +7,18 @@ import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.utils.InternetConnection;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import javax.inject.Inject;
-
 import kotlinx.coroutines.CoroutineScope;
 
 @HiltViewModel
@@ -28,6 +29,7 @@ public class LibaryFragmentViewModel extends ViewModel {
     private boolean singleLoad;
 
     private MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
+    private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
 
     private final LibaryRepository repository;
 
@@ -37,16 +39,20 @@ public class LibaryFragmentViewModel extends ViewModel {
     }
 
     public void loadData(int mode) {
-        if (!singleLoad) {
-            CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-            animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(mode), viewModelScope);
-
-            compositeDisposable.add(animePagingDataFlowable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(animePagingData::setValue));
-            singleLoad = true;
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.postValue(LoadState.NO_NETWORK);
+            return;
         }
+        loadSate.postValue(LoadState.LOADING);
+        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
+        animePagingDataFlowable = PagingRx.cachedIn(repository.getAnimeListByPage(mode), viewModelScope);
+
+        compositeDisposable.add(animePagingDataFlowable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pagingData -> {
+                    animePagingData.setValue(pagingData);
+                }));
     }
 
     @Override
@@ -57,5 +63,9 @@ public class LibaryFragmentViewModel extends ViewModel {
 
     public LiveData<PagingData<AnimeReleaseModel>> getAnimePagingData() {
         return animePagingData;
+    }
+
+    public LiveData<LoadState> getLoadState() {
+        return loadSate;
     }
 }

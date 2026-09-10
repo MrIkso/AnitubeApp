@@ -19,9 +19,9 @@ import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
-import com.mrikso.anitube.app.repository.UserProfileRepository;
 
 import org.jsoup.nodes.Document;
 
@@ -63,6 +63,18 @@ public class HomeFragmentViewModel extends ViewModel {
         this.repository = repository;
         this.userProfileRepository = userProfileRepository;
         this.homePageParser = homePageParser;
+        initUserProfileSubscription();
+    }
+
+    private void initUserProfileSubscription() {
+        compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(results -> {
+                    if (results != null) {
+                        userData.postValue(results);
+                    }
+                }));
     }
 
     public void loadHome() {
@@ -102,15 +114,6 @@ public class HomeFragmentViewModel extends ViewModel {
                         });
 
         compositeDisposable.add(disposable);
-
-        compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(results -> {
-                    if (results != null) {
-                        userData.postValue(results);
-                    }
-                }));
     }
 
     private void createActionList() {

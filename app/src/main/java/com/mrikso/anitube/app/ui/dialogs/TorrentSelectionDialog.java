@@ -95,6 +95,13 @@ public class TorrentSelectionDialog extends BaseBottomSheetDialogFragment {
                 case ERROR:
                     progressBar.setVisibility(View.GONE);
                     errorTextView.setVisibility(View.VISIBLE);
+                    errorTextView.setText(R.string.error_load);
+                    recyclerView.setVisibility(View.GONE);
+                    break;
+                case NO_NETWORK:
+                    progressBar.setVisibility(View.GONE);
+                    errorTextView.setVisibility(View.VISIBLE);
+                    errorTextView.setText(R.string.error_load);
                     recyclerView.setVisibility(View.GONE);
                     break;
             }

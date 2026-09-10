@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.Gson;
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.data.history.enity.LastWatchedEpisodeEnity;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.ResponseModel;
@@ -14,15 +15,9 @@ import com.mrikso.anitube.app.parser.video.model.EpisodeModel;
 import com.mrikso.anitube.app.parser.video.model.PlayerModel;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
 import com.mrikso.anitube.app.utils.FileCache;
+import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.treeview.TreeItem;
-
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,6 +31,12 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
 public class WatchAnimeFragmentViewModel extends ViewModel {
@@ -59,7 +60,6 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
         if (!singleLoad) {
             loadData(isHavePlaylistsAjax, animeId, url);
         }
-        singleLoad = true;
     }
 
     public void reloadPlaylist(boolean isHavePlaylistsAjax, int animeId, String url) {
@@ -67,6 +67,11 @@ public class WatchAnimeFragmentViewModel extends ViewModel {
     }
 
     private void loadData(boolean isHavePlaylistsAjax, int animeId, String url) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.postValue(LoadState.NO_NETWORK);
+            return;
+        }
+        singleLoad = true;
         if (isHavePlaylistsAjax) {
             Disposable disposable = repository
                     .getPlaylist(url, animeId, PreferencesHelper.getInstance().getDleHash())

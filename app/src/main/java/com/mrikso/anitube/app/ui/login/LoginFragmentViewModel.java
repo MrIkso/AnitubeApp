@@ -6,29 +6,29 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.common.base.Strings;
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.parser.HomePageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
-import com.mrikso.anitube.app.utils.CookieParser;
-import com.mrikso.anitube.app.utils.PreferencesHelper;
 import com.mrikso.anitube.app.repository.UserProfileRepository;
-
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import com.mrikso.anitube.app.utils.CookieParser;
+import com.mrikso.anitube.app.utils.InternetConnection;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import org.jsoup.nodes.Document;
-
-import retrofit2.Response;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.Response;
 
 @HiltViewModel
 public class LoginFragmentViewModel extends ViewModel {
@@ -44,6 +44,10 @@ public class LoginFragmentViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(new Pair<>(LoadState.NO_NETWORK, null));
+            return;
+        }
         compositeDisposable.add(repository
                 .login(username, password)
                 .subscribeOn(Schedulers.io())

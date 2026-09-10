@@ -9,9 +9,11 @@ import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
 import com.google.common.base.Strings;
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.CommentModel;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.parser.CommentsParser;
+import com.mrikso.anitube.app.utils.InternetConnection;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import org.jsoup.nodes.Document;
@@ -49,19 +51,37 @@ public class CommentsFragmentViewModel extends ViewModel {
 
     public void loadComments(int animeId) {
         if (!singleLoad) {
-            CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-            Flowable<PagingData<CommentModel>> commentsPagingDataFlowable =
-                    PagingRx.cachedIn(repository.loadComments(animeId), viewModelScope);
-
-            compositeDisposable.add(commentsPagingDataFlowable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(commentsPagingData::setValue));
-            singleLoad = true;
+            executeLoadComments(animeId);
         }
     }
 
+    public void reloadComments(int animeId) {
+        executeLoadComments(animeId);
+    }
+
+    private void executeLoadComments(int animeId) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(new Pair<>(LoadState.NO_NETWORK, null));
+            return;
+        }
+        singleLoad = true;
+        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
+        Flowable<PagingData<CommentModel>> commentsPagingDataFlowable =
+                PagingRx.cachedIn(repository.loadComments(animeId), viewModelScope);
+
+        compositeDisposable.add(commentsPagingDataFlowable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pagingData -> {
+                    commentsPagingData.setValue(pagingData);
+                }));
+    }
+
     public void addComments(int animeId, String comment) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(new Pair<>(LoadState.NO_NETWORK, null));
+            return;
+        }
         PreferencesHelper helper = PreferencesHelper.getInstance();
 
         compositeDisposable.add(repository.addComment(animeId, comment, helper.getUserLogin(), helper.getDleHash())

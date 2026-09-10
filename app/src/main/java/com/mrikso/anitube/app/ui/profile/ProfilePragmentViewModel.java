@@ -7,22 +7,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserProfileModel;
 import com.mrikso.anitube.app.parser.UserProfileParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
-
-import dagger.hilt.android.lifecycle.HiltViewModel;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import com.mrikso.anitube.app.utils.InternetConnection;
 
 import org.jsoup.nodes.Document;
 
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
 public class ProfilePragmentViewModel extends ViewModel {
@@ -53,6 +54,10 @@ public class ProfilePragmentViewModel extends ViewModel {
     }
 
     public void loadPage(String url) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(new Pair<>(LoadState.NO_NETWORK, null));
+            return;
+        }
         compositeDisposable.add(repository
                 .getPage(url)
                 .subscribeOn(Schedulers.io())

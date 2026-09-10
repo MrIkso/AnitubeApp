@@ -6,21 +6,18 @@ import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.UserModel;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.paging.AnimeListPagingSource;
 import com.mrikso.anitube.app.parser.AnimeReleasesMapper;
-
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import org.jsoup.nodes.Document;
 
-
-import java.util.function.Function;
-
 import javax.inject.Inject;
+
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 public class LibaryRepository {
 
@@ -34,7 +31,18 @@ public class LibaryRepository {
     }
 
     public Single<Document> getPaggingData(int page, int listType) {
-        String userName = mapper.getUserData().getUserName();
+        String userName = null;
+        UserModel user = mapper.getUserData();
+        if (user != null) {
+            userName = user.getUserName();
+        } else if (PreferencesHelper.getInstance().isLogin()) {
+            userName = PreferencesHelper.getInstance().getUserLogin();
+        }
+
+        if (userName == null) {
+            return Single.error(new NullPointerException("Username is null and not loading favorites"));
+        }
+
         switch (listType) {
             case AnimeListType.LIST_ALL:
                 return apiService.getAllMyLists(userName, page);
@@ -50,8 +58,9 @@ public class LibaryRepository {
                 return apiService.getWatchList(userName, page);
             case AnimeListType.LIST_WILL:
                 return apiService.getWllList(userName, page);
+            default:
+                return Single.error(new IllegalArgumentException("Unknown listType: " + listType));
         }
-        return null;
     }
 
 

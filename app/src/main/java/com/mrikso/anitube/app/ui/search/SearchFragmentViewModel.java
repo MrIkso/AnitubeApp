@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.data.search.RecentSearch;
 import com.mrikso.anitube.app.model.AnimeReleaseModel;
+import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.SimpleModel;
+import com.mrikso.anitube.app.utils.InternetConnection;
 
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class SearchFragmentViewModel extends ViewModel {
     private final MutableLiveData<Boolean> _showRecentSearchResultScreen = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> _showKeyboard = new MutableLiveData<>(true);
     private final MutableLiveData<PagingData<AnimeReleaseModel>> animePagingData = new MutableLiveData<>();
+    private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.DONE);
     private final SearchRepository searchRepository;
 
     @Inject
@@ -48,6 +52,10 @@ public class SearchFragmentViewModel extends ViewModel {
     }
 
     public void runQuickSearch(String query, String dleHash) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.postValue(LoadState.NO_NETWORK);
+            return;
+        }
         Disposable disposable = searchRepository
                 .runQickSearch(query, dleHash)
                 .subscribe(
@@ -82,13 +90,20 @@ public class SearchFragmentViewModel extends ViewModel {
     }
 
     public void getSearchResult(String query) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.postValue(LoadState.NO_NETWORK);
+            return;
+        }
+        loadSate.postValue(LoadState.LOADING);
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
         Flowable<PagingData<AnimeReleaseModel>> animePagingDataFlowable = PagingRx.cachedIn(searchRepository.getSearchResult(query), viewModelScope);
 
         compositeDisposable.add(animePagingDataFlowable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(animePagingData::postValue));
+                .subscribe(pagingData -> {
+                    animePagingData.postValue(pagingData);
+                }));
     }
 
     public LiveData<List<RecentSearch>> getSearchHistoryData() {
@@ -131,5 +146,9 @@ public class SearchFragmentViewModel extends ViewModel {
 
     public void showRecentSearchResultEmptyScreen() {
         _showRecentSearchResultScreen.postValue(true);
+    }
+
+    public LiveData<LoadState> getLoadState() {
+        return loadSate;
     }
 }

@@ -6,10 +6,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.TorrentModel;
 import com.mrikso.anitube.app.parser.TorrentsPageParser;
 import com.mrikso.anitube.app.repository.AnitubeRepository;
+import com.mrikso.anitube.app.utils.InternetConnection;
 
 import org.jsoup.nodes.Document;
 
@@ -37,6 +39,10 @@ public class TorrentSelectionViewModel extends ViewModel {
     }
 
     public void loadTorrents(String url) {
+        if (!InternetConnection.isNetworkAvailable(App.getApplication())) {
+            loadSate.setValue(LoadState.NO_NETWORK);
+            return;
+        }
         compositeDisposable.add(repository
                 .getPage(url)
                 .subscribeOn(Schedulers.io())
