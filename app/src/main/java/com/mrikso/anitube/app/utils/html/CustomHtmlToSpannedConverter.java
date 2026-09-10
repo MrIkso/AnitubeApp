@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -29,8 +30,10 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.LeadingMarginSpan;
@@ -47,6 +50,8 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
 import android.util.Pair;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -77,6 +82,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
     private static int titleQuoteColor;
     private static int quoteColor;
     private static int quoteBackgroundColor;
+    private static int spoilerTextBackgroundColor;
 
     private final String mSource;
     private final XMLReader mReader;
@@ -85,8 +91,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
     private final Html.TagHandler mTagHandler;
     private final String mBaseUri;
     private boolean isCode;
-    private boolean isQuote;
-    private boolean isTitleQuote;
+    private boolean mInTitleSpoiler;
 
     public CustomHtmlToSpannedConverter(String source,
                                         Html.ImageGetter imageGetter, Html.TagHandler tagHandler,
@@ -100,6 +105,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
         titleQuoteColor = MaterialColors.getColor(context, androidx.appcompat.R.attr.colorPrimary, null);
         quoteColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorTertiary, null);
         quoteBackgroundColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceVariant, null);
+        spoilerTextBackgroundColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceContainerLow, null);
     }
 
     private static void handleP(SpannableStringBuilder text) {
@@ -146,6 +152,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
                                     Object[] replArray) {
         int len = text.length();
         Object obj = getLast(text, kind);
+        if (obj == null) return;
         int where = text.getSpanStart(obj);
 
         text.removeSpan(obj);
@@ -162,6 +169,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
     private static void end(SpannableStringBuilder text, Class kind, Object repl) {
         int len = text.length();
         Object obj = getLast(text, kind);
+        if (obj == null) return;
         int where = text.getSpanStart(obj);
 
         text.removeSpan(obj);
@@ -206,6 +214,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
     private static void endFont(SpannableStringBuilder text) {
         int len = text.length();
         Object obj = getLast(text, Font.class);
+        if (obj == null) return;
         int where = text.getSpanStart(obj);
 
         text.removeSpan(obj);
@@ -240,25 +249,13 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static void processQuote(SpannableStringBuilder text, int color, boolean isHeader, boolean isClose) {
-        if (text.length() > 0 && text.charAt(text.length() - 1) != '\n') {
-            text.append("\n");
-        }
-
-        if(!isClose){
-            start(text, new Blockquote());
-        }
-        else {
-            if(!isHeader) {
-                handleP(text);
-            }
-            end(text, Blockquote.class, new CustomQuoteSpan(quoteBackgroundColor, color));
-        }
-    }
-
     private static void startA(SpannableStringBuilder text,
                                Attributes attributes, String baseUri) {
         String href = attributes.getValue("", "href");
+
+        if (href != null && href.startsWith("javascript:")) {
+            return;
+        }
 
         if (href != null && !href.startsWith("http")) {
             String prefix;
@@ -277,6 +274,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
     private static void endA(SpannableStringBuilder text) {
         int len = text.length();
         Object obj = getLast(text, Href.class);
+        if (obj == null) return;
         int where = text.getSpanStart(obj);
 
         text.removeSpan(obj);
@@ -458,8 +456,11 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
             if (end == start) {
                 mSpannableStringBuilder.removeSpan(obj[i]);
             } else {
-                mSpannableStringBuilder.setSpan(obj[i], start, end,
-                        Spannable.SPAN_PARAGRAPH);
+                try {
+                    mSpannableStringBuilder.setSpan(obj[i], start, end, Spannable.SPAN_PARAGRAPH);
+                } catch (Exception e) {
+                    mSpannableStringBuilder.setSpan(obj[i], start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
 
@@ -477,11 +478,14 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("div")) {
             String cssClass = attributes.getValue("class");
             if ("title_quote".equals(cssClass)) {
-                processQuote(mSpannableStringBuilder, titleQuoteColor, true, false);
-                isTitleQuote = true;
+                startBlockElement(mSpannableStringBuilder, new TitleQuote());
             } else if ("quote".equals(cssClass)) {
-                processQuote(mSpannableStringBuilder, quoteColor, false, false);
-                isQuote = true;
+                startBlockElement(mSpannableStringBuilder, new Quote());
+            } else if ("title_spoiler".equals(cssClass)) {
+                mInTitleSpoiler = true;
+                startBlockElement(mSpannableStringBuilder, new TitleSpoiler());
+            } else if ("text_spoiler".equals(cssClass)) {
+                startBlockElement(mSpannableStringBuilder, new TextSpoiler());
             } else {
                 handleP(mSpannableStringBuilder);
             }
@@ -536,6 +540,7 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
             handleP(mSpannableStringBuilder);
             start(mSpannableStringBuilder, new Header(tag.charAt(1) - '1'));
         } else if (tag.equalsIgnoreCase("img")) {
+            if (mInTitleSpoiler) return;
             startImg(mSpannableStringBuilder, attributes, mImageGetter);
         } else if (mTagHandler != null) {
             mTagHandler.handleTag(true, tag, mSpannableStringBuilder, mReader);
@@ -548,12 +553,32 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("p")) {
             handleP(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("div")) {
-            if (isTitleQuote) {
-                processQuote(mSpannableStringBuilder, titleQuoteColor, true, true);
-                isTitleQuote = false;
-            } else if (isQuote) {
-                processQuote(mSpannableStringBuilder, quoteColor, false, true);
-                isQuote = false;
+            Object obj = getLast(mSpannableStringBuilder, BlockElement.class);
+            if (obj instanceof TitleQuote) {
+                if (mSpannableStringBuilder.length() > 0 && mSpannableStringBuilder.charAt(mSpannableStringBuilder.length() - 1) != '\n') {
+                    mSpannableStringBuilder.append("\n");
+                }
+                int where = mSpannableStringBuilder.getSpanStart(obj);
+                int len = mSpannableStringBuilder.length();
+                if (where != len) {
+                    mSpannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                endBlockElement(mSpannableStringBuilder, TitleQuote.class, new CustomQuoteSpan(quoteBackgroundColor, titleQuoteColor));
+            } else if (obj instanceof Quote) {
+                handleP(mSpannableStringBuilder);
+                endBlockElement(mSpannableStringBuilder, Quote.class, new CustomQuoteSpan(quoteBackgroundColor, quoteColor));
+            } else if (obj instanceof TitleSpoiler) {
+                mInTitleSpoiler = false;
+                int where = mSpannableStringBuilder.getSpanStart(obj);
+                int len = mSpannableStringBuilder.length();
+                if (where == len) {
+                    mSpannableStringBuilder.removeSpan(obj);
+                } else {
+                    endBlockElement(mSpannableStringBuilder, TitleSpoiler.class, new StyleSpan(Typeface.ITALIC));
+                }
+            } else if (obj instanceof TextSpoiler) {
+                handleP(mSpannableStringBuilder);
+                endBlockElement(mSpannableStringBuilder, TextSpoiler.class, new SpoilerSpan(spoilerTextBackgroundColor));
             } else {
                 handleP(mSpannableStringBuilder);
             }
@@ -657,6 +682,12 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
 
     public void characters(char[] ch, int start, int length)
             throws SAXException {
+        if (mInTitleSpoiler) {
+            String text = new String(ch, start, length);
+            if (text.contains("Показати / приховати текст")) {
+                return;
+            }
+        }
         StringBuilder sb = new StringBuilder();
 
         /*
@@ -709,6 +740,41 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
     }
 
     public void skippedEntity(String name) throws SAXException {
+    }
+
+    private static class BlockElement {
+    }
+
+    private static class TitleQuote extends BlockElement {
+    }
+
+    private static class Quote extends BlockElement {
+    }
+
+    private static class TitleSpoiler extends BlockElement {
+    }
+
+    private static class TextSpoiler extends BlockElement {
+    }
+
+    private static void startBlockElement(SpannableStringBuilder text, Object mark) {
+        if (text.length() > 0 && text.charAt(text.length() - 1) != '\n') {
+            text.append("\n");
+        }
+        start(text, mark);
+    }
+
+    private static void endBlockElement(SpannableStringBuilder text, Class kind, Object repl) {
+        int len = text.length();
+        Object obj = getLast(text, kind);
+        if (obj == null) return;
+        int where = text.getSpanStart(obj);
+
+        text.removeSpan(obj);
+
+        if (where != len) {
+            text.setSpan(repl, where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     private static class Bold {
@@ -847,6 +913,36 @@ public class CustomHtmlToSpannedConverter implements ContentHandler {
 
             p.setStyle(style);
             p.setColor(color);
+        }
+    }
+
+    public static class SpoilerSpan extends ClickableSpan {
+        private boolean isRevealed = false;
+        private final int backgroundColor;
+
+        public SpoilerSpan(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
+        }
+
+        @Override
+        public void onClick(@NonNull View widget) {
+            isRevealed = !isRevealed;
+            if (widget instanceof TextView tv) {
+                tv.setText(tv.getText());
+            } else {
+                widget.postInvalidate();
+            }
+        }
+
+        @Override
+        public void updateDrawState(@NonNull TextPaint ds) {
+            if (isRevealed) {
+                ds.bgColor = Color.TRANSPARENT;
+            } else {
+                ds.bgColor = backgroundColor;
+                ds.setColor(backgroundColor);
+            }
+            ds.setUnderlineText(false);
         }
     }
 }

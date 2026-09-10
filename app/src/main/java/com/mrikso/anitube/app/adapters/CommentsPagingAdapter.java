@@ -1,5 +1,6 @@
 package com.mrikso.anitube.app.adapters;
 
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -50,6 +51,7 @@ public class CommentsPagingAdapter extends PagingDataAdapter<CommentModel, Comme
         public ViewHolder(@NonNull ItemCommentBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.tvComment.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         public void bind(CommentModel comment) {
