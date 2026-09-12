@@ -128,7 +128,7 @@
     <string name="state_no_data_anime_list_desc">Список аніме порожній</string>
     <string name="state_no_data_years_list_desc">Список років порожній</string>
     <string name="state_no_data_genres_list_desc">Список жанрів порожній</string>
-    <string name="state_no_data_favotie_anime_list_desc">Список "%s" аніме порожній</string>
+    <string name="state_no_data_favotie_anime_list_desc">Список "%s" порожній</string>
     <string name="state_no_data_search_desc">За вашим пошуковим запитом нічого не знайдено</string>
 
     <string name="just_now">Тільки що</string>
