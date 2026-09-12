@@ -17,6 +17,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.util.Rational;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
@@ -330,26 +331,22 @@ public class PlayerActivity extends AppCompatActivity {
         });
         youTubeOverlay.player(exoPlayer);
         playerView.setPlayer(exoPlayer);
-        if (!restorePlayer) {
-            //currentPosition =  listRepo.getList().get(episodeNumber - 1).getTotalWatchTime();
-            if (autoContinue) {
-                exoPlayer.setPlayWhenReady(false);
-                showContinuePlayDialog(listRepo.getList().get(episodeNumber - 1));
-            }
+        if (!restorePlayer && autoContinue) {
+            showContinuePlayDialog(listRepo.getList().get(episodeNumber - 1));
+        } else {
+            initPlayback(episodeLinks, currentPosition);
         }
-        setMediaSourceByModel(episodeLinks);
-
-        //exoPlayer.seekTo(currentPosition);
-        // exoPlayer.setPlayWhenReady(playWhenReady);
-        exoPlayer.prepare();
-
-        //  if (autoContinue) {
-        playVideo();
-        //  }
 
         if (Utils.isPiPSupported(this)) {
             setPictureInPictureParams(getPipParams(exoPlayer.isPlaying()));
         }
+    }
+
+    private void initPlayback(VideoLinksModel model, long position) {
+        currentPosition = position;
+        setMediaSourceByModel(model);
+        exoPlayer.prepare();
+        playVideo();
     }
 
     private void setupTextViewValues() {
@@ -605,7 +602,7 @@ public class PlayerActivity extends AppCompatActivity {
         final AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         if (AppOpsManager.MODE_ALLOWED
                 != appOpsManager.checkOpNoThrow(
-                AppOpsManager.OPSTR_PICTURE_IN_PICTURE, android.os.Process.myUid(), getPackageName())) {
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), getPackageName())) {
             final Intent intent = new Intent(
                     "android.settings.PICTURE_IN_PICTURE_SETTINGS", Uri.fromParts("package", getPackageName(), null));
             if (intent.resolveActivity(getPackageManager()) != null) {
@@ -746,8 +743,7 @@ public class PlayerActivity extends AppCompatActivity {
                             if (autoContinue) {
                                 showContinuePlayDialog(episode);
                             } else {
-                                currentPosition = 0;
-                                setMediaSourceByModel(result.second);
+                                initPlayback(episodeLinks, 0);
                             }
                         } else {
                             UnsupportedVideoSourceDialog.show(PlayerActivity.this, result.second.getIfRameUrl());
@@ -818,20 +814,12 @@ public class PlayerActivity extends AppCompatActivity {
     private void showContinuePlayDialog(EpisodeModel episode) {
         var pos = episode.getTotalWatchTime();
         if (pos == 0) {
-            this.currentPosition = 0;
-            setMediaSourceByModel(episodeLinks);
+            initPlayback(episodeLinks, 0);
         } else {
             DialogUtils.showConfirmation(this, getString(R.string.dialog_continue_title),
                     getString(R.string.dialog_continue_playning_summary, ReadableTime.generateTime(pos)),
-                    () -> {
-                        this.currentPosition = pos;
-                        setMediaSourceByModel(episodeLinks);
-                    },
-                    () -> {
-                        this.currentPosition = 0;
-                        setMediaSourceByModel(episodeLinks);
-                    });
-
+                    () -> initPlayback(episodeLinks, pos),
+                    () -> initPlayback(episodeLinks, 0));
         }
     }
 
