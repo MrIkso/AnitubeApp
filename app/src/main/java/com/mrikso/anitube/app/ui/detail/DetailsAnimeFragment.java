@@ -245,10 +245,16 @@ public class DetailsAnimeFragment extends Fragment
         if (trailer != null) {
             binding.layoutTrailer.llVideo.setVisibility(View.VISIBLE);
 
-            ViewUtils.loadImage(binding.layoutTrailer.itemTrailer.trailerPreview, trailer.getPreviewUrl());
+            ViewUtils.loadImage(binding.layoutTrailer.itemTrailer.trailerPreview, trailer.getPreviewUrl(), () -> {
+                if (binding != null) {
+                    binding.layoutTrailer.llVideo.setVisibility(View.GONE);
+                }
+            });
             binding.layoutTrailer.itemTrailer.getRoot().setOnClickListener(v -> {
                 IntentUtils.openInBrowser(requireContext(), trailer.getFullUrl());
             });
+        } else {
+            binding.layoutTrailer.llVideo.setVisibility(View.GONE);
         }
 
         screenshotsList = animeDetails.getScreenshotsModel();

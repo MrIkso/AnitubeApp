@@ -54,9 +54,13 @@ public class ParserUtils {
     }
 
     public static String getImageUrl(Element element) {
+        if (element == null)
+            return null;
         Element image = element.getElementsByTag("img").first();
+        if (image == null)
+            return null;
         String imagePath = image.attr("src");
-        if(imagePath.isEmpty()){
+        if (imagePath.isEmpty()) {
             return image.attr("data-src");
         }
         return imagePath;

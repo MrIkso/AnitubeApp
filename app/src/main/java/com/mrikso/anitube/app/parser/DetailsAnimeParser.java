@@ -348,13 +348,17 @@ public class DetailsAnimeParser {
     }
 
     @Nullable
-    private String buildPreviewUrl(@NonNull String previewUrl) {
+    private String buildPreviewUrl(@NonNull String trailerUrl) {
+        if (Strings.isNullOrEmpty(trailerUrl))
+            return null;
+        if (!trailerUrl.contains("youtube.com") && !trailerUrl.contains("youtu.be")) {
+            return null;
+        }
         // Використовуємо регулярний вираз, щоб отримати ID відео
-        Pattern pattern = Pattern.compile(".*\\/([a-zA-Z0-9_-]{11}).*");
-        Matcher matcher = pattern.matcher(previewUrl);
-
-        if (matcher.matches()) {
-            String videoId = matcher.group(1);
+        Pattern pattern = Pattern.compile(".*\\/(embed\\/|watch\\?v=|)([a-zA-Z0-9_-]{11}).*");
+        Matcher matcher = pattern.matcher(trailerUrl);
+        if (matcher.find()) {
+            String videoId = matcher.group(2);
             return String.format("https://img.youtube.com/vi/%s/hqdefault.jpg", videoId);
         } else {
             return null;

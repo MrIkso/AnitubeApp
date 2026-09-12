@@ -18,6 +18,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -25,9 +26,13 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.google.android.material.snackbar.Snackbar;
 import com.mrikso.anitube.app.R;
@@ -52,12 +57,35 @@ public class ViewUtils {
     }
 
     public static void loadImage(ImageView view, String url) {
+        loadImage(view, url, null);
+    }
+
+    public static void loadImage(ImageView view, String url, @Nullable Runnable onLoadingFailed) {
         DrawableCrossFadeFactory factory =
                 new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         Glide.with(view.getContext())
                 .load(url)
                 .transition(DrawableTransitionOptions.withCrossFade(factory))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Drawable> target, boolean isFirstResource) {
+                        if (onLoadingFailed != null) {
+                            view.post(onLoadingFailed);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(@NonNull Drawable resource, @NonNull Object model, Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
+                        /*if (url.contains("img.youtube.com") && resource.getIntrinsicWidth() <= 120) {
+                            if (onLoadingFailed != null) {
+                                view.post(onLoadingFailed);
+                            }
+                        }*/
+                        return false;
+                    }
+                })
                 .into(view);
     }
 
