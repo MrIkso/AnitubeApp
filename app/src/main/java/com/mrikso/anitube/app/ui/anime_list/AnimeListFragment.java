@@ -13,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.AnimePagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
@@ -174,11 +175,7 @@ public class AnimeListFragment extends Fragment {
             }
         });
 
-        viewModel.getUserData().observe(getViewLifecycleOwner(), results -> {
-            if (results != null) {
-                setUserData(results);
-            }
-        });
+        viewModel.getUserData().observe(getViewLifecycleOwner(), this::setUserData);
     }
 
     private void showAnimeList(final PagingData<AnimeReleaseModel> results) {
@@ -197,8 +194,13 @@ public class AnimeListFragment extends Fragment {
     }
 
     private void setUserData(UserModel data) {
-        profileLink = data.getUserUrl();
-        ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
+        if (data != null && !Strings.isNullOrEmpty(data.getUserName())) {
+            profileLink = data.getUserUrl();
+            ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
+        } else {
+            profileLink = null;
+            binding.layoutToolbar.profileAvatar.setImageResource(R.drawable.ic_person);
+        }
     }
 
     private void openProfileFragment() {

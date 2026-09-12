@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.color.MaterialColors;
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.ActionListAdapter;
 import com.mrikso.anitube.app.adapters.AnimeCarouselAdapter;
@@ -237,13 +238,7 @@ public class HomeFragment extends Fragment
                 actionListAdapter.submitList(results);
             }
         });
-        viewModel.getUserData().observe(getViewLifecycleOwner(), results -> {
-            {
-                if (results != null) {
-                    setUserData(results);
-                }
-            }
-        });
+        viewModel.getUserData().observe(getViewLifecycleOwner(), this::setUserData);
     }
 
 /*
@@ -327,8 +322,13 @@ public class HomeFragment extends Fragment
     }
 
     private void setUserData(UserModel data) {
-        profileLink = data.getUserUrl();
-        ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
+        if (data != null && !Strings.isNullOrEmpty(data.getUserName())) {
+            profileLink = data.getUserUrl();
+            ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
+        } else {
+            profileLink = null;
+            binding.layoutToolbar.profileAvatar.setImageResource(R.drawable.ic_person);
+        }
     }
 
     @Override

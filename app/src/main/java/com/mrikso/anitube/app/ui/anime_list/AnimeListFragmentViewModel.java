@@ -47,11 +47,7 @@ public class AnimeListFragmentViewModel extends ViewModel {
         compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(results -> {
-                    if (results != null) {
-                        userData.postValue(results);
-                    }
-                }));
+                .subscribe(userData::postValue));
     }
 
     public void loadData() {

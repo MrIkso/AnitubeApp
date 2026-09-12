@@ -21,6 +21,7 @@ import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.databinding.FragmentProfileBinding;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.UserProfileModel;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.ParserUtils;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
@@ -135,6 +136,7 @@ public class ProfileFragment extends Fragment {
         PreferencesHelper.getInstance().saveCookies(new HashSet<>());
         PreferencesHelper.getInstance().setLogin(false);
         PreferencesHelper.getInstance().setUserLogin(null);
+        UserProfileRepository.getInstance().clearUserModel();
         Navigation.findNavController(requireView()).navigate(ProfileFragmentDirections.actionNavProfileToNavLogin());
     }
 
