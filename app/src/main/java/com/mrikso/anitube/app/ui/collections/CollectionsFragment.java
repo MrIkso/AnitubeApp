@@ -13,11 +13,16 @@ import androidx.navigation.Navigation;
 import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.CollectionsPagingAdapter;
 import com.mrikso.anitube.app.adapters.MoviesLoadStateAdapter;
 import com.mrikso.anitube.app.databinding.FragmentCollectionsBinding;
 import com.mrikso.anitube.app.model.CollectionModel;
+import com.mrikso.anitube.app.model.UserModel;
+import com.mrikso.anitube.app.utils.ParserUtils;
+import com.mrikso.anitube.app.utils.PreferencesHelper;
+import com.mrikso.anitube.app.utils.ViewUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -27,6 +32,7 @@ public class CollectionsFragment extends Fragment {
     private FragmentCollectionsBinding binding;
     private CollectionsFragmentViewModel viewModel;
     private CollectionsPagingAdapter collectionPagingAdapter;
+    private String profileLink;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -146,6 +152,8 @@ public class CollectionsFragment extends Fragment {
                 }
             }
         });
+
+        viewModel.getUserData().observe(getViewLifecycleOwner(), this::setUserData);
     }
 
     private void showCollectionsList(final PagingData<CollectionModel> results) {
@@ -164,13 +172,22 @@ public class CollectionsFragment extends Fragment {
     }
 
     private void openProfileFragment() {
-        //        if (PreferencesHelper.getInstance().isLogin()) {
-        //            AnimeListFragmentDirections.ActionNavAnimeListToNavProfile action =
-        //
-        // AnimeListFragmentDirections.actionNavAnimeListToNavProfile(profileLink);
-        //            Navigation.findNavController(requireView()).navigate(action);
-        //        } else {
-        //            Navigation.findNavController(requireView()).navigate(R.id.nav_login);
-        //        }
+        if (PreferencesHelper.getInstance().isLogin()) {
+            CollectionsFragmentDirections.ActionNavCollectionsToNavProfile action =
+                    CollectionsFragmentDirections.actionNavCollectionsToNavProfile(profileLink);
+            Navigation.findNavController(requireView()).navigate(action);
+        } else {
+            Navigation.findNavController(requireView()).navigate(R.id.nav_login);
+        }
+    }
+
+    private void setUserData(UserModel data) {
+        if (data != null && !Strings.isNullOrEmpty(data.getUserName())) {
+            profileLink = data.getUserUrl();
+            ViewUtils.loadImage(binding.layoutToolbar.profileAvatar, ParserUtils.normalizeUrl(ParserUtils.loadSmartphoneNoAvatar(data.getUserAvatar())));
+        } else {
+            profileLink = null;
+            binding.layoutToolbar.profileAvatar.setImageResource(R.drawable.ic_person);
+        }
     }
 }

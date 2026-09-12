@@ -10,6 +10,8 @@ import androidx.paging.rxjava3.PagingRx;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.CollectionModel;
 import com.mrikso.anitube.app.model.LoadState;
+import com.mrikso.anitube.app.model.UserModel;
+import com.mrikso.anitube.app.repository.UserProfileRepository;
 import com.mrikso.anitube.app.utils.InternetConnection;
 
 import javax.inject.Inject;
@@ -27,14 +29,26 @@ public class CollectionsFragmentViewModel extends ViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private CollectionsRepository repository;
+    private final UserProfileRepository userProfileRepository;
+
     private MutableLiveData<PagingData<CollectionModel>> collectionPagingData = new MutableLiveData<>();
     private Flowable<PagingData<CollectionModel>> collectionPagingDataFlowable;
+    private final MutableLiveData<UserModel> userData = new MutableLiveData<>(null);
     private final MutableLiveData<LoadState> loadSate = new MutableLiveData<>(LoadState.LOADING);
 
     @Inject
-    public CollectionsFragmentViewModel(CollectionsRepository repository) {
+    public CollectionsFragmentViewModel(CollectionsRepository repository, UserProfileRepository userProfileRepository) {
         this.repository = repository;
+        this.userProfileRepository = userProfileRepository;
+        initUserProfileSubscription();
         loadData();
+    }
+
+    private void initUserProfileSubscription() {
+        compositeDisposable.add(userProfileRepository.getUserModelPublishSubject()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(userData::postValue));
     }
 
     public void loadData() {
@@ -66,5 +80,9 @@ public class CollectionsFragmentViewModel extends ViewModel {
 
     public LiveData<LoadState> getLoadState() {
         return loadSate;
+    }
+
+    public LiveData<UserModel> getUserData() {
+        return userData;
     }
 }
