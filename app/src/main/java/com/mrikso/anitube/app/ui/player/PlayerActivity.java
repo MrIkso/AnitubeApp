@@ -169,6 +169,7 @@ public class PlayerActivity extends AppCompatActivity {
     private boolean autoPlayNextEpisode;
     private boolean gesturesEnabled;
     private boolean autoContinue;
+    private boolean isContinueDialogShowing = false;
     private BroadcastReceiver broadcastReceiver;
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -308,6 +309,7 @@ public class PlayerActivity extends AppCompatActivity {
                 //.setSeekBackIncrementMs(INCREMENT_MILLIS)
                 // .setSeekForwardIncrementMs(INCREMENT_MILLIS)
                 .build();
+        exoPlayer.setPlayWhenReady(false);
         //  exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
         exoPlayer.addListener(new PlayerEventListener());
         // exoPlayer.addAnalyticsListener(new EventLogger());
@@ -331,7 +333,11 @@ public class PlayerActivity extends AppCompatActivity {
         });
         youTubeOverlay.player(exoPlayer);
         playerView.setPlayer(exoPlayer);
-        if (!restorePlayer && autoContinue) {
+        if (!restorePlayer && autoContinue && listRepo.getList().get(episodeNumber - 1).getTotalWatchTime() > 0) {
+            isContinueDialogShowing = true;
+            currentPosition = 0;
+            setMediaSourceByModel(episodeLinks);
+            exoPlayer.prepare();
             showContinuePlayDialog(listRepo.getList().get(episodeNumber - 1));
         } else {
             initPlayback(episodeLinks, currentPosition);
@@ -343,6 +349,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void initPlayback(VideoLinksModel model, long position) {
+        isContinueDialogShowing = false;
         currentPosition = position;
         setMediaSourceByModel(model);
         exoPlayer.prepare();
@@ -481,12 +488,24 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void savePlayer() {
-        if (exoPlayer != null) {
+        if (exoPlayer != null && exoPlayer.getPlaybackState() != Player.STATE_IDLE) {
             currentPosition = Math.max(0, exoPlayer.getCurrentPosition());
+            long duration = exoPlayer.getContentDuration();
+
+            // Update DB
             sharedViewModel.addOrUpdateWatchedAnime(
-                    animeModel, episodePath, episodeNumber, exoPlayer.getContentDuration(), currentPosition);
+                    animeModel, episodePath, episodeNumber, duration, currentPosition);
             sharedViewModel.addOrUpdateWatchedEpisode(
-                    episodeNumber - 1, true, exoPlayer.getContentDuration(), currentPosition, animeModel);
+                    episodeNumber - 1, true, duration, currentPosition, animeModel);
+
+            // Update local repository to keep data consistent when switching episodes
+            List<EpisodeModel> episodes = listRepo.getList();
+            if (episodes != null && episodeNumber > 0 && episodeNumber <= episodes.size()) {
+                EpisodeModel currentEp = episodes.get(episodeNumber - 1);
+                currentEp.setTotalWatchTime(currentPosition);
+                currentEp.setTotalEpisodeTime(duration);
+                currentEp.setIsWatched(currentPosition >= duration * 0.9); // Mark as watched if 90% done
+            }
         }
     }
 
@@ -731,6 +750,10 @@ public class PlayerActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(v -> {
+                    if (exoPlayer != null) {
+                        exoPlayer.stop();
+                        exoPlayer.clearMediaItems();
+                    }
                     progressDialog = DialogUtils.getProDialog(this, R.string.loading_episode);
                 })
                 .subscribeWith(new DisposableSingleObserver<Pair<LoadState, VideoLinksModel>>() {
@@ -740,7 +763,11 @@ public class PlayerActivity extends AppCompatActivity {
                         if (result.first == LoadState.DONE) {
                             episodeLinks = result.second;
                             exoEpisodeNumber.setText(episode.getName());
-                            if (autoContinue) {
+                            if (autoContinue && episode.getTotalWatchTime() > 0) {
+                                isContinueDialogShowing = true;
+                                currentPosition = 0;
+                                setMediaSourceByModel(episodeLinks);
+                                exoPlayer.prepare();
                                 showContinuePlayDialog(episode);
                             } else {
                                 initPlayback(episodeLinks, 0);
@@ -813,14 +840,20 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void showContinuePlayDialog(EpisodeModel episode) {
         var pos = episode.getTotalWatchTime();
-        if (pos == 0) {
-            initPlayback(episodeLinks, 0);
-        } else {
-            DialogUtils.showConfirmation(this, getString(R.string.dialog_continue_title),
-                    getString(R.string.dialog_continue_playning_summary, ReadableTime.generateTime(pos)),
-                    () -> initPlayback(episodeLinks, pos),
-                    () -> initPlayback(episodeLinks, 0));
-        }
+        DialogUtils.showConfirmation(this, getString(R.string.dialog_continue_title),
+                getString(R.string.dialog_continue_playning_summary, ReadableTime.generateTime(pos)),
+                () -> {
+                    isContinueDialogShowing = false;
+                    currentPosition = pos;
+                    exoPlayer.seekTo(pos);
+                    playVideo();
+                },
+                () -> {
+                    isContinueDialogShowing = false;
+                    currentPosition = 0;
+                    exoPlayer.seekTo(0);
+                    playVideo();
+                });
     }
 
     private void showProgressBarAndControlToggle(boolean isShow) {
@@ -1002,7 +1035,9 @@ public class PlayerActivity extends AppCompatActivity {
                     showProgressBarAndControlToggle(true);
                     break;
                 case Player.STATE_READY:
-                    showProgressBarAndControlToggle(false);
+                    if (!isContinueDialogShowing) {
+                        showProgressBarAndControlToggle(false);
+                    }
                     break;
                 case Player.STATE_ENDED:
                     if (autoPlayNextEpisode) {
