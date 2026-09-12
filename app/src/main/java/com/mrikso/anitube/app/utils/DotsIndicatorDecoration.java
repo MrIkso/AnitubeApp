@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mrikso.anitube.app.adapters.AnimeCarouselAdapter;
+
 /**
  * DotsIndicatorDecoration on main screen.
  * Dots that will be shown in size,color and in circular shape at center of screen.
@@ -54,14 +56,21 @@ public class DotsIndicatorDecoration extends RecyclerView.ItemDecoration {
         if (totalItemCount == 0)
             return;
 
-        int realItemCount = (totalItemCount > 1) ? totalItemCount / 3 : totalItemCount;
+        int realItemCount;
+        if (adapter instanceof AnimeCarouselAdapter) {
+            realItemCount = ((AnimeCarouselAdapter) adapter).getCurrentList().size();
+        } else {
+            realItemCount = (totalItemCount > 1) ? totalItemCount / 3 : totalItemCount;
+        }
+
+        if (realItemCount == 0) return;
 
         float totalLength = this.radius * 2 * realItemCount;
         float paddingBetweenItems = Math.max(0, realItemCount - 1) * indicatorItemPadding;
         float indicatorTotalWidth = totalLength + paddingBetweenItems;
         float indicatorStartX = (parent.getWidth() - indicatorTotalWidth) / 2.0f;
 
-        float indicatorPosY = parent.getHeight() - indicatorHeight / 1.0f;
+        float indicatorPosY = parent.getHeight() - indicatorHeight;
 
         drawInactiveDots(c, indicatorStartX, indicatorPosY, realItemCount);
 

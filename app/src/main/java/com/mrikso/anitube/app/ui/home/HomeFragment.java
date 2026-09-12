@@ -1,5 +1,7 @@
 package com.mrikso.anitube.app.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.color.MaterialColors;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
@@ -90,13 +95,20 @@ public class HomeFragment extends Fragment
             Navigation.findNavController(requireView()).navigate(action);
         });
 
-        /*  private Timer timer;
-    private TimerTask timerTask;
-    private int position;*/
+        initCarouselBackgrounds();
+
         LinearLayoutManager carouselLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView mNowShowingRecyclerView = binding.interestingLayout.carouselRecyclerView;
         mNowShowingRecyclerView.setLayoutManager(carouselLayoutManager);
         mNowShowingRecyclerView.setAdapter(carouselAdapter);
+
+        mNowShowingRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                updateParallax();
+            }
+        });
 
         final int radius = getResources().getDimensionPixelSize(R.dimen.dots_radius);
         final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.dots_height);
@@ -122,28 +134,53 @@ public class HomeFragment extends Fragment
                 new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         binding.newAnimeLayout.newAnimeRecyclerView.setAdapter(releaseAnimeAdapter);
 
-        // Initialize AutoScrollHelper with a 3-second interval
-        autoScrollHelper = new AutoScrollHelper(mNowShowingRecyclerView, 3000);
+        // Initialize AutoScrollHelper with a 10-second interval (like on the website)
+        autoScrollHelper = new AutoScrollHelper(mNowShowingRecyclerView, 10000);
         autoScrollHelper.startAutoScroll();
-
-        /*mNowShowingRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (newState == 1) {
-                    stopAutoScrollCarousel();
-                } else if (newState == 0) {
-                    position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
-                    runAutoScrollingCarousel();
-                }
-            }
-        });*/
 
         binding.swipeRefreshLayout.setOnRefreshListener(() -> {
             viewModel.reloadHome();
             binding.swipeRefreshLayout.setRefreshing(false);
         });
+    }
+
+    private void updateParallax() {
+        RecyclerView rv = binding.interestingLayout.carouselRecyclerView;
+        for (int i = 0; i < rv.getChildCount(); i++) {
+            View child = rv.getChildAt(i);
+            RecyclerView.ViewHolder rawHolder = rv.getChildViewHolder(child);
+            if (rawHolder instanceof AnimeCarouselAdapter.ViewHolder) {
+                AnimeCarouselAdapter.ViewHolder holder = (AnimeCarouselAdapter.ViewHolder) rawHolder;
+                // Offset is relative to the screen center
+                float offset = child.getLeft();
+                holder.setOffset(-offset);
+
+                // Opacity
+                int centerX = rv.getWidth() / 2;
+                int childCenterX = (child.getLeft() + child.getRight()) / 2;
+                int centerOffset = Math.abs(centerX - childCenterX);
+                float alpha = 1.0f - (float) centerOffset / centerX;
+                child.setAlpha(Math.max(0.6f, alpha));
+            }
+        }
+    }
+
+    private void initCarouselBackgrounds() {
+        Glide.with(this)
+                .asBitmap()
+                .load(ApiClient.ANIME_CAROUSEL_BG_URL)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        if (carouselAdapter != null) {
+                            carouselAdapter.setTiledBitmap(resource);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
     }
 
     private void initListeners() {
@@ -212,7 +249,13 @@ public class HomeFragment extends Fragment
         viewModel.getInteresingAnime().observe(getViewLifecycleOwner(), results -> {
             if (results != null && !results.isEmpty()) {
                 carouselAdapter.submitList(results, () -> {
-                    binding.interestingLayout.carouselRecyclerView.scrollToPosition(results.size());
+                    if (results.size() > 1) {
+                        int middle = (Integer.MAX_VALUE / 2);
+                        int startPosition = middle - (middle % results.size());
+                        binding.interestingLayout.carouselRecyclerView.scrollToPosition(startPosition);
+                        // Trigger initial parallax
+                        binding.interestingLayout.carouselRecyclerView.post(this::updateParallax);
+                    }
                 });
             }
         });
@@ -240,45 +283,6 @@ public class HomeFragment extends Fragment
         });
         viewModel.getUserData().observe(getViewLifecycleOwner(), this::setUserData);
     }
-
-/*
-    private void stopAutoScrollCarousel() {
-        if (timer != null && timerTask != null) {
-            timerTask.cancel();
-            timer.cancel();
-            timer = null;
-            timerTask = null;
-            position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
-        }
-    }
-
-    private void runAutoScrollingCarousel() {
-        if (carouselAdapter != null) {
-            if (timer == null && timerTask == null) {
-                timer = new Timer();
-                timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (position == carouselAdapter.getItemCount() - 1) {
-                            mNowShowingRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    position = 0;
-                                    mNowShowingRecyclerView.smoothScrollToPosition(position);
-                                    mNowShowingRecyclerView.smoothScrollBy(5, 0);
-                                }
-                            });
-                        } else {
-                            position++;
-                            mNowShowingRecyclerView.smoothScrollToPosition(position);
-                        }
-                    }
-                };
-                timer.schedule(timerTask, 4000, 4000);
-            }
-        }
-    }
-*/
 
     @Override
     public void onBaseItemSelected(String link) {
