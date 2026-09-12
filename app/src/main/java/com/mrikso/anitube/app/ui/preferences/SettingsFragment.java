@@ -3,7 +3,6 @@ package com.mrikso.anitube.app.ui.preferences;
 import static com.mrikso.anitube.app.utils.PreferenceKeys.PREF_KEY_DYNAMIC_COLORS;
 import static com.mrikso.anitube.app.utils.PreferenceKeys.PREF_KEY_THEME;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -17,12 +16,10 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.color.DynamicColors;
-import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.BuildConfig;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.ui.base.BasePreferenceFragment;
-import com.mrikso.anitube.app.utils.DialogUtils;
 import com.mrikso.anitube.app.utils.IntentUtils;
 import com.mrikso.anitube.app.utils.PreferenceKeys;
 import com.mrikso.anitube.app.utils.PreferenceUtils;
@@ -117,17 +114,7 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
             case PREF_KEY_DYNAMIC_COLORS:
                 boolean enable = (Boolean) newValue;
                 prefHelper.setDynamicColorsEnabled(enable);
-                if (enable) {
-                    DynamicColors.applyToActivitiesIfAvailable(App.getApplication());
-                    requireActivity().recreate();
-                } else {
-                    DialogUtils.showConfirmation(requireContext(), R.string.pref_restart_dialog_title,
-                            R.string.pref_restart_dialog_description, () -> {
-                                restartMainActivity();
-                            }
-                    );
-                }
-
+                requireActivity().recreate();
                 break;
 
             /*case PreferenceKeys.PREF_PLAYER_DOUBLE_TAP_SEEK:
@@ -164,13 +151,6 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
                 .build();
 
         return url.toString();
-    }
-    private void restartMainActivity() {
-        Intent intent = getActivity().getIntent();
-        getActivity().finish();
-        startActivity(intent);
-
-        //Runtime.getRuntime().exit(0);
     }
 
     @Override

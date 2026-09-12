@@ -3,6 +3,7 @@ package com.mrikso.anitube.app;
 import android.app.Application;
 
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.DynamicColorsOptions;
 import com.mrikso.anitube.app.utils.PreferencesHelper;
 
 import dagger.hilt.android.HiltAndroidApp;
@@ -17,8 +18,10 @@ public class App extends Application {
         super.onCreate();
         instance = this;
         preferenceHelper = PreferencesHelper.getInstance();
-        if (preferenceHelper.isDynamicColorsEnabled() && DynamicColors.isDynamicColorAvailable()) {
-            DynamicColors.applyToActivitiesIfAvailable(this);
+        if (DynamicColors.isDynamicColorAvailable()) {
+            DynamicColors.applyToActivitiesIfAvailable(this, new DynamicColorsOptions.Builder()
+                    .setPrecondition((activity, themeResId) -> preferenceHelper.isDynamicColorsEnabled())
+                    .build());
         }
 
         preferenceHelper.applyThemeMode(preferenceHelper.getThemeMode());
