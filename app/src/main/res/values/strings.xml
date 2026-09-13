@@ -46,6 +46,8 @@
     <string name="hide_progress">Приховати прогрес</string>
     <string name="set_video_speed">Швидкість відео</string>
     <string name="episode_number">Серія %d</string>
+    <string name="previous_episode">Попередня серія</string>
+    <string name="next_episode">Наступна серія</string>
     <string name="loading_episode">Заватаження відео...</string>
     <string name="searching_anime_on_hikka">Шукаємо аніме на hikka.io...</string>
     <string name="error_dialog_title">Помилка</string>
