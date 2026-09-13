@@ -102,6 +102,8 @@ public class PlayerActivity extends AppCompatActivity {
     public static final String PLAYBACK_ACTION = "PLAYER_PLAYBACK";
     public static final int PLAYBACK_ACTION_RESUME = 1;
     public static final int PLAYBACK_ACTION_PAUSE = 2;
+    public static final int PLAYBACK_ACTION_NEXT = 3;
+    public static final int PLAYBACK_ACTION_PREV = 4;
 
     private static final String EMPTY_STRING_VALUE = "~";
     private static final int EMPTY_EPISODE_NUMBER_VALUE = 0;
@@ -171,6 +173,9 @@ public class PlayerActivity extends AppCompatActivity {
     private boolean autoContinue;
     private boolean isContinueDialogShowing = false;
     private BroadcastReceiver broadcastReceiver;
+
+    private long lastSavedPosition = -1;
+    private int lastSavedEpisode = -1;
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
@@ -313,7 +318,11 @@ public class PlayerActivity extends AppCompatActivity {
         //  exoPlayer.setTrackSelectionParameters(trackSelectionParameters);
         exoPlayer.addListener(new PlayerEventListener());
         // exoPlayer.addAnalyticsListener(new EventLogger());
-        exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                .build();
+        exoPlayer.setAudioAttributes(audioAttributes, /* handleAudioFocus= */ true);
         // exoPlayer.setPlayWhenReady(true);
         exoPlayer.setHandleAudioBecomingNoisy(true);
 
@@ -399,7 +408,8 @@ public class PlayerActivity extends AppCompatActivity {
             exoBottomControllers.setVisibility(View.VISIBLE);
         }
 
-        playerView.setLocked(isLock);
+        playerView.setLocked(lock);
+        ((DoubleTapPlayerView) playerView).setDoubleTapEnabled(!lock && doubleTapSeek != -1);
     }
 
     private void playVideo() {
@@ -490,22 +500,31 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void savePlayer() {
         if (exoPlayer != null) {
-            currentPosition = Math.max(0, exoPlayer.getCurrentPosition());
+            long currentPos = Math.max(0, exoPlayer.getCurrentPosition());
             long duration = exoPlayer.getContentDuration();
+
+            // Avoid redundant saves if position hasn't changed significantly (e.g. within 1 second)
+            // and it's the same episode.
+            if (lastSavedEpisode == episodeNumber && Math.abs(currentPos - lastSavedPosition) < 1000) {
+                return;
+            }
+
+            lastSavedPosition = currentPos;
+            lastSavedEpisode = episodeNumber;
 
             // Update DB
             sharedViewModel.addOrUpdateWatchedAnime(
-                    animeModel, episodePath, episodeNumber, duration, currentPosition);
+                    animeModel, episodePath, episodeNumber, duration, currentPos);
             sharedViewModel.addOrUpdateWatchedEpisode(
-                    episodeNumber - 1, true, duration, currentPosition, animeModel);
+                    episodeNumber - 1, true, duration, currentPos, animeModel);
 
             // Update local repository to keep data consistent when switching episodes
             List<EpisodeModel> episodes = listRepo.getList();
             if (episodes != null && episodeNumber > 0 && episodeNumber <= episodes.size()) {
                 EpisodeModel currentEp = episodes.get(episodeNumber - 1);
-                currentEp.setTotalWatchTime(currentPosition);
+                currentEp.setTotalWatchTime(currentPos);
                 currentEp.setTotalEpisodeTime(duration);
-                currentEp.setIsWatched(currentPosition >= duration * 0.9); // Mark as watched if 90% done
+                currentEp.setIsWatched(currentPos >= duration * 0.9); // Mark as watched if 90% done
             }
         }
     }
@@ -638,6 +657,13 @@ public class PlayerActivity extends AppCompatActivity {
         playerView.setControllerAutoShow(false);
         playerView.hideController();
 
+        // Ensure all UI overlays are hidden for PiP
+        exoProgressBar.setVisibility(View.GONE);
+        exoTopControllers.setVisibility(View.GONE);
+        exoBottomControllers.setVisibility(View.GONE);
+        exoMiddleControllers.setVisibility(View.GONE);
+        exoLock.setVisibility(View.GONE);
+
         enterPictureInPictureMode(getPipParams(exoPlayer.isPlaying()));
     }
 
@@ -645,7 +671,7 @@ public class PlayerActivity extends AppCompatActivity {
         var pipParams = new PictureInPictureParams.Builder();
         final Format format = exoPlayer.getVideoFormat();
 
-        if (format != null) {
+        if (format != null && format.width > 0 && format.height > 0) {
             // https://github.com/google/ExoPlayer/issues/8611
             // TODO: Test/disable on Android 11+
             final View videoSurfaceView = playerView.getVideoSurfaceView();
@@ -666,14 +692,34 @@ public class PlayerActivity extends AppCompatActivity {
                 rational = rationalLimitTall;
 
             pipParams.setAspectRatio(rational);
+        } else {
+            // Fallback to 16:9 if format not yet available
+            pipParams.setAspectRatio(new Rational(16, 9));
         }
 
+        List<RemoteAction> actions = new ArrayList<>();
 
+        // Previous Episode Action
+        if (episodeNumber > 1) {
+            actions.add(new RemoteAction(
+                    Icon.createWithResource(this, R.drawable.ic_skip_previous),
+                    getString(R.string.previous_episode),
+                    getString(R.string.previous_episode),
+                    PendingIntent.getBroadcast(
+                            this,
+                            PLAYBACK_ACTION_PREV,
+                            new Intent(ACTION_BROADCAST_CONTROL)
+                                    .setPackage(this.getPackageName())
+                                    .putExtra(PLAYBACK_ACTION, PLAYBACK_ACTION_PREV),
+                            PendingIntent.FLAG_IMMUTABLE)));
+        }
+
+        // Play/Pause Action
         var pauseAction = isPlaying ? PLAYBACK_ACTION_PAUSE : PLAYBACK_ACTION_RESUME;
         var pauseIcon = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play_arrow;
         var pauseTitle = isPlaying ? getString(R.string.pause) : getString(R.string.resume);
 
-        pipParams.setActions(List.of(new RemoteAction(
+        actions.add(new RemoteAction(
                 Icon.createWithResource(this, pauseIcon),
                 pauseTitle, pauseTitle,
                 PendingIntent.getBroadcast(
@@ -682,7 +728,24 @@ public class PlayerActivity extends AppCompatActivity {
                         new Intent(ACTION_BROADCAST_CONTROL)
                                 .setPackage(this.getPackageName())
                                 .putExtra(PLAYBACK_ACTION, pauseAction),
-                        PendingIntent.FLAG_IMMUTABLE))));
+                        PendingIntent.FLAG_IMMUTABLE)));
+
+        // Next Episode Action
+        if (listRepo.getList() != null && episodeNumber < listRepo.getList().size()) {
+            actions.add(new RemoteAction(
+                    Icon.createWithResource(this, R.drawable.ic_skip_next),
+                    getString(R.string.next_episode),
+                    getString(R.string.next_episode),
+                    PendingIntent.getBroadcast(
+                            this,
+                            PLAYBACK_ACTION_NEXT,
+                            new Intent(ACTION_BROADCAST_CONTROL)
+                                    .setPackage(this.getPackageName())
+                                    .putExtra(PLAYBACK_ACTION, PLAYBACK_ACTION_NEXT),
+                            PendingIntent.FLAG_IMMUTABLE)));
+        }
+
+        pipParams.setActions(actions);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             pipParams.setTitle(animeTitle);
@@ -695,53 +758,63 @@ public class PlayerActivity extends AppCompatActivity {
         return pipParams.build();
     }
 
-    /*void updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
-        final ArrayList<RemoteAction> actions = new ArrayList<>();
-        final PendingIntent intent = PendingIntent.getBroadcast(this, requestCode,
-                new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
-        final Icon icon = Icon.createWithResource(this, iconId);
-        final String title = getString(resTitle);
-        actions.add(new RemoteAction(icon, title, title, intent));
-        ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setActions(actions);
-        setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
-    }*/
-
-
-    private void broadcastReceiver(Player player) {
-        if (player != null) {
-            broadcastReceiver = new BroadcastReceiver() {
-
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent == null || (!Objects.equals(intent.getAction(), ACTION_BROADCAST_CONTROL))) {
-                        return;
-                    }
-
-                    switch (intent.getIntExtra(PLAYBACK_ACTION, 0)) {
-                        case PLAYBACK_ACTION_RESUME:
-                            player.play();
-                            break;
-                        case PLAYBACK_ACTION_PAUSE:
-                            player.pause();
-                            break;
-
-                        default:
-                            throw new IllegalArgumentException("Unknown playback action has been permitted!");
-                    }
-
+    private void initBroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent == null || (!Objects.equals(intent.getAction(), ACTION_BROADCAST_CONTROL))) {
+                    return;
                 }
-            };
 
-            ContextCompat.registerReceiver(
-                    this,
-                    broadcastReceiver,
-                    new IntentFilter(ACTION_BROADCAST_CONTROL),
-                    ContextCompat.RECEIVER_NOT_EXPORTED);
+                if (exoPlayer == null)
+                    return;
+
+                switch (intent.getIntExtra(PLAYBACK_ACTION, 0)) {
+                    case PLAYBACK_ACTION_RESUME:
+                        exoPlayer.play();
+                        break;
+                    case PLAYBACK_ACTION_PAUSE:
+                        exoPlayer.pause();
+                        break;
+                    case PLAYBACK_ACTION_NEXT:
+                        playNextEpisode();
+                        break;
+                    case PLAYBACK_ACTION_PREV:
+                        playPrevEpisode();
+                        break;
+                }
+                // Update PiP params to reflect new state (e.g. play/pause icon or next/prev availability)
+                if (isInPip()) {
+                    setPictureInPictureParams(getPipParams(exoPlayer.isPlaying()));
+                }
+            }
+        };
+    }
+
+    private void registerPipReceiver() {
+        if (broadcastReceiver == null) {
+            initBroadcastReceiver();
+        }
+        ContextCompat.registerReceiver(
+                this,
+                broadcastReceiver,
+                new IntentFilter(ACTION_BROADCAST_CONTROL),
+                ContextCompat.RECEIVER_NOT_EXPORTED);
+    }
+
+    private void unregisterPipReceiver() {
+        if (broadcastReceiver != null) {
+            try {
+                unregisterReceiver(broadcastReceiver);
+            } catch (Exception e) {
+                // Ignore if not registered
+            }
         }
     }
 
     private boolean isInPip() {
-        if (!Utils.isPiPSupported(this)) return false;
+        if (!Utils.isPiPSupported(this))
+            return false;
         return isInPictureInPictureMode();
     }
 
@@ -755,7 +828,9 @@ public class PlayerActivity extends AppCompatActivity {
                         exoPlayer.stop();
                         exoPlayer.clearMediaItems();
                     }
-                    progressDialog = DialogUtils.getProDialog(this, R.string.loading_episode);
+                    if (!isInPip()) {
+                        progressDialog = DialogUtils.getProDialog(this, R.string.loading_episode);
+                    }
                 })
                 .subscribeWith(new DisposableSingleObserver<Pair<LoadState, VideoLinksModel>>() {
                     @Override
@@ -769,7 +844,14 @@ public class PlayerActivity extends AppCompatActivity {
                                 currentPosition = 0;
                                 setMediaSourceByModel(episodeLinks);
                                 exoPlayer.prepare();
-                                showContinuePlayDialog(episode);
+                                if (isInPip()) {
+                                    isContinueDialogShowing = false;
+                                    currentPosition = episode.getTotalWatchTime();
+                                    exoPlayer.seekTo(currentPosition);
+                                    playVideo();
+                                } else {
+                                    showContinuePlayDialog(episode);
+                                }
                             } else {
                                 initPlayback(episodeLinks, 0);
                             }
@@ -934,14 +1016,20 @@ public class PlayerActivity extends AppCompatActivity {
         savePlayer();
         playerView.setUseController(!isInPictureInPictureMode);
         if (isInPictureInPictureMode) {
-            broadcastReceiver(exoPlayer);
+            registerPipReceiver();
         } else {
-            if (broadcastReceiver != null) {
-                unregisterReceiver(broadcastReceiver);
-                broadcastReceiver = null;
+            unregisterPipReceiver();
+            if (binding != null) {
+                hideNavBar();
+                // Restore UI controls visibility
+                exoTopControllers.setVisibility(View.VISIBLE);
+                exoBottomControllers.setVisibility(View.VISIBLE);
+                exoMiddleControllers.setVisibility(View.VISIBLE);
+                exoLock.setVisibility(View.VISIBLE);
+                playerView.setControllerAutoShow(true);
+                showProgressBarAndControlToggle(false);
             }
         }
-
     }
 
     // Activity input
@@ -964,6 +1052,7 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterPipReceiver();
         releasePlayer();
         binding = null;
         disposables.dispose();
@@ -1071,8 +1160,16 @@ public class PlayerActivity extends AppCompatActivity {
                 exoPlayer.seekToDefaultPosition();
                 exoPlayer.prepare();
             } else {
-                ViewUtils.showSnackbar(PlayerActivity.this, "error: " + error.getMessage());
-                finish();
+                new MaterialAlertDialogBuilder(PlayerActivity.this)
+                        .setTitle(R.string.error_dialog_title)
+                        .setMessage(getString(R.string.oh_something_went_wrong) + ": " + error.getMessage())
+                        .setPositiveButton(R.string.repeat, (dialog, which) -> {
+                            exoPlayer.prepare();
+                            exoPlayer.play();
+                        })
+                        .setNegativeButton(R.string.close, (dialog, which) -> finish())
+                        .setCancelable(false)
+                        .show();
             }
         }
     }
