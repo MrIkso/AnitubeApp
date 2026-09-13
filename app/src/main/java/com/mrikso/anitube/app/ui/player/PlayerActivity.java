@@ -353,6 +353,7 @@ public class PlayerActivity extends AppCompatActivity {
         currentPosition = position;
         setMediaSourceByModel(model);
         exoPlayer.prepare();
+        savePlayer(); // Save to history immediately on start
         playVideo();
     }
 
@@ -488,7 +489,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void savePlayer() {
-        if (exoPlayer != null && exoPlayer.getPlaybackState() != Player.STATE_IDLE) {
+        if (exoPlayer != null) {
             currentPosition = Math.max(0, exoPlayer.getCurrentPosition());
             long duration = exoPlayer.getContentDuration();
 
