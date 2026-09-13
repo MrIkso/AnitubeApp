@@ -23,6 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@drawable/bottom_nav_drawable"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:itemHorizontalTranslationEnabled="false"
         app:labelVisibilityMode="unlabeled"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"

@@ -336,8 +336,9 @@ public class PlayerActivity extends AppCompatActivity {
             if (visibility != View.VISIBLE) {
                 exoQuality.dismissDropDown();
             } else {
-
-                // controller is not visible
+                if (!isLock) {
+                    exoPlay.requestFocus();
+                }
             }
         });
         youTubeOverlay.player(exoPlayer);
@@ -1036,6 +1037,41 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (isLock) return true;
+
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+
+        if (action == KeyEvent.ACTION_DOWN) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (!playerView.isControllerFullyVisible()) {
+                    playerView.showController();
+                } else {
+                    if (exoPlayer.isPlaying()) {
+                        pauseVideo();
+                    } else {
+                        playVideo();
+                    }
+                }
+                return true;
+            }
+
+            if (!playerView.isControllerFullyVisible()) {
+                if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    exoPlayer.seekTo(Math.max(0, exoPlayer.getCurrentPosition() - 10000));
+                    playerView.showController();
+                    return true;
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    exoPlayer.seekTo(Math.min(exoPlayer.getDuration(), exoPlayer.getCurrentPosition() + 10000));
+                    playerView.showController();
+                    return true;
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    playerView.showController();
+                    return true;
+                }
+            }
+        }
+
         // See whether the player view wants to handle media or DPAD keys events.
         return playerView.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }

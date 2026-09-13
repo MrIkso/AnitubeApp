@@ -10,6 +10,8 @@
     app:cardBackgroundColor="?attr/colorSurface"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="true"
+    app:strokeColor="@color/focus_stroke_color"
+    app:strokeWidth="2dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
