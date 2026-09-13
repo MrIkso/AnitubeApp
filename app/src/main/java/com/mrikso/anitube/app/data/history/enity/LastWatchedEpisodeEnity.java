@@ -2,9 +2,11 @@ package com.mrikso.anitube.app.data.history.enity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "last_watched_episode")
+@Entity(tableName = "last_watched_episode",
+        indices = {@Index(value = {"anime_id", "episode_id"}, unique = true)})
 public class LastWatchedEpisodeEnity {
     @PrimaryKey(autoGenerate = true)
     public int id;
