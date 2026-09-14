@@ -145,18 +145,25 @@ public class HomeFragment extends Fragment
     }
 
     private void updateParallax() {
+        if (binding == null || binding.interestingLayout.carouselRecyclerView == null) return;
         RecyclerView rv = binding.interestingLayout.carouselRecyclerView;
         for (int i = 0; i < rv.getChildCount(); i++) {
             View child = rv.getChildAt(i);
             RecyclerView.ViewHolder rawHolder = rv.getChildViewHolder(child);
             if (rawHolder instanceof AnimeCarouselAdapter.ViewHolder) {
                 AnimeCarouselAdapter.ViewHolder holder = (AnimeCarouselAdapter.ViewHolder) rawHolder;
+
+                // Safe check for adapter position to avoid inconsistency crashes during scroll
+                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) continue;
+
                 // Offset is relative to the screen center
                 float offset = child.getLeft();
                 holder.setOffset(-offset);
 
                 // Opacity
                 int centerX = rv.getWidth() / 2;
+                if (centerX <= 0) continue;
+                
                 int childCenterX = (child.getLeft() + child.getRight()) / 2;
                 int centerOffset = Math.abs(centerX - childCenterX);
                 float alpha = 1.0f - (float) centerOffset / centerX;

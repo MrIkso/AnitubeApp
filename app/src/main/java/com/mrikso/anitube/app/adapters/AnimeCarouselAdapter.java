@@ -49,7 +49,9 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
 
     @Override
     public int getItemCount() {
-        int actualCount = mDiffer.getCurrentList().size();
+        List<InteresingModel> currentList = mDiffer.getCurrentList();
+        int actualCount = currentList.size();
+        // If we have only 1 item or it's empty, we don't need infinite scrolling logic
         return actualCount > 1 ? Integer.MAX_VALUE : actualCount;
     }
 
@@ -57,10 +59,16 @@ public class AnimeCarouselAdapter extends RecyclerView.Adapter<AnimeCarouselAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         List<InteresingModel> currentList = mDiffer.getCurrentList();
         int actualCount = currentList.size();
-        if (actualCount == 0)
+        if (actualCount == 0) {
             return;
+        }
 
+        // Standard infinite scroll math
         int realPosition = position % actualCount;
+        if (realPosition < 0 || realPosition >= actualCount) {
+            return;
+        }
+        
         InteresingModel item = currentList.get(realPosition);
         if (item != null) {
             holder.bind(item);
