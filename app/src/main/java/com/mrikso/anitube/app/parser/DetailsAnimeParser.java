@@ -24,8 +24,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -325,14 +327,20 @@ public class DetailsAnimeParser {
     private void parseSimilarBlock(Element element, AnimeDetailsModel model) {
         Elements elements = element.getElementsByTag("li");
         List<BaseAnimeModel> similarsList = new ArrayList<>(elements.size());
+        Set<Integer> addedIds = new HashSet<>();
+        addedIds.add(model.getAnimeId());
+        
         for (Element similar : elements) {
             String posterUrl = ParserUtils.getImageUrl(similar.selectFirst("div.sl_poster"));
             Element textElement = similar.selectFirst("div.text_content a");
             String title = textElement.text();
             String animeUrl = textElement.attr("href");
             int animeId = ParserUtils.getAnimeId(animeUrl);
-            BaseAnimeModel similarModel = new BaseAnimeModel(animeId, title, posterUrl, animeUrl);
-            similarsList.add(similarModel);
+
+            if (addedIds.add(animeId)) {
+                BaseAnimeModel similarModel = new BaseAnimeModel(animeId, title, posterUrl, animeUrl);
+                similarsList.add(similarModel);
+            }
         }
 
         model.setSimilarAnimeList(similarsList);

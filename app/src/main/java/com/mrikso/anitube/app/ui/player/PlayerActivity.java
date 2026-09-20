@@ -50,6 +50,7 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.DefaultTimeBar;
 import androidx.media3.ui.PlayerView;
 
 import com.bumptech.glide.Glide;
@@ -270,6 +271,12 @@ public class PlayerActivity extends AppCompatActivity {
             // https://developer.android.com/about/versions/12/features/pip-improvements
             //  boolean success = updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp,
             // R.string.exo_controls_play_description, CONTROL_TYPE_PLAY, REQUEST_PLAY);
+        }
+
+        DefaultTimeBar timeBar = findViewById(androidx.media3.ui.R.id.exo_progress);
+        if (timeBar != null) {
+            long seekStep = doubleTapSeek > 0 ? doubleTapSeek * 1000L : 10000L;
+            timeBar.setKeyTimeIncrement(seekStep);
         }
     }
 
@@ -1057,12 +1064,13 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             if (!playerView.isControllerFullyVisible()) {
+                long seekStep = doubleTapSeek > 0 ? doubleTapSeek * 1000L : 10000L;
                 if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    exoPlayer.seekTo(Math.max(0, exoPlayer.getCurrentPosition() - 10000));
+                    exoPlayer.seekTo(Math.max(0, exoPlayer.getCurrentPosition() - seekStep));
                     playerView.showController();
                     return true;
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                    exoPlayer.seekTo(Math.min(exoPlayer.getDuration(), exoPlayer.getCurrentPosition() + 10000));
+                    exoPlayer.seekTo(Math.min(exoPlayer.getDuration(), exoPlayer.getCurrentPosition() + seekStep));
                     playerView.showController();
                     return true;
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {

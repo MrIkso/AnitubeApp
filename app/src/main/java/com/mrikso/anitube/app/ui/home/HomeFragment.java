@@ -154,7 +154,7 @@ public class HomeFragment extends Fragment
                 AnimeCarouselAdapter.ViewHolder holder = (AnimeCarouselAdapter.ViewHolder) rawHolder;
 
                 // Safe check for adapter position to avoid inconsistency crashes during scroll
-                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) continue;
+                if (holder.getBindingAdapterPosition() == RecyclerView.NO_POSITION) continue;
 
                 // Offset is relative to the screen center
                 float offset = child.getLeft();
