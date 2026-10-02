@@ -24,8 +24,10 @@ import io.lindstrom.m3u8.parser.MultivariantPlaylistParser;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
     private final String TAG = "AhsdiVideosExtractor";
@@ -70,25 +72,45 @@ public class AhsdiVideosExtractor extends BaseVideoLinkExtracror {
 
     private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
         return Single.create(emitter -> {
-            String page = client.newCall(
-                            new Request.Builder().url(getUrl()).get().build())
-                    .execute()
-                    .body()
-                    .string();
-            Gson gson = new Gson();
-            //  String jsCode = getDocument().selectFirst("script").data();
-            //  Log.i(TAG, " " + getDocument().bo());
-            String json = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
-            // Log.i(TAG, " " + json);
-            PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
+            Request request1 = new Request.Builder().url(getUrl()).get().build();
+            Call call1 = client.newCall(request1);
+            emitter.setCancellable(call1::cancel);
 
-            String masterPlaylist = client.newCall(
-                            new Request.Builder().url(playerJs.getFile()).get().build())
-                    .execute()
-                    .body()
-                    .string();
+            try {
+                try (Response resp1 = call1.execute()) {
+                    if (!resp1.isSuccessful() || resp1.body() == null) {
+                        if (!emitter.isDisposed()) {
+                            emitter.tryOnError(new IOException("Failed to download manifest page"));
+                        }
+                        return;
+                    }
+                    String page = resp1.body().string();
+                    Gson gson = new Gson();
+                    String json = ParserUtils.getMatcherResult(PLAYER_JS_PATTERN, page, 1);
+                    PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
 
-            emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+                    Request request2 = new Request.Builder().url(playerJs.getFile()).get().build();
+                    Call call2 = client.newCall(request2);
+                    emitter.setCancellable(call2::cancel);
+
+                    try (Response resp2 = call2.execute()) {
+                        if (!resp2.isSuccessful() || resp2.body() == null) {
+                            if (!emitter.isDisposed()) {
+                                emitter.tryOnError(new IOException("Failed to download master playlist"));
+                            }
+                            return;
+                        }
+                        String masterPlaylist = resp2.body().string();
+                        if (!emitter.isDisposed()) {
+                            emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                if (!emitter.isDisposed()) {
+                    emitter.tryOnError(ex);
+                }
+            }
         });
     }
 

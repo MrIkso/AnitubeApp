@@ -17,7 +17,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +31,7 @@ import io.lindstrom.m3u8.parser.MultivariantPlaylistParser;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -87,94 +87,119 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
 
     private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
         return Single.create(emitter -> {
-            Response manifestRequest = client.newCall(new Request.Builder()
-                            .url(getUrl())
-                            .headers(Headers.of(HEADERS))
-                            .get()
-                            .build())
-                    .execute();
-            if (!manifestRequest.isSuccessful()) {
-                emitter.onError(new Exception("moonanime.art manifest don`t downloaded"));
-                return;
-            }
-            String responseBody = manifestRequest.body().string();
-            // Log.d(TAG, responseBody);
-            // find player js script
-            Element bodyElement = Jsoup.parse(responseBody).body();
-            Element targetScript = null;
-            for (Element script : bodyElement.getElementsByTag("script")) {
-                if (script.html().contains("atob(")) {
-                    targetScript = script;
-                    break;
-                }
-            }
-            if (targetScript == null) {
-                emitter.onError(new Exception("Encrypted script not found"));
-                return;
-            }
-            String jsTextCode = targetScript.html();
-            // Log.d(TAG, jsTextCode);
-            // find encrypted text on this script
-            String regex = "atob\\([\"']([A-Za-z0-9+/=]+)[\"']\\)";
-
-            String scriptBase64 = ParserUtils.getMatcherResult(
-                    regex, jsTextCode, 1);
-            if (Strings.isNullOrEmpty(scriptBase64)) {
-                emitter.onError(new Exception("Encrypted PlayesJS script not found"));
-                return;
-            }
-            String decryptedScript = decryptPlayerJsScript(scriptBase64);
-            Log.d(TAG, decryptedScript);
-
-            Matcher funcMatcher = Pattern.compile("([a-zA-Z0-9_$]+)\\([\"']([A-Za-z0-9+/=]+)[\"']\\)").matcher(decryptedScript);
-            if (!funcMatcher.find()) {
-                emitter.onError(new Exception("Decryption link function script not found on PlayesJS script"));
-                return;
-            }
-            String funcName = funcMatcher.group(1);
-            String bodyRegex = "function " + funcName + "\\(e\\)\\{(.*?)\\}";
-            String funcBody = ParserUtils.getMatcherResult(bodyRegex, decryptedScript, 1);
-            String dynamicKey = ParserUtils.getMatcherResult("(?:var|let|const)\\s+\\w+\\s*=\\s*[\"'](.*?)[\"']", funcBody, 1);
-
-            String dynamicCallRegex = funcName + "\\([\"']([A-Za-z0-9+/=]+)[\"']\\)";
-            Pattern dataPattern = Pattern.compile(dynamicCallRegex);
-            Matcher dataMatcher = dataPattern.matcher(decryptedScript);
-            StringBuffer sb = new StringBuffer();
-
-            while (dataMatcher.find()) {
-                String encryptedValue = dataMatcher.group(1);
-                String decryptedValue = decryptLinks(encryptedValue, dynamicKey);
-                dataMatcher.appendReplacement(sb, "\"" + decryptedValue + "\"");
-            }
-            dataMatcher.appendTail(sb);
-            String cleanJsCode = sb.toString();
-
-            Gson gson = new Gson();
-            String json = ParserUtils.getMatcherResult(
-                    PLAYER_JS_PATTERN, cleanJsCode, 1);
-            //  Log.d(TAG, json);
-            int lastIndex = json.lastIndexOf(",");
-            if (lastIndex >= 0) {
-                json = json.substring(0, lastIndex) + "}";
-            }
-            PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
-            //Log.d(TAG, playerJs.getFile());
-            manifestRequest.close();
-            Request masterPlaylistRequest = new Request.Builder()
-                    .url(playerJs.getFile())
+            Request request1 = new Request.Builder()
+                    .url(getUrl())
                     .headers(Headers.of(HEADERS))
                     .get()
                     .build();
-            try (Response response = client.newCall(masterPlaylistRequest).execute()) {
-                String masterPlaylist = response.body().string();
-                if (Strings.isNullOrEmpty(masterPlaylist)) {
-                    emitter.onError(new Throwable("masterPlaylist is null of empty"));
-                }
-                response.close();
-                emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+            Call call1 = client.newCall(request1);
+            emitter.setCancellable(call1::cancel);
 
-            } catch (UnknownHostException exception) {
-                emitter.onError(exception);
+            try (Response manifestRequest = call1.execute()) {
+                if (!manifestRequest.isSuccessful() || manifestRequest.body() == null) {
+                    if (!emitter.isDisposed()) {
+                        emitter.tryOnError(new Exception("moonanime.art manifest don`t downloaded"));
+                    }
+                    return;
+                }
+                String responseBody = manifestRequest.body().string();
+                // Log.d(TAG, responseBody);
+                // find player js script
+                Element bodyElement = Jsoup.parse(responseBody).body();
+                Element targetScript = null;
+                for (Element script : bodyElement.getElementsByTag("script")) {
+                    if (script.html().contains("atob(")) {
+                        targetScript = script;
+                        break;
+                    }
+                }
+                if (targetScript == null) {
+                    if (!emitter.isDisposed()) {
+                        emitter.tryOnError(new Exception("Encrypted script not found"));
+                    }
+                    return;
+                }
+                String jsTextCode = targetScript.html();
+                // Log.d(TAG, jsTextCode);
+                // find encrypted text on this script
+                String regex = "atob\\([\"']([A-Za-z0-9+/=]+)[\"']\\)";
+
+                String scriptBase64 = ParserUtils.getMatcherResult(
+                        regex, jsTextCode, 1);
+                if (Strings.isNullOrEmpty(scriptBase64)) {
+                    if (!emitter.isDisposed()) {
+                        emitter.tryOnError(new Exception("Encrypted PlayesJS script not found"));
+                    }
+                    return;
+                }
+                String decryptedScript = decryptPlayerJsScript(scriptBase64);
+                Log.d(TAG, decryptedScript);
+
+                Matcher funcMatcher = Pattern.compile("([a-zA-Z0-9_$]+)\\([\"']([A-Za-z0-9+/=]+)[\"']\\)").matcher(decryptedScript);
+                if (!funcMatcher.find()) {
+                    if (!emitter.isDisposed()) {
+                        emitter.tryOnError(new Exception("Decryption link function script not found on PlayesJS script"));
+                    }
+                    return;
+                }
+                String funcName = funcMatcher.group(1);
+                String bodyRegex = "function " + funcName + "\\(e\\)\\{(.*?)\\}";
+                String funcBody = ParserUtils.getMatcherResult(bodyRegex, decryptedScript, 1);
+                String dynamicKey = ParserUtils.getMatcherResult("(?:var|let|const)\\s+\\w+\\s*=\\s*[\"'](.*?)[\"']", funcBody, 1);
+
+                String dynamicCallRegex = funcName + "\\([\"']([A-Za-z0-9+/=]+)[\"']\\)";
+                Pattern dataPattern = Pattern.compile(dynamicCallRegex);
+                Matcher dataMatcher = dataPattern.matcher(decryptedScript);
+                StringBuffer sb = new StringBuffer();
+
+                while (dataMatcher.find()) {
+                    String encryptedValue = dataMatcher.group(1);
+                    String decryptedValue = decryptLinks(encryptedValue, dynamicKey);
+                    dataMatcher.appendReplacement(sb, "\"" + decryptedValue + "\"");
+                }
+                dataMatcher.appendTail(sb);
+                String cleanJsCode = sb.toString();
+
+                Gson gson = new Gson();
+                String json = ParserUtils.getMatcherResult(
+                        PLAYER_JS_PATTERN, cleanJsCode, 1);
+                //  Log.d(TAG, json);
+                int lastIndex = json.lastIndexOf(",");
+                if (lastIndex >= 0) {
+                    json = json.substring(0, lastIndex) + "}";
+                }
+                PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
+                //Log.d(TAG, playerJs.getFile());
+                Request masterPlaylistRequest = new Request.Builder()
+                        .url(playerJs.getFile())
+                        .headers(Headers.of(HEADERS))
+                        .get()
+                        .build();
+                Call call2 = client.newCall(masterPlaylistRequest);
+                emitter.setCancellable(call2::cancel);
+
+                try (Response response = call2.execute()) {
+                    if (!response.isSuccessful() || response.body() == null) {
+                        if (!emitter.isDisposed()) {
+                            emitter.tryOnError(new Throwable("masterPlaylist response is unsuccessful or body is null"));
+                        }
+                        return;
+                    }
+                    String masterPlaylist = response.body().string();
+                    if (Strings.isNullOrEmpty(masterPlaylist)) {
+                        if (!emitter.isDisposed()) {
+                            emitter.tryOnError(new Throwable("masterPlaylist is null of empty"));
+                        }
+                        return;
+                    }
+                    if (!emitter.isDisposed()) {
+                        emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+                    }
+                }
+            } catch (Exception exception) {
+                if (!emitter.isDisposed()) {
+                    emitter.tryOnError(exception);
+                }
             }
         });
     }

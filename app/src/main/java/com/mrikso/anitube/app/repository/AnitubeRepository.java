@@ -11,9 +11,12 @@ import com.mrikso.anitube.app.utils.ParserUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Single;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Response;
@@ -44,14 +47,33 @@ public class AnitubeRepository {
                     .header("User-Agent", ApiClient.MOBILE_USER_AGENT)
                     .build();
 
+            Call call = client.newCall(request1);
+            emitter.setCancellable(call::cancel);
+
             try  {
-                okhttp3.Response response = client.newCall(request1).execute();
-                if (response.isSuccessful() || response.code() == 200) {
-                    emitter.onSuccess(Jsoup.parse(response.body().string()));
+                try (okhttp3.Response response = call.execute()) {
+                    if (response.isSuccessful() || response.code() == 200) {
+                        if (response.body() != null) {
+                            String html = response.body().string();
+                            if (!emitter.isDisposed()) {
+                                emitter.onSuccess(Jsoup.parse(html));
+                            }
+                        } else {
+                            if (!emitter.isDisposed()) {
+                                emitter.tryOnError(new IOException("Response body is null"));
+                            }
+                        }
+                    } else {
+                        if (!emitter.isDisposed()) {
+                            emitter.tryOnError(new IOException("Unexpected code " + response));
+                        }
+                    }
                 }
             }
             catch (Exception ex){
-                emitter.onError(ex);
+                if (!emitter.isDisposed()) {
+                    emitter.tryOnError(ex);
+                }
             }
         });
        // return anitubeApi.getMobilePage(ApiClient.MOBILE_USER_AGENT, url);
