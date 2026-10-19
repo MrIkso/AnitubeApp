@@ -94,7 +94,7 @@ public class DirectVideoUrlParser {
                 extracror = new StreamSBExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("drive.google.com")) {
                 extracror = new GoogleDriveExtractor(iframeUrl);
-            } else if (iframeDomain.contains("fenixplay.xy")) {
+            } else if (iframeDomain.contains("fenixplay.xyz")) {
                 extracror = new FenixPlayExtractor(iframeUrl, client);
             } else {
                 Log.i(TAG, "unsupported, iframe: " + iframeUrl);
