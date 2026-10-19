@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class VideoLinksModel implements Serializable {
     private Map<String, String> linksQuality = new HashMap<>();
+    private Map<String, String> audioTracks = new HashMap<>(); // Додано мапу для аудіодоріжок
     private Map<String, String> httpHeaders = new HashMap<>();
     private final String ifRameUrl;
     private String singleDirectUrl;
@@ -23,6 +24,18 @@ public class VideoLinksModel implements Serializable {
 
     public void setLinksQuality(Map<String, String> linksQuality) {
         this.linksQuality = linksQuality;
+    }
+
+    public Map<String, String> getAudioTracks() {
+        return this.audioTracks;
+    }
+
+    public void setAudioTracks(Map<String, String> audioTracks) {
+        this.audioTracks = audioTracks;
+    }
+
+    public void addAudioTrack(String name, String url) {
+        this.audioTracks.put(name, url);
     }
 
     public Map<String, String> getHeaders() {

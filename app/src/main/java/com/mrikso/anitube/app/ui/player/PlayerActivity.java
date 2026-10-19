@@ -889,6 +889,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         MediaSource mediaSource = null;
+
         if (model.getLinksQuality() != null && !model.getLinksQuality().isEmpty()) {
             Map<String, String> qualitiesMap = model.getLinksQuality();
 
@@ -896,20 +897,32 @@ public class PlayerActivity extends AppCompatActivity {
                 currentQuality = qualitiesMap.keySet().stream().findFirst().get();
             }
 
-            String playUrl = qualitiesMap.get(currentQuality);
-            if (playUrl == null && !qualitiesMap.isEmpty()) {
+            String videoUrl = qualitiesMap.get(currentQuality);
+            if (videoUrl == null && !qualitiesMap.isEmpty()) {
                 currentQuality = qualitiesMap.keySet().iterator().next();
-                playUrl = qualitiesMap.get(currentQuality);
+                videoUrl = qualitiesMap.get(currentQuality);
             }
 
             updateQualityArray();
-            if (!Strings.isNullOrEmpty(playUrl)) {
-                mediaSource = mediaSourceHelper.getMediaSource(playUrl, model.getHeaders(), true);
+
+            String audioUrl = null;
+            if (model.getAudioTracks() != null && !model.getAudioTracks().isEmpty()) {
+                audioUrl = model.getAudioTracks().values().iterator().next();
+            }
+
+            if (!Strings.isNullOrEmpty(videoUrl)) {
+                mediaSource = mediaSourceHelper.getMergedAudioVideoMediaSource(
+                        videoUrl,
+                        audioUrl,
+                        model.getHeaders(),
+                        true
+                );
             }
 
         } else if (!Strings.isNullOrEmpty(model.getSingleDirectUrl())) {
             mediaSource = mediaSourceHelper.getMediaSource(model.getSingleDirectUrl(), model.getHeaders(), true);
         }
+
         if (mediaSource != null) {
             exoPlayer.setMediaSource(mediaSource);
             playerView.setHaveMedia(true);

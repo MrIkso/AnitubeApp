@@ -9,6 +9,7 @@ import com.google.gson.stream.JsonReader;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.extractors.AhsdiVideosExtractor;
 import com.mrikso.anitube.app.extractors.BaseVideoLinkExtracror;
+import com.mrikso.anitube.app.extractors.FenixPlayExtractor;
 import com.mrikso.anitube.app.extractors.FourSharedExtractor;
 import com.mrikso.anitube.app.extractors.GoogleDriveExtractor;
 import com.mrikso.anitube.app.extractors.MP4UploadExtractor;
@@ -93,7 +94,9 @@ public class DirectVideoUrlParser {
                 extracror = new StreamSBExtractor(iframeUrl, client);
             } else if (iframeDomain.contains("drive.google.com")) {
                 extracror = new GoogleDriveExtractor(iframeUrl);
-            }else {
+            } else if (iframeDomain.contains("fenixplay.xy")) {
+                extracror = new FenixPlayExtractor(iframeUrl, client);
+            } else {
                 Log.i(TAG, "unsupported, iframe: " + iframeUrl);
                 return Single.just(new Pair<>(LoadState.ERROR, new VideoLinksModel(iframeUrl)));
             }

@@ -3,7 +3,6 @@ package com.mrikso.player;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.OptIn;
 import androidx.media3.common.C;
@@ -23,6 +22,7 @@ import androidx.media3.exoplayer.dash.DashMediaSource;
 import androidx.media3.exoplayer.hls.HlsMediaSource;
 import androidx.media3.exoplayer.rtsp.RtspMediaSource;
 import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.MergingMediaSource;
 import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 
 import java.io.File;
@@ -171,5 +171,25 @@ public final class ExoMediaSourceHelper {
 
     public void setCache(Cache cache) {
         this.mCache = cache;
+    }
+
+    public MediaSource getMergedAudioVideoMediaSource(String videoUri, String audioUri, Map<String, String> headers, boolean isCache) {
+        DataSource.Factory factory = isCache ? getCacheDataSourceFactory() : getDataSourceFactory();
+
+        if (mHttpDataSourceFactory != null && headers != null) {
+            setHeaders(headers);
+        }
+
+        MediaItem videoItem = MediaItem.fromUri(Uri.parse(videoUri));
+        MediaSource videoSource = new HlsMediaSource.Factory(factory).createMediaSource(videoItem);
+
+        if (TextUtils.isEmpty(audioUri)) {
+            return videoSource;
+        }
+
+        MediaItem audioItem = MediaItem.fromUri(Uri.parse(audioUri));
+        MediaSource audioSource = new HlsMediaSource.Factory(factory).createMediaSource(audioItem);
+
+        return new MergingMediaSource(videoSource, audioSource);
     }
 }
