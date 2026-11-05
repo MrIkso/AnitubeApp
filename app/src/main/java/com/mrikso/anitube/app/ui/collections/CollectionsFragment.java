@@ -59,6 +59,9 @@ public class CollectionsFragment extends Fragment {
         collectionPagingAdapter = new CollectionsPagingAdapter();
         collectionPagingAdapter.setOnItemClickListener(this::openCollectionDetailsFragment);
         collectionPagingAdapter.addLoadStateListener(combinedLoadStates -> {
+            if (binding == null) {
+                return null;
+            }
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
             if (refreshLoadState instanceof LoadState.Loading) {

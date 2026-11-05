@@ -101,6 +101,9 @@ public class CollectionDetailsFragment extends Fragment {
             openDetailsFragment(link);
         });
         animePpagingAdapter.addLoadStateListener(combinedLoadStates -> {
+            if (binding == null) {
+                return null;
+            }
             LoadState refreshLoadState = combinedLoadStates.getRefresh();
             LoadState appendLoadState = combinedLoadStates.getAppend();
             if (refreshLoadState instanceof LoadState.Loading) {
