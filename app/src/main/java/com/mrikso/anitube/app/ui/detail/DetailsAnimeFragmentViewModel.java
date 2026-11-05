@@ -154,17 +154,17 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                 }));
     }
 
-    public void changeAnimeStatus(int animeId, int viewStatus) {
-        changeAnimeStatusOnAnitube(animeId, viewStatus);
+    public void changeAnimeStatus(int animeId, int viewStatus, String referer) {
+        changeAnimeStatusOnAnitube(animeId, viewStatus, referer);
 
         if (preferencesHelper.isLogginedToHikka()) {
             changeAnimeStatusOnHikka(animeId, viewStatus);
         }
     }
 
-    private void changeAnimeStatusOnAnitube(int anitubeId, int viewStatus) {
+    private void changeAnimeStatusOnAnitube(int anitubeId, int viewStatus, String referer) {
         compositeDisposable.add(anitubeRepository
-                .changeAnimeStatus(anitubeId, viewStatus)
+                .changeAnimeStatus(anitubeId, viewStatus, referer)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(v -> {

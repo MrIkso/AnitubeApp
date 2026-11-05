@@ -575,7 +575,9 @@ public class DetailsAnimeFragment extends Fragment
         ChangeAnimeStatusDialog dialog = ChangeAnimeStatusDialog.newInstance(currentWatchMode);
         dialog.setListener(newMode -> {
             currentWatchMode = newMode;
-            viewModel.changeAnimeStatus(currentAnimeDetails.getAnimeId(), newMode);
+            viewModel.changeAnimeStatus(currentAnimeDetails.getAnimeId(),
+                    newMode, ParserUtils.normalizeUrl(currentAnimeDetails.getAnimeUrl())
+            );
 
             WatchAnimeStatusModel newModel = ParserUtils.getWatchModel(newMode);
             currentAnimeDetails.setWatchStatusModdel(newModel);

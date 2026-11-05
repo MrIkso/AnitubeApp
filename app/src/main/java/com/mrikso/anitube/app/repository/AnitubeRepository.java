@@ -95,8 +95,8 @@ public class AnitubeRepository {
         return anitubeApi.addOrRemoveFromFavorites(animeId, isAdd ? "plus" : "minus", dleHash);
     }
 
-    public Single<ChangeStatusResponse> changeAnimeStatus(int animeId, int viewStatus) {
-        return anitubeApi.changeAnimeStatus(animeId, viewStatus);
+    public Single<ChangeStatusResponse> changeAnimeStatus(int animeId, int viewStatus, String referer) {
+        return anitubeApi.changeAnimeStatus(referer, animeId, viewStatus);
     }
 
     public Single<String> getPlaylist(String referer, int animeId, String dleHash) {

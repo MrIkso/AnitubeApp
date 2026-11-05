@@ -53,10 +53,13 @@ public interface AnitubeApiService {
             @Field("login_name") String loginName,
             @Field("login_password") String loginPassword);
 
-    @POST("/mylists")
+    @POST("/mylists/")
     @Headers("X-Requested-With: XMLHttpRequest")
     @FormUrlEncoded
-    Single<ChangeStatusResponse> changeAnimeStatus(@Field("news_id") int newsId, @Field("status_id") int statusId);
+    Single<ChangeStatusResponse> changeAnimeStatus(
+            @Header("referer") String referer,
+            @Field("news_id") int newsId,
+            @Field("status_id") int statusId);
 
     @GET("/mylists/{username}/page/{page}")
     Single<Document> getAllMyLists(@Path("username") String username, @Path("page") int page);
