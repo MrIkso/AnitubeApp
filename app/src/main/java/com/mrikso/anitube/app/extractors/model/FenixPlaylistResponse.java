@@ -1,19 +1,45 @@
 package com.mrikso.anitube.app.extractors.model;
 
 public class FenixPlaylistResponse {
+    private String slug;
+    private String default_edition;
     private Episode[] episodes;
+    private Playback playback;
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public String getDefault_edition() {
+        return default_edition;
+    }
 
     public Episode[] getEpisodes() {
         return episodes;
     }
 
+    public Playback getPlayback() {
+        return playback;
+    }
+
     public String getFirstMasterUrl() {
         if (episodes != null && episodes.length > 0) {
-            if (episodes[0].hls_master_url != null) {
-                return episodes[0].hls_master_url;
+            Episode ep = episodes[0];
+            if (ep.hls_master_url != null && !ep.hls_master_url.isEmpty()) {
+                return ep.hls_master_url;
             }
-            if (episodes[0].tracks != null && episodes[0].tracks.length > 0) {
-                return episodes[0].tracks[0].hls_url;
+            if (ep.tracks != null && ep.tracks.length > 0 && ep.tracks[0].hls_url != null && !ep.tracks[0].hls_url.isEmpty()) {
+                return ep.tracks[0].hls_url;
+            }
+            if (ep.thumbnail_url != null && !ep.thumbnail_url.isEmpty()) {
+                String thumb = ep.thumbnail_url;
+                int qIndex = thumb.indexOf('?');
+                if (qIndex != -1) {
+                    thumb = thumb.substring(0, qIndex);
+                }
+                if (thumb.endsWith("thumb.jpg")) {
+                    return thumb.substring(0, thumb.length() - "thumb.jpg".length()) + "master.m3u8";
+                }
             }
         }
         return null;
@@ -35,9 +61,20 @@ public class FenixPlaylistResponse {
 
 
     public static class Episode {
+        private int number;
+        private String edition;
         private String hls_master_url;
         private Track[] tracks;
         private Subtitle[] subtitles;
+        private String thumbnail_url;
+
+        public int getNumber() {
+            return number;
+        }
+
+        public String getEdition() {
+            return edition;
+        }
 
         public String getHls_master_url() {
             return hls_master_url;
@@ -49,6 +86,10 @@ public class FenixPlaylistResponse {
 
         public Subtitle[] getSubtitles() {
             return subtitles;
+        }
+
+        public String getThumbnail_url() {
+            return thumbnail_url;
         }
     }
 
@@ -71,9 +112,23 @@ public class FenixPlaylistResponse {
         }
     }
 
+    public static class Playback {
+        private int version;
+        private String token;
+
+        public int getVersion() {
+            return version;
+        }
+
+        public String getToken() {
+            return token;
+        }
+    }
+
     public static class FenixMediaAccess {
         private String origin;
         private String token;
+        private String url_prefix;
 
         public String getOrigin() {
             return origin;
@@ -81,6 +136,10 @@ public class FenixPlaylistResponse {
 
         public String getToken() {
             return token;
+        }
+
+        public String getUrl_prefix() {
+            return url_prefix;
         }
     }
 
