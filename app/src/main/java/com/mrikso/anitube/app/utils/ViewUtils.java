@@ -2,6 +2,7 @@ package com.mrikso.anitube.app.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,6 +35,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 import com.mrikso.anitube.app.R;
 
@@ -154,11 +156,7 @@ public class ViewUtils {
      * @param resource the string resource to show to the user.
      */
     public static void showSnackbar(@NonNull Activity activity, @StringRes int resource) {
-        View view = activity.findViewById(android.R.id.content);
-        if (view == null) {
-            return;
-        }
-        Snackbar.make(view, resource, Snackbar.LENGTH_SHORT).show();
+        showSnackbar(activity, activity.getString(resource));
     }
 
     /**
@@ -175,7 +173,7 @@ public class ViewUtils {
         if (view == null) {
             return;
         }
-        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        showSnackbarView(view, message);
     }
 
     public static void showSnackbar(@NonNull Fragment fragment, @StringRes int message) {
@@ -187,20 +185,34 @@ public class ViewUtils {
         if (view == null) {
             return;
         }
-        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        showSnackbarView(view, message);
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    private static void showSnackbarView(View view, String message) {
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        Context context = view.getContext();
+        final int color = MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceContainer, null);
+        final int textColor = MaterialColors.getColor(context, com.google.android.material.R.attr.colorOnSurface, null);
+        snackbarView.setBackgroundTintList(ColorStateList.valueOf(color));
+        TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        if (textView != null) {
+            textView.setTextColor(textColor);
+        }
+        snackbar.show();
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = null;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
+            if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
 
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
         } else {
             bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
