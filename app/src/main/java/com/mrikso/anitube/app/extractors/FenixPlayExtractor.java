@@ -152,18 +152,22 @@ public class FenixPlayExtractor extends BaseVideoLinkExtracror {
         return model;
     }
 
-    private String getToken(FenixPlaylistResponse playlistResponse, FenixPlaylistResponse.FenixMediaAccess mediaAccess) {
-        if (mediaAccess != null && mediaAccess.getToken() != null && !mediaAccess.getToken().isEmpty()) {
-            return mediaAccess.getToken();
-        }
+    private String getToken(FenixPlaylistResponse playlistResponse) {
         if (playlistResponse != null && playlistResponse.getPlayback() != null && playlistResponse.getPlayback().getToken() != null && !playlistResponse.getPlayback().getToken().isEmpty()) {
             return playlistResponse.getPlayback().getToken();
         }
         return null;
     }
 
+    private String getToken(FenixPlaylistResponse.FenixMediaAccess mediaAccess) {
+        if (mediaAccess != null && mediaAccess.getToken() != null && !mediaAccess.getToken().isEmpty()) {
+            return mediaAccess.getToken();
+        }
+        return null;
+    }
+
     private String appendTokenToUrl(String url, FenixPlaylistResponse playlistResponse, FenixPlaylistResponse.FenixMediaAccess mediaAccess) {
-        String token = getToken(playlistResponse, mediaAccess);
+        String token = getToken(mediaAccess);
         if (url == null || token == null || token.isEmpty()) {
             return url;
         }
@@ -176,7 +180,7 @@ public class FenixPlayExtractor extends BaseVideoLinkExtracror {
 
     private Single<Triple<String, FenixPlaybackResponse, FenixPlaylistResponse.FenixMediaAccess>> downloadManifest() {
         return Single.create(emitter -> {
-            Request request1 = new Request.Builder().url(getUrl()).get().build();
+            Request request1 = new Request.Builder().url(getUrl()).get().header("User-Agent", ApiClient.DESKTOP_USER_AGENT).build();
             Call call1 = client.newCall(request1);
             emitter.setCancellable(call1::cancel);
 
@@ -234,7 +238,7 @@ public class FenixPlayExtractor extends BaseVideoLinkExtracror {
 
                     String playbackApiUrl = "https://fenixplay.xyz/api/playback/" + slug + "/episodes/" + edition + "/" + number;
 
-                    String token = getToken(playlistResponse, mediaAccess);
+                    String token = getToken(playlistResponse);
 
                     Request.Builder reqBuilderPlayback = new Request.Builder().url(playbackApiUrl).get();
                     reqBuilderPlayback.addHeader("User-Agent", ApiClient.DESKTOP_USER_AGENT);
