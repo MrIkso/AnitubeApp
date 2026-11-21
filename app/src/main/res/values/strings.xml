@@ -144,6 +144,7 @@
     <string name="cannot_download">Невдалося завантажити файл</string>
     <string name="problem_location_download">Неможливо завантажити по вказаному шляху</string>
     <string name="download_pending">Завантаження розпочалося</string>
+    <string name="download_completed">Завантаження завершилось успішно</string>
 	<string name="comments">Коментарі</string>
     <string name="don_t_have_an_account">Немає акаунту</string>
     <string name="sign_up">Реєстрація</string>
@@ -171,7 +172,7 @@
     <string name="long_press_action_title">Дія при тривалому натисканні</string>
     <string name="long_press_action_lock">Блокування екрана</string>
     <string name="long_press_action_speed_2x">Прискорення 2x</string>
-    <string name="show_original_title">Показати оригінальну назву</string>
+    <string name="show_original_title">Показати назву</string>
     <string name="hide_original_title">Приховати</string>
     <string name="loading_org_name">Завантаження...</string>
     <string name="original_title">Оригінальна назва:</string>

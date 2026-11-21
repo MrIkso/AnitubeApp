@@ -91,6 +91,7 @@ public class DetailsAnimeFragment extends Fragment
 
     private boolean isOrgNameLoaded = false;
     private String cachedOrgName = "";
+    private ItemDetailsInfoRowBinding orgNameRowBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,6 +174,25 @@ public class DetailsAnimeFragment extends Fragment
                 showMobileDetails(results);
             } else {
                 // binding.loadStateLayout.errorLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewModel.getOriginalName().observe(getViewLifecycleOwner(), orgName -> {
+            if (orgNameRowBinding != null) {
+                orgNameRowBinding.tvValue.setEnabled(true);
+                if (!Strings.isNullOrEmpty(orgName)) {
+                    isOrgNameLoaded = true;
+                    cachedOrgName = orgName;
+                    orgNameRowBinding.tvValue.setText(orgName);
+                    orgNameRowBinding.tvValue.setTextColor(orgNameRowBinding.tvTitle.getCurrentTextColor());
+                    orgNameRowBinding.tvValue.setClickable(false);
+                } else {
+                    final int color = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorPrimary, null);
+                    orgNameRowBinding.tvValue.setText(R.string.show_original_title);
+                    orgNameRowBinding.tvValue.setTextColor(color);
+                    orgNameRowBinding.tvValue.setClickable(true);
+                    ViewUtils.showSnackbar(requireActivity(), R.string.error_show_original_name);
+                }
             }
         });
     }
@@ -310,6 +330,7 @@ public class DetailsAnimeFragment extends Fragment
         binding.layoutInfo.tableLayout.removeAllViews();
         isOrgNameLoaded = false;
         cachedOrgName = "";
+        orgNameRowBinding = null;
     }
 
     private void updateReleaseActions(AnimeDetailsModel animeDetails) {
@@ -429,37 +450,37 @@ public class DetailsAnimeFragment extends Fragment
 
     private void addOrgNameTableRow(AnimeDetailsModel animeDetails) {
         TableLayout table = binding.layoutInfo.tableLayout;
-        var row = ItemDetailsInfoRowBinding.inflate(getLayoutInflater(), table, false);
-        final int color = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorAccent, null);
-        row.tvTitle.setText(R.string.original_title);
-        row.tvValue.setText(R.string.show_original_title);
-        row.tvValue.setTextColor(color);
-        row.tvValue.setClickable(true);
-        row.tvValue.setFocusable(true);
+        orgNameRowBinding = ItemDetailsInfoRowBinding.inflate(getLayoutInflater(), table, false);
+        final int color = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorPrimary, null);
+        orgNameRowBinding.tvTitle.setText(R.string.original_title);
 
-        row.tvValue.setOnClickListener(v -> {
-            if (isOrgNameLoaded) {
-                return;
-            }
-            row.tvValue.setText(R.string.loading_org_name);
-            row.tvValue.setEnabled(false);
-            viewModel.loadOrgName(animeDetails.getAnimeUrl(), animeDetails.getAnimeId(), orgName -> {
-                row.tvValue.setEnabled(true);
-                if (!Strings.isNullOrEmpty(orgName)) {
-                    isOrgNameLoaded = true;
-                    cachedOrgName = orgName;
-                    row.tvValue.setText(orgName);
-                    row.tvValue.setTextColor(row.tvTitle.getCurrentTextColor());
-                    row.tvValue.setClickable(false);
-                } else {
-                    row.tvValue.setText(R.string.show_original_title);
-                    row.tvValue.setTextColor(color);
-                    ViewUtils.showSnackbar(requireActivity(), R.string.error_show_original_name);
+        String currentOrgName = viewModel.getOriginalName().getValue();
+        if (!Strings.isNullOrEmpty(currentOrgName)) {
+            isOrgNameLoaded = true;
+            cachedOrgName = currentOrgName;
+            orgNameRowBinding.tvValue.setText(currentOrgName);
+            orgNameRowBinding.tvValue.setTextColor(orgNameRowBinding.tvTitle.getCurrentTextColor());
+            orgNameRowBinding.tvValue.setClickable(false);
+        } else if (isOrgNameLoaded && !Strings.isNullOrEmpty(cachedOrgName)) {
+            orgNameRowBinding.tvValue.setText(cachedOrgName);
+            orgNameRowBinding.tvValue.setTextColor(orgNameRowBinding.tvTitle.getCurrentTextColor());
+            orgNameRowBinding.tvValue.setClickable(false);
+        } else {
+            orgNameRowBinding.tvValue.setText(R.string.show_original_title);
+            orgNameRowBinding.tvValue.setTextColor(color);
+            orgNameRowBinding.tvValue.setClickable(true);
+            orgNameRowBinding.tvValue.setFocusable(true);
+            orgNameRowBinding.tvValue.setOnClickListener(v -> {
+                if (isOrgNameLoaded) {
+                    return;
                 }
+                orgNameRowBinding.tvValue.setText(R.string.loading_org_name);
+                orgNameRowBinding.tvValue.setEnabled(false);
+                viewModel.loadOrgName(animeDetails.getAnimeUrl(), animeDetails.getAnimeId());
             });
-        });
+        }
 
-        table.addView(row.getRoot(), 0);
+        table.addView(orgNameRowBinding.getRoot(), 0);
         tableRowIndex++;
     }
 
@@ -632,11 +653,37 @@ public class DetailsAnimeFragment extends Fragment
         dialog.setListener(new OnTorrentClickListener() {
             @Override
             public void onDownloadTorrent(String url) {
-                DownloadUtils.downloadFile(requireActivity(), url);
+                dialog.dismiss();
+                Disposable downloadDisposable = DownloadUtils.downloadFile(requireContext(), url)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            switch (result) {
+                                case SUCCESS:
+                                    ViewUtils.showSnackbar(requireActivity(), R.string.download_pending);
+                                    break;
+                                case COMPLETE:
+                                    ViewUtils.showSnackbar(requireActivity(), R.string.download_completed);
+                                    break;
+                                case FAILURE_LOCATION:
+                                    ViewUtils.showSnackbar(requireActivity(), R.string.problem_location_download);
+                                    break;
+                                case FAILURE_ENQUEUE:
+                                    ViewUtils.showSnackbar(requireActivity(), R.string.cannot_download);
+                                    break;
+                            }
+                        }, throwable -> {
+                            if (isAdded()) {
+                                ViewUtils.showSnackbar(requireActivity(), R.string.cannot_download);
+                            }
+                        });
+
+                disposables.add(downloadDisposable);
             }
 
             @Override
             public void onDownloadByMagnet(String url) {
+                dialog.dismiss();
                 IntentUtils.openInBrowser(requireContext(), url);
             }
         });

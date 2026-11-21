@@ -25,7 +25,6 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -49,6 +48,8 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
     private final MutableLiveData<AnimeMobileDetailsModel> mobileDetailsModelMutableLiveData = new MutableLiveData<>(new AnimeMobileDetailsModel());
     private final DetailsAnimeParser parser = new DetailsAnimeParser();
     private final PreferencesHelper preferencesHelper;
+
+    private final MutableLiveData<String> originalName = new MutableLiveData<>();
 
     @Inject
     public DetailsAnimeFragmentViewModel(AnitubeRepository repository, HikkaRepository hikkaRepository, PreferencesHelper preferencesHelper) {
@@ -201,7 +202,7 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                 });
     }
 
-    public void loadOrgName(String referer, int animeId, Consumer<String> callback) {
+    public void loadOrgName(String referer, int animeId) {
         compositeDisposable.add(
                 anitubeRepository.getOrgName(referer, animeId)
                         .subscribeOn(Schedulers.io())
@@ -209,14 +210,12 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                         .subscribe(
                                 response -> {
                                     if (response != null && !Strings.isNullOrEmpty(response.getNameorg())) {
-                                        callback.accept(response.getNameorg());
-                                    } else {
-                                        callback.accept("");
+                                        originalName.postValue(response.getNameorg());
                                     }
                                 },
                                 throwable -> {
                                     throwable.printStackTrace();
-                                    callback.accept("");
+
                                 }
                         )
         );
@@ -243,5 +242,9 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         compositeDisposable.dispose();
+    }
+
+    public LiveData<String> getOriginalName() {
+        return originalName;
     }
 }

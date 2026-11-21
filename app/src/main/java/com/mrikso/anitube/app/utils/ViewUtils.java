@@ -146,6 +146,13 @@ public class ViewUtils {
         textView.setText(spannableString, TextView.BufferType.SPANNABLE);
     }
 
+    public static void showSnackbar(@NonNull View view, @StringRes int resource) {
+        showSnackbar(view, view.getContext().getString(resource));
+    }
+
+    public static void showSnackbar(@NonNull View view, @NonNull String message) {
+        showSnackbarView(view, message);
+    }
     /**
      * Displays a snackbar to the user with a String resource.
      *

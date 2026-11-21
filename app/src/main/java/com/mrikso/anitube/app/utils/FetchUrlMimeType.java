@@ -1,21 +1,26 @@
-/*
- * Copyright 2014 A.C.R. Development
- */
 package com.mrikso.anitube.app.utils;
 
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
-
-import io.reactivex.rxjava3.core.Single;
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import io.reactivex.rxjava3.core.Observable;
 
 /**
  * This class is used to pull down the http headers of a given URL so that we can analyse the
@@ -24,10 +29,11 @@ import java.net.URL;
  * If the user just clicks on the link, we will do the same steps of correcting the mimetype down in
  * android.os.webkit.LoadListener rather than handling it here.
  */
-class FetchUrlMimeType {
+public class FetchUrlMimeType {
 
     private static final String TAG = "FetchUrlMimeType";
 
+    private final Context mContext;
     private final DownloadManager.Request mRequest;
     private final DownloadManager mDownloadManager;
     private final String mUri;
@@ -35,11 +41,13 @@ class FetchUrlMimeType {
     private final String mUserAgent;
 
     public FetchUrlMimeType(
-            DownloadManager downloadManager,
-            DownloadManager.Request request,
+            @NonNull Context context,
+            @NonNull DownloadManager downloadManager,
+            @NonNull DownloadManager.Request request,
             String uri,
             String cookies,
             String userAgent) {
+        mContext = context.getApplicationContext();
         mRequest = request;
         mDownloadManager = downloadManager;
         mUri = uri;
@@ -47,8 +55,8 @@ class FetchUrlMimeType {
         mUserAgent = userAgent;
     }
 
-    public Single<Result> create() {
-        return Single.create(emitter -> {
+    public Observable<Result> create() {
+        return Observable.create(emitter -> {
             // User agent is likely to be null, though the AndroidHttpClient
             // seems ok with that.
             String mimeType = null;
@@ -80,7 +88,7 @@ class FetchUrlMimeType {
                     }
                 }
             } catch (@NonNull IllegalArgumentException | IOException ex) {
-                if (connection != null) connection.disconnect();
+                Log.e(TAG, "Error fetching headers", ex);
             } finally {
                 if (connection != null) connection.disconnect();
             }
@@ -98,25 +106,74 @@ class FetchUrlMimeType {
             }
 
             // Start the download
+            long downloadId;
             try {
-                mDownloadManager.enqueue(mRequest);
-                emitter.onSuccess(Result.SUCCESS);
+                downloadId = mDownloadManager.enqueue(mRequest);
+                emitter.onNext(Result.SUCCESS);
             } catch (IllegalArgumentException e) {
-                // Probably got a bad URL or something
                 Log.e(TAG, "Unable to enqueue request", e);
-                emitter.onSuccess(Result.FAILURE_ENQUEUE);
+                emitter.onNext(Result.FAILURE_ENQUEUE);
+                emitter.onComplete();
+                return;
             } catch (SecurityException e) {
-                // TODO write a download utility that downloads files rather than rely on
-                // the system
-                // because the system can only handle Environment.getExternal... as a path
-                emitter.onSuccess(Result.FAILURE_LOCATION);
+                emitter.onNext(Result.FAILURE_LOCATION);
+                emitter.onComplete();
+                return;
             }
+
+            BroadcastReceiver onCompleteReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                    Log.d(TAG, "Broadcast received for id: " + id + ", target: " + downloadId);
+
+                    if (id == downloadId) {
+                        DownloadManager.Query query = new DownloadManager.Query();
+                        query.setFilterById(downloadId);
+
+                        try (Cursor cursor = mDownloadManager.query(query)) {
+                            if (cursor != null && cursor.moveToFirst()) {
+                                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                                if (columnIndex != -1) {
+                                    int status = cursor.getInt(columnIndex);
+                                    Log.d(TAG, "Download status: " + status);
+
+                                    if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                                        emitter.onNext(Result.COMPLETE);
+                                    } else {
+                                        emitter.onNext(Result.FAILURE_ENQUEUE);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Failed to query download status", e);
+                        } finally {
+                            emitter.onComplete();
+                            safeUnregisterReceiver(this);
+                        }
+                    }
+                }
+            };
+
+            IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            ContextCompat.registerReceiver(mContext, onCompleteReceiver, filter, null, mainHandler, ContextCompat.RECEIVER_EXPORTED);
+            emitter.setCancellable(() -> safeUnregisterReceiver(onCompleteReceiver));
         });
     }
 
-    enum Result {
+    private void safeUnregisterReceiver(BroadcastReceiver receiver) {
+        try {
+            mContext.unregisterReceiver(receiver);
+        } catch (IllegalArgumentException ignored) {
+        }
+    }
+
+    public enum Result {
         FAILURE_ENQUEUE,
         FAILURE_LOCATION,
-        SUCCESS
+        SUCCESS,
+        COMPLETE
     }
 }
