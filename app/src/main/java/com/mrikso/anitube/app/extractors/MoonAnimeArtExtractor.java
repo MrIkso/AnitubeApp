@@ -136,7 +136,7 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                     return;
                 }
                 String decryptedScript = decryptPlayerJsScript(scriptBase64);
-                Log.d(TAG, decryptedScript);
+                // Log.d(TAG, decryptedScript);
 
                 Matcher funcMatcher = Pattern.compile("([a-zA-Z0-9_$]+)\\([\"']([A-Za-z0-9+/=]+)[\"']\\)").matcher(decryptedScript);
                 if (!funcMatcher.find()) {
