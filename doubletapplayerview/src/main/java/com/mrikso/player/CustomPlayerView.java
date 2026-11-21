@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.media3.common.C;
+import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.SeekParameters;
@@ -66,6 +67,18 @@ public class CustomPlayerView extends PlayerView
 
     private boolean haveMedia;
     private boolean locked = false;
+
+    private String longPressAction = "lock";
+    private boolean isLongPressSpeedUp = false;
+    private float originalSpeed = 1.0f;
+
+    public void setLongPressAction(String longPressAction) {
+        this.longPressAction = longPressAction;
+    }
+
+    public String getLongPressAction() {
+        return this.longPressAction;
+    }
 
     private long[] chapterStarts;
 
@@ -140,6 +153,13 @@ public class CustomPlayerView extends PlayerView
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                if (isLongPressSpeedUp) {
+                    isLongPressSpeedUp = false;
+                    if (getPlayer() != null) {
+                        getPlayer().setPlaybackParameters(new PlaybackParameters(originalSpeed));
+                    }
+                    postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
+                }
                 if (handleTouch) {
                     if (gestureOrientation == Orientation.HORIZONTAL) {
                         setCustomErrorMessage(null);
@@ -317,14 +337,25 @@ public class CustomPlayerView extends PlayerView
 
     @Override
     public void onLongPress(@NonNull MotionEvent motionEvent) {
-        if (locked || (getPlayer() != null && getPlayer().isPlaying())) {
-            locked = !locked;
-            isHandledLongPress = true;
-            Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
-            setIconLock(locked);
+        if ("speed_2x".equals(longPressAction)) {
+            if (!locked && getPlayer() != null && getPlayer().isPlaying()) {
+                originalSpeed = getPlayer().getPlaybackParameters().speed;
+                getPlayer().setPlaybackParameters(new PlaybackParameters(2.0f));
+                isLongPressSpeedUp = true;
+                isHandledLongPress = true;
+                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                setCustomErrorMessage("2.0x ▶▶");
+            }
+        } else if ("lock".equals(longPressAction)) {
+            if (locked || (getPlayer() != null && getPlayer().isPlaying())) {
+                locked = !locked;
+                isHandledLongPress = true;
+                Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
+                setIconLock(locked);
 
-            if (locked && isControllerFullyVisible()) {
-                hideController();
+                if (locked && isControllerFullyVisible()) {
+                    hideController();
+                }
             }
         }
     }

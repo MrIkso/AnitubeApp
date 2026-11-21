@@ -10,6 +10,7 @@ public class PreferenceKeys {
     public static final String PREF_KEY_REVERSE_EPISODE_LIST = "pref_key_reverse_episode_list";
     public static final String PREF_ENDPOINT_KEY = "pref_streamsb_api_endpoint";
     public static final String PREF_PLAYER_DOUBLE_TAP_SEEK = "player_double_tap_seek";
+    public static final String PREF_PLAYER_LONG_PRESS_ACTION = "player_long_press_action";
     public static final String PREF_PLAYER_FAST_SEEK = "player_fast_seek";
     public static final String PREF_PLAYER_SWIPE_CONTROLS = "player_swipe_controls";
     public static final String PREF_PLAYER_AUTOPLAY_NEXT_EPISODE = "player_autoplay_next_episode";

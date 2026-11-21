@@ -77,4 +77,16 @@
         <item>180</item>
         <item>240</item>
     </string-array>
+
+    <string-array name="long_press_action_entries">
+        <item>@string/long_press_action_lock</item>
+        <item>@string/long_press_action_speed_2x</item>
+        <item>@string/disabled</item>
+    </string-array>
+
+    <string-array name="long_press_action_values">
+        <item>lock</item>
+        <item>speed_2x</item>
+        <item>off</item>
+    </string-array>
 </resources>

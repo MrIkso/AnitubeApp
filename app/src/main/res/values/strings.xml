@@ -168,6 +168,9 @@
     <string name="swipe_controls">Керування свайпами</string>
     <string name="swipe_controls_summary">Проведіть по екрану, щоб відрегулювати яскравість і гучість</string>
     <string name="disabled">Вимкнено</string>
+    <string name="long_press_action_title">Дія при тривалому натисканні</string>
+    <string name="long_press_action_lock">Блокування екрана</string>
+    <string name="long_press_action_speed_2x">Прискорення 2x</string>
     <string name="player_auto_continue_play">Автостарт з попередньої позиції</string>
     <string name="player_auto_continue_play_summary">Відтворення буде розпочинатися з останньої збереженої позиції</string>
     <string name="dialog_continue_title">Продовжити?</string>

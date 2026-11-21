@@ -34,6 +34,15 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
+            app:defaultValue="lock"
+            app:entries="@array/long_press_action_entries"
+            app:entryValues="@array/long_press_action_values"
+            app:icon="@drawable/ic_round_touch"
+            app:key="player_long_press_action"
+            app:title="@string/long_press_action_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
             app:defaultValue="60"
             app:entries="@array/fast_seek_entries"
             app:entryValues="@array/fast_seek_values"

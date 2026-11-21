@@ -8,7 +8,6 @@ import androidx.preference.PreferenceManager;
 
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.App;
-import com.mrikso.anitube.app.network.response.TokenResponse;
 
 import java.util.Set;
 
@@ -128,6 +127,10 @@ public class PreferencesHelper {
             return -1;
         }
         return Integer.parseInt(seek);
+    }
+
+    public String getPlayerLongPressAction() {
+        return preferences.getString(PreferenceKeys.PREF_PLAYER_LONG_PRESS_ACTION, "lock");
     }
 
     public int getPlayerFastSeek() {

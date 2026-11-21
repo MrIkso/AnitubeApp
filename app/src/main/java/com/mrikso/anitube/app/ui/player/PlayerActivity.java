@@ -172,6 +172,7 @@ public class PlayerActivity extends AppCompatActivity {
     private boolean autoPlayNextEpisode;
     private boolean gesturesEnabled;
     private boolean autoContinue;
+    private String longPressAction;
     private boolean isContinueDialogShowing = false;
     private BroadcastReceiver broadcastReceiver;
 
@@ -308,6 +309,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         playerView.setGesturesEnabled(gesturesEnabled);
+        playerView.setLongPressAction(longPressAction);
 
         playerView.setLocked(isLock);
         var renderersFactory = new NextRenderersFactory(this)
@@ -1005,6 +1007,7 @@ public class PlayerActivity extends AppCompatActivity {
         autoPlayNextEpisode = prefs.isPlayerEnabledPlayNextEpisode();
         gesturesEnabled = prefs.isPlayerEnabledSwipeControls();
         autoContinue = prefs.isPlayerAutoContinuePlay();
+        longPressAction = prefs.getPlayerLongPressAction();
     }
 
     @Override
