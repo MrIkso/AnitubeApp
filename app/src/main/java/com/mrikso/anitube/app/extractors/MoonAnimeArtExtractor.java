@@ -6,8 +6,6 @@ import android.util.Log;
 import androidx.core.util.Pair;
 
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
-import com.mrikso.anitube.app.extractors.model.PlayerJsResponse;
 import com.mrikso.anitube.app.model.LoadState;
 import com.mrikso.anitube.app.model.VideoLinksModel;
 import com.mrikso.anitube.app.network.ApiClient;
@@ -40,7 +38,7 @@ import okhttp3.Response;
 public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
 
     private final String TAG = "MoonAnimeArtExtractor";
-    private final String PLAYER_JS_PATTERN = "Playerjs\\(([^)]+)\\)";
+    private final String RAW_VIDEO_PATTERN = "(?:var|let|const)\\s+rawVideo\\s*=\\s*[\"']([^\"']+)[\"']";
     private final MultivariantPlaylistParser masterPlaylistParser = new MultivariantPlaylistParser();
 
     private final Map<String, String> HEADERS = Map.of("User-Agent", ApiClient.DESKTOP_USER_AGENT,
@@ -62,30 +60,35 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                 .doOnError(v -> new Pair<>(LoadState.ERROR, getUrl()));
     }
 
-    private VideoLinksModel getModel(String masterU3u8, PlayerJsResponse playerJs) throws IOException {
+    private VideoLinksModel getModel(String masterU3u8, String rawVideoUrl) throws IOException {
         Map<String, String> qualitiesMap = new HashMap<>();
-        VideoLinksModel model = new VideoLinksModel(playerJs.getFile());
+        VideoLinksModel model = new VideoLinksModel(rawVideoUrl);
         MultivariantPlaylist masterPlayList = masterPlaylistParser.readPlaylist(masterU3u8);
-        // Log.i(TAG, "start parse playlist");
-        // Log.i(TAG, masterPlayList.toString());
+        String highestQuality = "1080p";
         for (Variant variant : masterPlayList.variants()) {
             String newUri = variant.uri();
 
             Optional<Resolution> resolutionOptional = variant.resolution();
             if (resolutionOptional.isPresent()) {
-                qualitiesMap.put(ParserUtils.standardizeQuality(String.valueOf(resolutionOptional.get().height())), newUri);
+                String resStr = String.valueOf(resolutionOptional.get().height());
+                String stdRes = ParserUtils.standardizeQuality(resStr);
+                qualitiesMap.put(stdRes, newUri);
+                highestQuality = stdRes;
             } else {
-                qualitiesMap.put("AUTO", playerJs.getFile());
+                qualitiesMap.put("AUTO", rawVideoUrl);
             }
         }
         model.setHeaders(HEADERS);
-        model.setLinksQuality(qualitiesMap);
-        model.setDefaultQuality(ParserUtils.standardizeQuality(playerJs.getDefaultQuality()));
-        model.setSubtileUrl(playerJs.getSubtitle());
+        if (!qualitiesMap.isEmpty()) {
+            model.setLinksQuality(qualitiesMap);
+            model.setDefaultQuality(highestQuality);
+        } else {
+            model.setSingleDirectUrl(rawVideoUrl);
+        }
         return model;
     }
 
-    private Single<Pair<String, PlayerJsResponse>> downloadManifest() {
+    private Single<Pair<String, String>> downloadManifest() {
         return Single.create(emitter -> {
             Request request1 = new Request.Builder()
                     .url(getUrl())
@@ -160,18 +163,17 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                 dataMatcher.appendTail(sb);
                 String cleanJsCode = sb.toString();
 
-                Gson gson = new Gson();
-                String json = ParserUtils.getMatcherResult(
-                        PLAYER_JS_PATTERN, cleanJsCode, 1);
-                //  Log.d(TAG, json);
-                int lastIndex = json.lastIndexOf(",");
-                if (lastIndex >= 0) {
-                    json = json.substring(0, lastIndex) + "}";
+                String rawVideo = ParserUtils.getMatcherResult(
+                        RAW_VIDEO_PATTERN, cleanJsCode, 1);
+                if (Strings.isNullOrEmpty(rawVideo)) {
+                    if (!emitter.isDisposed()) {
+                        emitter.tryOnError(new Exception("rawVideo URL not found in script"));
+                    }
+                    return;
                 }
-                PlayerJsResponse playerJs = gson.fromJson(json, PlayerJsResponse.class);
-                //Log.d(TAG, playerJs.getFile());
+
                 Request masterPlaylistRequest = new Request.Builder()
-                        .url(playerJs.getFile())
+                        .url(rawVideo)
                         .headers(Headers.of(HEADERS))
                         .get()
                         .build();
@@ -188,12 +190,12 @@ public class MoonAnimeArtExtractor extends BaseVideoLinkExtracror {
                     String masterPlaylist = response.body().string();
                     if (Strings.isNullOrEmpty(masterPlaylist)) {
                         if (!emitter.isDisposed()) {
-                            emitter.tryOnError(new Throwable("masterPlaylist is null of empty"));
+                            emitter.tryOnError(new Throwable("masterPlaylist is null or empty"));
                         }
                         return;
                     }
                     if (!emitter.isDisposed()) {
-                        emitter.onSuccess(new Pair<>(masterPlaylist, playerJs));
+                        emitter.onSuccess(new Pair<>(masterPlaylist, rawVideo));
                     }
                 }
             } catch (Exception exception) {
