@@ -25,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private SharedViewModel viewModel = null;
 
+    private long lastBottomNavClickTime = 0;
+    private int lastBottomNavItemId = -1;
+    private static final long DOUBLE_TAP_TIMEOUT = 500;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +57,44 @@ public class MainActivity extends AppCompatActivity {
 
         binding.bttomNav.setOnItemSelectedListener(item -> {
             int selectedItemId = item.getItemId();
-            handleBottomNavItemSelections(binding.bttomNav, selectedItemId);
-            NavigationUI.onNavDestinationSelected(item, navController);
+            long currentTime = System.currentTimeMillis();
+
+            if (selectedItemId == lastBottomNavItemId && (currentTime - lastBottomNavClickTime) < DOUBLE_TAP_TIMEOUT) {
+                navigateToRoot(selectedItemId);
+            } else {
+                handleBottomNavItemSelections(binding.bttomNav, selectedItemId);
+                NavigationUI.onNavDestinationSelected(item, navController);
+            }
+
+            lastBottomNavClickTime = currentTime;
+            lastBottomNavItemId = selectedItemId;
             return true;
         });
 
+        binding.bttomNav.setOnItemReselectedListener(item -> {
+            int selectedItemId = item.getItemId();
+            long currentTime = System.currentTimeMillis();
+
+            navigateToRoot(selectedItemId);
+
+            lastBottomNavClickTime = currentTime;
+            lastBottomNavItemId = selectedItemId;
+        });
+
         handleIntent(getIntent());
+    }
+
+    private void navigateToRoot(int itemId) {
+        if (navController != null && navController.getCurrentDestination() != null) {
+            int currentId = navController.getCurrentDestination().getId();
+            if (currentId == itemId) {
+                return;
+            }
+            boolean popped = navController.popBackStack(itemId, false);
+            if (!popped) {
+                navController.navigate(itemId);
+            }
+        }
     }
 
     private void handleBottomNavItemSelections(BottomNavigationView bn, int itemId) {
