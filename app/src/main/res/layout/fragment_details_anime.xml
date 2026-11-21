@@ -125,19 +125,6 @@
                             android:textColor="@color/text"
                             android:textSize="20sp"
                             tools:text="БЛІЧ: ТИСЯЧОЛІТНЯ КРИВАВА ВІЙНА" />
-
-                        <TextView
-                            android:id="@+id/title_eng"
-                            style="@style/TextLabelAlpha"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:ellipsize="end"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:visibility="gone"
-                            tools:text="Bleach: Sennen Kessen-hen"
-                            tools:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout

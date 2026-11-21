@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.blankj.utilcode.util.EncodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.color.MaterialColors;
 import com.google.common.base.Strings;
 import com.mrikso.anitube.app.R;
 import com.mrikso.anitube.app.adapters.ActionsAdapter;
@@ -87,6 +88,9 @@ public class DetailsAnimeFragment extends Fragment
     private AnimeDetailsModel currentAnimeDetails;
     private int tableRowIndex = 0;
     private ActionsAdapter actionsAdapter;
+
+    private boolean isOrgNameLoaded = false;
+    private String cachedOrgName = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -208,12 +212,6 @@ public class DetailsAnimeFragment extends Fragment
         binding.clContent.setVisibility(View.VISIBLE);
         binding.fabWatch.setVisibility(View.VISIBLE);
         binding.title.setText(animeDetails.getTitle());
-        String titleEng = animeDetails.getOriginalTitle();
-
-        if (!Strings.isNullOrEmpty(titleEng)) {
-            binding.titleEng.setVisibility(View.VISIBLE);
-            binding.titleEng.setText(titleEng);
-        }
 
         if (!PreferencesHelper.getInstance().isLoadAnimeAdditionalInfo()) {
             loadPosterImage(animeDetails.getPosterUrl());
@@ -310,6 +308,8 @@ public class DetailsAnimeFragment extends Fragment
     private void clearDetailsTable() {
         tableRowIndex = 0;
         binding.layoutInfo.tableLayout.removeAllViews();
+        isOrgNameLoaded = false;
+        cachedOrgName = "";
     }
 
     private void updateReleaseActions(AnimeDetailsModel animeDetails) {
@@ -381,6 +381,10 @@ public class DetailsAnimeFragment extends Fragment
     }
 
     private void showInfoGroup(AnimeDetailsModel animeDetails) {
+        if (PreferencesHelper.getInstance().isLogin()) {
+            addOrgNameTableRow(animeDetails);
+        }
+
         SimpleModel yearRelease = animeDetails.getReleaseYear();
         if (yearRelease != null) {
             addTableRow(R.string.year, createClickableTextView(yearRelease));
@@ -421,6 +425,42 @@ public class DetailsAnimeFragment extends Fragment
         showVoices(animeDetails.getVoicers());
         showDubbers(animeDetails.getDubbersTeamList());
         showGenresGroup(animeDetails.getGenres());
+    }
+
+    private void addOrgNameTableRow(AnimeDetailsModel animeDetails) {
+        TableLayout table = binding.layoutInfo.tableLayout;
+        var row = ItemDetailsInfoRowBinding.inflate(getLayoutInflater(), table, false);
+        final int color = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorAccent, null);
+        row.tvTitle.setText(R.string.original_title);
+        row.tvValue.setText(R.string.show_original_title);
+        row.tvValue.setTextColor(color);
+        row.tvValue.setClickable(true);
+        row.tvValue.setFocusable(true);
+
+        row.tvValue.setOnClickListener(v -> {
+            if (isOrgNameLoaded) {
+                return;
+            }
+            row.tvValue.setText(R.string.loading_org_name);
+            row.tvValue.setEnabled(false);
+            viewModel.loadOrgName(animeDetails.getAnimeUrl(), animeDetails.getAnimeId(), orgName -> {
+                row.tvValue.setEnabled(true);
+                if (!Strings.isNullOrEmpty(orgName)) {
+                    isOrgNameLoaded = true;
+                    cachedOrgName = orgName;
+                    row.tvValue.setText(orgName);
+                    row.tvValue.setTextColor(row.tvTitle.getCurrentTextColor());
+                    row.tvValue.setClickable(false);
+                } else {
+                    row.tvValue.setText(R.string.show_original_title);
+                    row.tvValue.setTextColor(color);
+                    ViewUtils.showSnackbar(requireActivity(), R.string.error_show_original_name);
+                }
+            });
+        });
+
+        table.addView(row.getRoot(), 0);
+        tableRowIndex++;
     }
 
     private void showVoices(List<SimpleModel> voices) {

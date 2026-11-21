@@ -2,6 +2,7 @@ package com.mrikso.anitube.app.network;
 
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
+import com.mrikso.anitube.app.model.OrgNameResponse;
 
 import org.jsoup.nodes.Document;
 
@@ -45,6 +46,10 @@ public interface AnitubeApiService {
     @GET("/engine/ajax/playlists.php")
     @Headers("X-Requested-With: XMLHttpRequest")
     Single<String> getPlaylist(@Header("referer") String referer, @Query("news_id") int newsId, @Query("xfield") String xField, @Query("user_hash") String userHash);
+
+    @GET("/engine/ajax/get_orgname.php")
+    @Headers("X-Requested-With: XMLHttpRequest")
+    Single<OrgNameResponse> getOrgName(@Header("referer") String referer, @Query("id") int animeId);
 
     @POST("/")
     @FormUrlEncoded

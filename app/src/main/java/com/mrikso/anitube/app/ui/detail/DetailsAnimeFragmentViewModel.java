@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.common.base.Strings;
 import com.mrikso.anitube.app.App;
 import com.mrikso.anitube.app.model.AnimeDetailsModel;
 import com.mrikso.anitube.app.model.AnimeMobileDetailsModel;
@@ -24,6 +25,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -197,6 +199,27 @@ public class DetailsAnimeFragmentViewModel extends ViewModel {
                 .map(v -> String.format("%s/%s/%s", ApiClient.HIKKA_URL, v.getDataType(), v.getSlug()))
                 .doOnError(throwable -> {
                 });
+    }
+
+    public void loadOrgName(String referer, int animeId, Consumer<String> callback) {
+        compositeDisposable.add(
+                anitubeRepository.getOrgName(referer, animeId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                response -> {
+                                    if (response != null && !Strings.isNullOrEmpty(response.getNameorg())) {
+                                        callback.accept(response.getNameorg());
+                                    } else {
+                                        callback.accept("");
+                                    }
+                                },
+                                throwable -> {
+                                    throwable.printStackTrace();
+                                    callback.accept("");
+                                }
+                        )
+        );
     }
 
     public void parseAnimePage(Document document) {

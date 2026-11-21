@@ -171,6 +171,11 @@
     <string name="long_press_action_title">Дія при тривалому натисканні</string>
     <string name="long_press_action_lock">Блокування екрана</string>
     <string name="long_press_action_speed_2x">Прискорення 2x</string>
+    <string name="show_original_title">Показати оригінальну назву</string>
+    <string name="hide_original_title">Приховати</string>
+    <string name="loading_org_name">Завантаження...</string>
+    <string name="original_title">Оригінальна назва:</string>
+    <string name="error_show_original_name">Не вдалося отримати оригінальну назву</string>
     <string name="player_auto_continue_play">Автостарт з попередньої позиції</string>
     <string name="player_auto_continue_play_summary">Відтворення буде розпочинатися з останньої збереженої позиції</string>
     <string name="dialog_continue_title">Продовжити?</string>

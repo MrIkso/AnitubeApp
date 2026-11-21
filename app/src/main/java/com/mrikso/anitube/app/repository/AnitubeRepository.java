@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.mrikso.anitube.app.model.ChangeStatusResponse;
 import com.mrikso.anitube.app.model.CommentsResponse;
+import com.mrikso.anitube.app.model.OrgNameResponse;
 import com.mrikso.anitube.app.network.AnitubeApiService;
 import com.mrikso.anitube.app.network.ApiClient;
 import com.mrikso.anitube.app.utils.ParserUtils;
@@ -105,6 +106,10 @@ public class AnitubeRepository {
 
     public Single<CommentsResponse> getCommentsForAnime(int page, int animeId) {
         return anitubeApi.getCommentsForAnime(page, animeId);
+    }
+
+    public Single<OrgNameResponse> getOrgName(String referer, int animeId) {
+        return anitubeApi.getOrgName(referer, animeId);
     }
 
 
